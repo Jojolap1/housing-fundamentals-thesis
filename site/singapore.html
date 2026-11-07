@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Singapore housing</title>
-<meta name="description" content="Singapore: in preparation.">
+<meta name="description" content="Prices, rents, yields and valuation gaps in Singapore.">
 <link rel="stylesheet" href="assets/style.css">
-
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 </head>
-<body>
+<body data-city="singapore">
 <header class="top"><div class="wrap">
   <a class="brand" href="index.html">Housing fundamentals</a>
   <nav>
@@ -20,7 +20,68 @@
   </nav>
 </div></header>
 <main class="wrap">
-<h1>Singapore</h1><p class="lede">In preparation: the data are downloaded and cleaned; models and valuation are being finalised.</p></main>
+
+<h1>Singapore</h1>
+<p class="lede">Resale transactions of public (HDB) flats on 99-year leases, January 2017 onward. Rents are HDB approvals to rent out whole flats. Fundamental value discounts rent over the remaining lease, not in perpetuity.</p>
+<p class="meta-line">Period: <span id="period">…</span> · retained transactions: <span id="ntotal">…</span> · source: HDB resale flat prices and HDB rental approvals (data.gov.sg), Census of Population 2020</p>
+
+<div class="card">
+  <div class="controls">
+    <label>Geography<select id="layer">
+      <option value="hex">Hexagons (H3 res. 9, street scale)</option>
+      <option value="l1">Planning area</option>
+      <option value="l2">Subzone</option>
+    </select></label>
+    <label>Indicator<select id="metric">
+      <option value="ppm2">Price per m²</option>
+      <option value="rent">Monthly rent per flat</option>
+      <option value="yield">Gross rental yield</option>
+      <option value="pti">Price-to-income</option>
+      <option value="gap">Valuation gap (model)</option>
+      <option value="mis">Relative mispricing</option>
+    </select></label>
+    <label>Year<select id="year"></select></label>
+  </div>
+  <div id="map-title" style="font-weight:600;margin-bottom:6px"></div>
+  <div id="map" style="position:relative"></div>
+  <div class="legend" id="legend"></div>
+  <p class="note" id="gap-note" hidden>The valuation gap compares the model's predicted market price with rents capitalised at an
+  assumed user cost. A positive value means prices are above what rents justify <em>under the baseline assumptions</em>;
+  see the sensitivity band below. It is a model-dependent hypothesis, not investment advice.</p>
+  <p class="note" id="mis-note" hidden>Relative mispricing is the median residual of the price model: positive = dearer than
+  comparable dwellings elsewhere in the city, negative = cheaper. It says nothing about a bubble.</p>
+  <p class="meta-line">Source: HDB resale flat prices and HDB rental approvals (data.gov.sg), Census of Population 2020. Period shown: the selected year. Cells with fewer than 5 transactions in a year are
+  not published. Valuation gaps are model-dependent hypotheses, not investment advice.</p>
+</div>
+
+<h2>Fundamental vs market value per m²</h2>
+<div class="card">
+  <div class="legend"><span><span style="color:var(--series-market)">●</span> Market: median transaction price per m²</span>
+  <span><span style="color:var(--series-fund)">●</span> Fundamental: median V* per m², baseline assumptions</span>
+  <span><span style="display:inline-block;width:18px;height:10px;background:var(--band-fund)"></span> Range of V* over the sensitivity grid (r<sub>f</sub> ±1 pt, risk premium 1–4%, growth 0–4%)</span></div>
+  <div class="chart-wrap" id="chart"></div>
+  <details><summary>Table view</summary><div id="chart-table" class="table-scroll"></div></details>
+  <p class="note">HDB rents are available from 2021; earlier years use the rent model's 2021 level and should be read with care. A negative gap does not mean HDB flats are a bargain anyone can take: only eligible households (mainly citizens) may buy, owners must live in the flat for 5 years before renting it out, and grants and CPF rules shape demand, so rent capitalisation is constrained. Private condominiums (URA) are not included yet.</p>
+</div>
+
+<h2>Streets</h2>
+<div class="card">
+  <div class="controls">
+    <label>Year<select id="t-year"></select></label>
+    <label>Search street<input type="search" id="t-search" placeholder="e.g. ANG MO KIO AVE 10"></label>
+    <span class="meta-line" id="t-count"></span>
+  </div>
+  <div class="table-scroll"><table>
+    <thead id="t-head"><tr><th>Street</th><th>Planning area</th><th class="num" data-k="n">n</th><th class="num" data-k="ppm2">Median S$/m²</th>
+    <th class="num">IQR</th><th class="num" data-k="yoy">YoY</th><th class="num" data-k="mis">Rel. mispricing</th></tr></thead>
+    <tbody id="t-body"></tbody>
+  </table></div>
+  <p class="meta-line">Only street-years with at least 5 transactions are listed. Relative mispricing = cheap/expensive versus
+  comparable dwellings, not a bubble indicator.</p>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="assets/app.js"></script>
+</main>
 <footer><div class="wrap">
 Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),
 INSEE, IGN, Île-de-France Mobilités, HDB / URA / LTA / NParks / SingStat via data.gov.sg (Singapore Open Data

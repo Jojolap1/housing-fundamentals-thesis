@@ -52,6 +52,13 @@ These are stated plainly because they bound what the results can say.
 
 ## Models and spatial statistics
 - Spatial block CV uses H3 resolution-8 cells. Larger blocks would be stricter.
+- OLS residuals remain spatially autocorrelated: Moran's I = 0.06 for Paris, 0.25 for Singapore
+  sales, 0.04 for Singapore rents. The tree models, which see coordinates, capture more of this.
+- The HDB rent model has no floor area or storey (not in the source): its MAPE is about 15%,
+  against 5-7% for HDB prices.
+- HDB demand is restricted (eligibility, 5-year minimum occupation before renting out, grants,
+  CPF rules), so the arbitrage behind rent capitalisation is constrained. A negative HDB gap is
+  not evidence that flats are available below their value to any buyer.
 - Moran's I is computed on a 20,000-sale sample with k = 10 neighbours.
 - Distances are straight-line, not walking distances. The CBD anchor is a single point.
 

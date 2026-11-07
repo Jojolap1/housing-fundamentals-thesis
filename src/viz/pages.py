@@ -177,7 +177,10 @@ CITIES = {
         lede="Resale transactions of public (HDB) flats on 99-year leases, January 2017 onward. Rents are HDB approvals to "
              "rent out whole flats. Fundamental value discounts rent over the remaining lease, not in perpetuity.",
         fund_note="HDB rents are available from 2021; earlier years use the rent model's 2021 level and should be read "
-                  "with care. Private condominiums (URA) are not included yet.",
+                  "with care. A negative gap does not mean HDB flats are a bargain anyone can take: only eligible "
+                  "households (mainly citizens) may buy, owners must live in the flat for 5 years before renting it "
+                  "out, and grants and CPF rules shape demand, so rent capitalisation is constrained. Private "
+                  "condominiums (URA) are not included yet.",
     ),
 }
 

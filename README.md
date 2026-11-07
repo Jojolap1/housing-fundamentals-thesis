@@ -2,7 +2,7 @@
 
 *A machine-learning and rent-capitalisation approach to residential valuation — Paris and Singapore.*
 
-> Status: Paris complete. Singapore: data downloaded, cleaned and geocoded; models and valuation in progress (see `docs/status_singapore.md`).
+> Status: Paris and Singapore (HDB resale) complete. Next: Singapore private market (URA, needs an access key), Kaggle dataset.
 
 Hedonic and ML models trained on transaction prices estimate **market** value. They cannot
 tell whether market value is justified. This project anchors **fundamental** value on rents
@@ -17,6 +17,8 @@ tests overvaluation as a **hypothesis**, under explicit and varied assumptions.
 ![Paris: median price per m², H3 hexagons, 2025](docs/img/paris_hex_price.png)
 ![Paris: valuation gap by quartier, 2025](docs/img/paris_quartier_gap.png)
 ![Paris: fundamental vs market value per m²](docs/img/paris_fundamental_chart.png)
+![Singapore: valuation gap by planning area, 2025](docs/img/singapore_pa_gap.png)
+![Singapore: fundamental vs market value per m²](docs/img/singapore_fundamental_chart.png)
 
 ## Data
 
