@@ -1,0 +1,16 @@
+# Raw downloads (licences forbid nothing, but they are large and reproducible: `make data`)
+data/raw/*
+!data/raw/.gitkeep
+# Provenance of every download, and the OneMap geocoding cache (block addresses, not personal data)
+!data/raw/MANIFEST.csv
+!data/raw/singapore/
+data/raw/singapore/*
+!data/raw/singapore/onemap_blocks.csv
+# Transaction-level intermediate files contain addresses and parcel ids: never committed
+data/interim/*
+!data/interim/.gitkeep
+logs/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.part

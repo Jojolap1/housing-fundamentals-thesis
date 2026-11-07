@@ -1,0 +1,6 @@
+city,step,rule,rows_before,rows_removed,rows_after
+singapore,1_price_area_plausible,price > 0 and 25 <= area <= 300 m2,244312,1,244311
+singapore,2_geocoded,block + street matched by OneMap,244311,0,244311
+singapore,3_in_subzone,point inside an MP2019 subzone,244311,0,244311
+singapore,4a_non_market_price,"price/m2 within [median/3, median*3] of town x flat type x year",244311,0,244311
+singapore,4b_ppm2_p1_p99,price/m2 within p1-p99 of town x flat type x year,244311,6113,238198

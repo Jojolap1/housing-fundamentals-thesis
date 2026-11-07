@@ -1,0 +1,14 @@
+{
+  "python": "3.13.18",
+  "seed": 20261107,
+  "pandas": "3.0.5",
+  "numpy": "2.5.3",
+  "geopandas": "1.2.0",
+  "statsmodels": "0.15.0",
+  "scikit-learn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "shap": "0.54.1",
+  "h3": "4.5.0",
+  "esda": "2.10.0",
+  "libpysal": "4.15.1"
+}

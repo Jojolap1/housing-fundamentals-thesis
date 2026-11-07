@@ -1,0 +1,9 @@
+city,step,rule,rows_before,rows_removed,rows_after
+paris,1_exact_duplicates,identical line in geo-DVF,428067,38279,389788
+paris,2_nature_vente,nature_mutation == 'Vente',389788,6355,383433
+paris,3_single_apartment,exactly one Appartement line; other lines only Dépendance,383433,112826,270607
+paris,3b_one_line_per_sale,"reshape, not a filter: outbuilding lines folded into their sale (n_dependances)",270607,119429,151178
+paris,4_price_area_plausible,price > 0 and 9 <= area <= 400 m2,151178,2653,148525
+paris,5_geolocated_in_paris,coordinates inside a Paris quartier administratif,148525,9,148516
+paris,6a_non_market_price,"price/m2 within [median/3, median*3] of arrondissement x year",148516,5729,142787
+paris,6b_ppm2_p1_p99,price/m2 within p1-p99 of arrondissement x year,142787,2958,139829
