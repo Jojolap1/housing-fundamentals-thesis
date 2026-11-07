@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Method and limits</title>
+<meta name="description" content="How prices, rents and fundamental values are computed, and what limits them.">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">Housing fundamentals</a>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="paris.html">Paris</a>
+    <a href="singapore.html">Singapore</a>
+    <a href="methodology.html" aria-current="page">Method &amp; limits</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<div class="card doc"><h1>Methodology</h1>
+<h2>1. Research question and stance</h2>
+<p>ML and hedonic models fitted to transaction prices estimate <strong>market value</strong>: what a
+dwelling with given characteristics sells for, given current market conditions. They cannot
+say whether those conditions are justified. Fundamental value is anchored on <strong>rents
+capitalised at the user cost of housing</strong> (Poterba 1984; Himmelberg, Mayer &amp; Sinai 2005,
+"HMS"). Whether prices exceed fundamentals is a <strong>hypothesis tested</strong> under explicit,
+varied assumptions. It is never a premise.</p>
+<h2>2. Pipeline</h2>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Module</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ingest</td>
+<td><code>src/ingest/*</code></td>
+<td><code>data/raw/**</code> + <code>data/raw/MANIFEST.csv</code> (URL, UTC time, bytes, SHA-256 of every file)</td>
+</tr>
+<tr>
+<td>Clean + harmonise</td>
+<td><code>src/clean/paris.py</code>, <code>src/clean/singapore.py</code></td>
+<td><code>data/interim/transactions_&lt;city&gt;.parquet</code> (common schema), <code>data/processed/cleaning_log_&lt;city&gt;.csv</code></td>
+</tr>
+<tr>
+<td>Features</td>
+<td><code>src/features/build.py</code></td>
+<td>distances, building period, matched rents</td>
+</tr>
+<tr>
+<td>Ratios</td>
+<td><code>src/ratios/levels.py</code></td>
+<td><code>data/processed/stats_&lt;city&gt;_&lt;level&gt;.csv</code></td>
+</tr>
+<tr>
+<td>Models</td>
+<td><code>src/models/hedonic.py</code></td>
+<td><code>reports/tables/model_comparison_*.csv</code>, OLS coefficients, SHAP figures</td>
+</tr>
+<tr>
+<td>Valuation</td>
+<td><code>src/ratios/valuation.py</code></td>
+<td><code>data/processed/valuation_*</code>, <code>sensitivity_*</code>, <code>fundamental_vs_market_*</code></td>
+</tr>
+<tr>
+<td>Site</td>
+<td><code>src/viz/export.py</code>, <code>src/viz/pages.py</code></td>
+<td><code>site/</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>make data &amp;&amp; make models &amp;&amp; make site</code> reproduces everything. The random seed is fixed
+(<code>src/config.py</code>), and package versions are written to <code>data/processed/package_versions.json</code>.</p>
+<h2>3. Harmonised schema</h2>
+<p><code>city, date, year, price_local, currency, price_eur, price_usd, floor_area_m2,
+price_per_m2_local, price_per_m2_eur, rooms_or_flat_type, property_type, tenure,
+lease_remaining_years, address_street, street_id, district_l1, district_l2, lat, lon, source_id</code>,
+plus city-specific extras (Paris: quartier name, IRIS, outbuildings, Carrez area; Singapore:
+HDB town, block, flat model, storey band and mid-point, lease start year).</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>district_l1</th>
+<th>district_l2</th>
+<th>street_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paris</td>
+<td>arrondissement (1–20)</td>
+<td>quartier administratif (city-wide number 1–80, the key used by the reference rents)</td>
+<td>INSEE commune code + FANTOIR street code</td>
+</tr>
+<tr>
+<td>Singapore</td>
+<td>URA planning area (MP2019)</td>
+<td>URA subzone (MP2019)</td>
+<td>HDB street name</td>
+</tr>
+</tbody>
+</table>
+<p>The HDB town, HDB's own administrative unit, is kept as <code>hdb_town</code>. Subzones are used for
+<code>district_l2</code> because they nest inside planning areas, while HDB towns do not.</p>
+<p><strong>FX.</strong> The ECB euro reference rates (SGD and USD per EUR), monthly average of the
+transaction month. Singapore records give only the month, so the same rule is used for
+both cities. Local currency is always kept.</p>
+<h2>4. Cleaning rules</h2>
+<p>Every step is counted in <code>data/processed/cleaning_log_&lt;city&gt;.csv</code>, and the identifiers of
+removed rows are kept in <code>data/interim/removed_rows_&lt;city&gt;.csv.gz</code> (not published).</p>
+<p><strong>Paris (DVF):</strong>
+1. exact duplicate lines;
+2. <code>nature_mutation == "Vente"</code> only;
+3. mutations made of exactly one apartment, with or without outbuildings (dépendances);
+4. price &gt; 0 and 9 ≤ built area ≤ 400 m²;
+5. point inside a Paris quartier;
+6. non-market prices: price/m² more than 3× above or below the arrondissement × year median.
+   This catches €1 symbolic transfers and similar, which are over 1% of some
+   arrondissement-years, so a percentile trim alone misses them;
+7. 1st–99th percentile of price/m² within arrondissement × year.</p>
+<p>Floor area is <code>surface_reelle_bati</code>, which is always filled. Carrez area is filled for only
+about half of the sales and is kept as a robustness variable.</p>
+<p><strong>Singapore (HDB resale):</strong>
+1. price &gt; 0, 25 ≤ area ≤ 300 m²;
+2. block geocoded by OneMap;
+3. inside an MP2019 subzone;
+4. factor-3 non-market rule within town × flat type × year;
+5. 1st–99th percentile.</p>
+<p>Exact duplicate lines are <strong>kept and flagged</strong> (<code>dup_flag</code>), because two flats in the same
+block, month and storey band can sell at the same price.</p>
+<p><strong>Geocoding.</strong> Paris: geo-DVF coordinates, which are cadastral-parcel centroids (no
+geocoder needed). Singapore: OneMap search on "block + street". A result is accepted only
+if OneMap returns the same block number and the same street after HDB abbreviations are
+expanded ("BT" → "BUKIT", "AVE" → "AVENUE", …). The hit rate is written to
+<code>data/processed/geocoding_singapore.csv</code>.</p>
+<h2>5. Ratios</h2>
+<p>Computed per year at city, <code>district_l1</code>, <code>district_l2</code> and street level
+(<code>src/ratios/levels.py</code>):</p>
+<ul>
+<li><strong>Price/m²:</strong> median, IQR (q25–q75) and n. YoY is the change of the median against the
+  same unit one year earlier. The window change is 2022 → 2025 for Paris (the only full
+  years inside DVF's 5-year window) and 2020 → 2025 for Singapore.</li>
+<li><strong>Rent:</strong></li>
+<li>Paris: unfurnished reference rent (€/m²/month) of the cell quartier × rooms (1, 2, 3, 4+) ×
+    construction period × vintage. Vintages apply from 1 July to 30 June. The construction
+    period comes from the nearest residential BD TOPO building within 30 m of the parcel
+    point. If no building matches, the four periods are averaged, weighted by the quartier's
+    dwelling mix; this is also reported as a robustness variant.</li>
+<li>Singapore: median monthly rent of HDB approvals for the same flat type and year. It is
+    matched at block level if that cell has n ≥ 5, then subzone, then planning area.
+    <code>rent_source</code> records the level used.</li>
+<li><strong>Gross yield</strong> = 12 × monthly rent / price, per transaction, then the median.
+  <strong>Price-to-rent</strong> is its inverse, also per transaction, then the median.</li>
+<li><strong>Price-to-income:</strong></li>
+<li>Paris: price of a <strong>60 m²</strong> dwelling at the transaction's price/m², divided by the
+    annual median disposable income per consumption unit of the transaction's IRIS
+    (Filosofi 2021) (<code>pti_uc</code>). It is also divided by that income × <strong>1.5 UC</strong>, a couple
+    without children on the modified OECD scale (<code>pti_hh</code>).</li>
+<li>Singapore: <strong>4-room HDB</strong> resale price / (12 × the planning area's median monthly
+    household income from work). The median is interpolated linearly inside the income
+    band from the Census 2020 band counts; it is undefined if it falls in the open
+    S$20,000+ band.</li>
+<li><strong>Publication rule:</strong> a cell (street, hexagon or district) × year is published only if
+  n ≥ 5.</li>
+</ul>
+<h2>6. Models</h2>
+<ul>
+<li>Target: log price/m² (sales) and log monthly rent (Singapore HDB rentals).</li>
+<li>Features: log floor area, rooms or flat type, flat model, construction period, building
+  year and number of floors (Paris), storey mid-point and remaining lease (Singapore),
+  outbuildings, log distance to the nearest metro/RER or MRT/LRT exit, log distance to the
+  CBD anchor, log distance to the nearest public green space ≥ 1 ha, and time.</li>
+<li><strong>OLS:</strong> district_l2 and year fixed effects, HC1 robust standard errors, and also
+  standard errors clustered by district. Moran's I on the residuals uses 10-nearest-neighbour
+  weights on a seeded random sample of 20,000 sales, with 199 permutations.</li>
+<li><strong>Random Forest</strong> (200 trees, min leaf 5, 40% of features per split, 50% bootstrap) and
+  <strong>LightGBM</strong> (1,500 rounds, learning rate 0.03, 63 leaves). Both see latitude/longitude
+  and a numeric month index.</li>
+<li><strong>Validation:</strong></li>
+<li>(a) spatial block CV: H3 resolution-8 cells (about 0.7 km²) are the groups, 5 folds,
+    <code>GroupKFold</code>;</li>
+<li>(b) time split: train on all years before the latest one, test on the latest. The
+    unseen year's OLS effect is set to the last training year's.</li>
+</ul>
+<p>Errors are reported on price/m², after Duan smearing: RMSE, MAE and MAPE.
+- <strong>Interpretability:</strong> SHAP (TreeExplainer) summary and dependence plots for LightGBM,
+  compared with the OLS elasticities.</p>
+<h2>7. Fundamental value and valuation gap</h2>
+<pre><code>u   = r_f + τ + δ + γ − g
+V*  = R / u                                   Paris (freehold: perpetuity)
+V*  = R / u · [1 − ((1+g)/(1+i))^T], i = u+g  Singapore (HDB lease, T years left)
+gap = P̂ / V* − 1
+</code></pre>
+<ul>
+<li><strong>R:</strong></li>
+<li>Paris: annual reference rent × floor area.</li>
+<li>Singapore: annual rent predicted by the HDB rent model for the sold flat's type and
+    location. Rents exist only from 2021, so earlier years use the 2021 level and are
+    flagged.</li>
+<li><strong>P̂:</strong> the out-of-fold LightGBM prediction from the spatial CV, so no dwelling is valued
+  by a model trained on its own sale.</li>
+<li><strong>r_f:</strong> mean 10-year government yield of the year. France: ECB series
+  IRS.M.FR.L.L40.CI.0000.EUR.N.Z. Singapore: SingStat M700071, series 15.</li>
+<li><strong>Assumptions</strong> (baseline [sensitivity range]; sources in <code>src/ratios/params.py</code>):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Paris</th>
+<th>Singapore</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>τ, property tax</td>
+<td>0.25% [0.1–0.5%]</td>
+<td>0.10% [0–0.3%]</td>
+</tr>
+<tr>
+<td>δ, maintenance + depreciation</td>
+<td>1.5% [1.0–2.5%]</td>
+<td>1.5% [1.0–2.5%]</td>
+</tr>
+<tr>
+<td>γ, risk premium</td>
+<td>2% [1–4%] (HMS)</td>
+<td>2% [1–4%] (HMS)</td>
+</tr>
+<tr>
+<td>g, expected growth</td>
+<td>2% [0–4%]</td>
+<td>2% [0–4%]</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Sensitivity grid:</strong> r_f ± 0, 0.5 and 1 percentage point; γ ∈ {1, 2, 3, 4}%;
+  g ∈ {0, 1, 2, 3, 4}%. Combinations with u &lt; 0.5% are reported as undefined, never clipped.</li>
+<li><strong>Relative mispricing</strong> = log(actual price) − log(P̂), aggregated by street, hexagon or
+  district. It measures cheap or expensive <strong>relative to comparable dwellings</strong>. It is
+  <strong>not</strong> a bubble indicator.</li>
+</ul><h1>Limitations</h1>
+<p>These are stated plainly because they bound what the results can say.</p>
+<h2>Rents</h2>
+<ul>
+<li><strong>Paris rents are regulatory reference values, not contracts.</strong> They are set by
+  prefectoral order from observed rents (OLAP). The "reference" is roughly a median, and
+  the legal ceiling is +20% above it. A gap computed with them compares prices with
+  regulated-market rents. Observed market rents (and especially furnished lets) can be
+  higher, which would lower the measured gap.</li>
+<li><strong>The rented and the owned stocks differ.</strong> Reference rents describe the private rental
+  stock, while DVF describes the dwellings that were sold. Matching on quartier × rooms ×
+  construction period reduces, but does not remove, the composition difference.</li>
+<li><strong>Construction period</strong> is not in DVF. It comes from the nearest residential BD TOPO
+  building within 30 m of the parcel centroid (matched for about 86% of sales). A wrong
+  building match puts a sale in the wrong rent cell. The period-mix rent is the robustness
+  check.</li>
+<li><strong>Singapore rents are HDB approvals to rent out whole flats</strong>, with the declared rent and
+  no floor area. They cover 2021 onwards only: for 2017–2020 the rent model is held at its
+  2021 level, so gaps for those years are weaker evidence. Room rentals are excluded.</li>
+</ul>
+<h2>Prices</h2>
+<ul>
+<li><strong>DVF covers only the last five years</strong> (legal rule), currently July 2021 – June 2026, so
+  there is no Paris history before the 2022 rate shock, and 2021 and 2026 are half-years.</li>
+<li>DVF has no floor level, condition, view or energy class. Hedonic residuals therefore mix
+  unobserved quality with genuine mispricing.</li>
+<li>The DVF price covers the whole mutation, including outbuildings (parking, cellar);
+  outbuildings are a model feature.</li>
+<li>HDB resale prices are recorded by month only. Storey is a 3-floor band.</li>
+<li>Exact duplicate HDB lines are kept: they cannot be told apart from distinct sales.</li>
+<li><strong>Singapore private housing (URA) is not included yet.</strong> It needs a personal access key.
+  Results for Singapore are for public housing only, and public housing is a regulated
+  market: eligibility rules, CPF financing and grants all shape HDB prices.</li>
+</ul>
+<h2>Income</h2>
+<ul>
+<li>Paris: median disposable income <strong>per consumption unit</strong>, by IRIS, for <strong>2021</strong> only.
+  The household version assumes a 1.5-UC couple.</li>
+<li>Singapore: household income <strong>from work</strong> only, in bands, from the <strong>2020</strong> Census, by
+  planning area. Households with no employed member (13% of the total) are excluded, and
+  several small planning areas are pooled into "Others" and get no value.</li>
+<li>The two price-to-income definitions are <strong>not strictly comparable across cities</strong>.</li>
+</ul>
+<h2>Fundamental value</h2>
+<ul>
+<li>Only r_f is measured. τ, δ, γ and g are assumptions. The sensitivity grid shows how far
+  the conclusion moves with them, and it moves a lot, as it does in HMS (2005). A gap is
+  evidence <em>conditional</em> on those assumptions.</li>
+<li>The user-cost model is a steady-state arbitrage condition. It ignores credit
+  constraints, transaction costs, taxes on rental income, and (for Paris) rent regulation
+  itself, which caps R.</li>
+<li>For HDB, the finite lease is handled by discounting over the remaining lease. Policy
+  around lease expiry (e.g. VERS/SERS redevelopment) is not modelled.</li>
+</ul>
+<h2>Models and spatial statistics</h2>
+<ul>
+<li>Spatial block CV uses H3 resolution-8 cells. Larger blocks would be stricter.</li>
+<li>Moran's I is computed on a 20,000-sale sample with k = 10 neighbours.</li>
+<li>Distances are straight-line, not walking distances. The CBD anchor is a single point.</li>
+</ul>
+<h2>Data access</h2>
+<ul>
+<li>The OSM Overpass API and Geofabrik were unreachable from the build environment, so
+  stations and parks come from official sources instead (IDFM, Ville de Paris, LTA,
+  NParks). This is an improvement in provenance, but OSM-based features are not
+  reproduced.</li>
+</ul></div></main>
+<footer><div class="wrap">
+Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),
+INSEE, IGN, Île-de-France Mobilités, HDB / URA / LTA / NParks / SingStat via data.gov.sg (Singapore Open Data
+Licence), ECB. Map tiles © OpenStreetMap contributors © CARTO. Derived databases from ODbL sources are released
+under ODbL. Nothing here is investment advice.
+</div></footer>
+</body>
+</html>

@@ -123,3 +123,7 @@ td.num, th.num { text-align: right; }
 footer { color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 40px; }
 .legend .cls { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .legend .sw { width: 18px; height: 12px; border-radius: 2px; display: inline-block; }
+.doc { overflow-x: auto; }
+.doc table { margin: 10px 0; }
+.doc pre { background: var(--note-bg); padding: 10px 12px; border-radius: 8px; overflow-x: auto; }
+.doc code { font-size: 0.9em; }

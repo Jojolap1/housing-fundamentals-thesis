@@ -182,9 +182,23 @@ CITIES = {
 }
 
 
+def methodology() -> str:
+    """Methodology and limitations pages, rendered from docs/*.md."""
+    import markdown
+
+    docs = ROOT / "docs"
+    body = "".join(
+        markdown.markdown((docs / f).read_text(), extensions=["tables", "fenced_code"])
+        for f in ("methodology.md", "limitations.md"))
+    return ('<div class="card doc">' + body + "</div>")
+
+
 def main() -> None:
     (SITE / "index.html").write_text(
         head("Housing fundamentals", "Do rents justify housing prices in Paris and Singapore?", "home") + INDEX + FOOT)
+    (SITE / "methodology.html").write_text(
+        head("Method and limits", "How prices, rents and fundamental values are computed, and what limits them.", "meth")
+        + methodology() + FOOT)
     for key, c in CITIES.items():
         if not (SITE / "data" / f"{key}_meta.json").exists():
             (SITE / f"{key}.html").write_text(

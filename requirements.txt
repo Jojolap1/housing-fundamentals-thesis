@@ -13,4 +13,5 @@ h3==4.5.0
 esda==2.10.0
 libpysal==4.15.1
 matplotlib==3.11.2
+markdown==3.11.3
 pytest==9.2.0
