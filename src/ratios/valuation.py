@@ -29,7 +29,7 @@ from src.ratios.params import BASE, GRID, MIN_USER_COST
 
 
 def rf_by_year(city: str) -> pd.Series:
-    f = INTERIM / ("rf_paris.csv" if city == "Paris" else "rf_singapore.csv")
+    f = INTERIM / ("rf_paris.csv" if city == "Paris" else "rf_singapore.csv")  # both Singapore markets: SGS 10y
     r = pd.read_csv(f)
     r["year"] = r["month"].str[:4].astype(int)
     return (r.groupby("year")["rate_pct"].mean() / 100).rename("rf")
@@ -43,7 +43,9 @@ def _value(R, rf, p, T=None, rf_shift=0.0, gamma=None, g=None):
     V = R / u
     if T is not None:
         i = u + g
-        V = V * (1 - ((1 + g) / (1 + i)) ** T)
+        # NaN remaining lease = freehold (or 999-year lease): perpetuity, no lease factor.
+        factor = 1 - ((1 + g) / (1 + i)) ** np.nan_to_num(T, nan=np.inf)
+        V = V * np.where(np.isnan(T), 1.0, factor)
     return V, u
 
 
@@ -53,8 +55,9 @@ def inputs(city: str) -> pd.DataFrame:
         d["R"] = 12 * d["rent_m2"] * d["floor_area_m2"]
         d["T"] = np.nan
     else:
-        d = pd.read_parquet(INTERIM / "oof_singapore.parquet")
-        rent = pd.read_parquet(INTERIM / "rent_model_on_sales_singapore.parquet")
+        tag = city.lower().replace(" ", "_")
+        d = pd.read_parquet(INTERIM / f"oof_{tag}.parquet")
+        rent = pd.read_parquet(INTERIM / f"rent_model_on_sales_{tag}.parquet")
         d = d.merge(rent, on="source_id", how="left")
         d["R"] = 12 * d["pred_rent_month"]
         d["T"] = d["lease_remaining_years"]
@@ -67,14 +70,14 @@ def inputs(city: str) -> pd.DataFrame:
 def run_city(city: str) -> pd.DataFrame:
     d = inputs(city)
     p = BASE[city]
-    T = d["T"].to_numpy() if city == "Singapore" else None
+    T = d["T"].to_numpy() if city.startswith("Singapore") else None
     V, u = _value(d["R"].to_numpy(), d["rf"].to_numpy(), p, T)
     d["user_cost"], d["V_star"] = u, V
     d["V_star_m2"] = V / d["floor_area_m2"]
     d["gap"] = d["P_hat"] / V - 1
     d["gap_actual_price"] = d["P"] / V - 1
     d["mispricing_resid"] = np.log(d["P"]) - np.log(d["P_hat"])  # >0: dearer than comparables
-    tag = city.lower()
+    tag = city.lower().replace(" ", "_")
     d.to_parquet(INTERIM / f"valuation_{tag}.parquet", index=False)
 
     for level, keys in LEVELS.items():
@@ -114,7 +117,7 @@ def run_city(city: str) -> pd.DataFrame:
 
 
 def run() -> None:
-    for city in ("Paris", "Singapore"):
+    for city in ("Paris", "Singapore", "Singapore private"):
         run_city(city)
 
 

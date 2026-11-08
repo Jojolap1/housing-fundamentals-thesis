@@ -34,7 +34,7 @@ LEVELS = {
     "district_l2": ["city", "district_l1", "district_l2"],
     "street": ["city", "district_l1", "street_id"],
 }
-WINDOW = {"Paris": (2022, 2025), "Singapore": (2020, 2025)}
+WINDOW = {"Paris": (2022, 2025), "Singapore": (2020, 2025), "Singapore private": (2022, 2025)}
 
 
 # ------------------------------------------------------------------- income inputs
@@ -125,6 +125,32 @@ def singapore_transactions() -> pd.DataFrame:
     return t
 
 
+def singapore_private_transactions() -> pd.DataFrame:
+    """URA private non-landed sales. Rent: median rent/m² of URA rental contracts in the same
+    project and year (n >= MIN_N_PUBLISH), else subzone, else planning area, times the sold
+    unit's floor area. Price-to-income: price / (12 × planning-area median monthly household
+    income from work, Census 2020), for all private sales (no reference flat type)."""
+    t = pd.read_parquet(INTERIM / "features_singapore_private.parquet")
+    r = pd.read_parquet(INTERIM / "features_singapore_private_rent.parquet")
+    t["rent_m2"] = np.nan
+    t["rent_source"] = "none"
+    left = t.rename(columns={"district_l2": "subzone", "district_l1": "planning_area"})
+    for level, keys in [("project", ["project"]), ("subzone", ["subzone"]), ("planning_area", ["planning_area"])]:
+        g = r.groupby(keys + ["year"])["rent_m2"].agg(["median", "size"])
+        g = g[g["size"] >= MIN_N_PUBLISH]["median"].rename("m").reset_index()
+        m = left.merge(g, on=keys + ["year"], how="left")["m"].to_numpy()
+        fill = np.isnan(t["rent_m2"].to_numpy()) & ~np.isnan(m)
+        t.loc[fill, "rent_m2"] = m[fill]
+        t.loc[fill, "rent_source"] = level
+    t["rent_month"] = t["rent_m2"] * t["floor_area_m2"]
+    t["gross_yield"] = 12 * t["rent_month"] / t["price_local"]
+    t["price_to_rent"] = 1 / t["gross_yield"]
+    inc = singapore_income().rename(columns={"planning_area": "district_l1"})
+    t = t.merge(inc, on="district_l1", how="left")
+    t["pti_hh"] = t["price_local"] / (12 * t["median_hh_income_work_month"])
+    return t
+
+
 # --------------------------------------------------------------------- aggregation
 def _q(p):
     f = lambda s: s.quantile(p)  # noqa: E731
@@ -169,7 +195,8 @@ def aggregate(t: pd.DataFrame, level: str) -> pd.DataFrame:
 
 def run() -> dict[str, pd.DataFrame]:
     res = {}
-    for city, fn in [("paris", paris_transactions), ("singapore", singapore_transactions)]:
+    for city, fn in [("paris", paris_transactions), ("singapore", singapore_transactions),
+                     ("singapore_private", singapore_private_transactions)]:
         t = fn()
         t.to_parquet(INTERIM / f"ratios_input_{city}.parquet", index=False)
         for level in LEVELS:

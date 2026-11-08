@@ -9,12 +9,16 @@ data:
 	$(PY) -m src.ingest.paris
 	$(PY) -m src.ingest.singapore
 	$(PY) -m src.ingest.onemap
+	$(PY) -m src.ingest.ura          # needs a URA access key (see README)
+	$(PY) -m src.ingest.ura_geocode
 
 ## Clean + harmonise transactions, then build features
 features:
 	$(PY) -m src.clean.paris
 	$(PY) -m src.clean.singapore
+	$(PY) -m src.clean.singapore_private
 	$(PY) -m src.features.build
+	$(PY) -c "from src.features.build import singapore_private_features as f; f()"
 	$(PY) -m src.ratios.levels
 
 ## Hedonic / ML models, validation tables, SHAP, then fundamental values and gaps

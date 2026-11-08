@@ -12,6 +12,9 @@ tau   property tax as % of market value
       value; its effective rate on Paris market values is low. Baseline 0.25%, range 0.1-0.5%.
       Singapore: owner-occupier property tax on HDB annual values is progressive and small
       relative to resale prices. Baseline 0.10%, range 0.0-0.3%.
+      Singapore private homes: owner-occupier rates are progressive on the annual value (about
+      the annual rent) and non-owner-occupier rates are 12-36% of it, i.e. roughly 0.1-1% of
+      market value at a 3% gross yield. Baseline 0.40%, range 0.1-1.0%.
 delta maintenance + depreciation, % of value. HMS (2005) use 2.5% (structure-heavy US
       housing). Land is a large share of value in both cities, so the baseline is lower:
       1.5%, range 1.0-2.5%. Singapore HDB adds lease decay, which is handled through the
@@ -24,6 +27,7 @@ g     expected long-run nominal growth of rents/prices. Baseline 2% (Paris: the 
 BASE = {
     "Paris":     {"tau": 0.0025, "delta": 0.015, "gamma": 0.02, "g": 0.02},
     "Singapore": {"tau": 0.0010, "delta": 0.015, "gamma": 0.02, "g": 0.02},
+    "Singapore private": {"tau": 0.0040, "delta": 0.015, "gamma": 0.02, "g": 0.02},
 }
 
 # Sensitivity grid (the user asked for r_f, risk premium and growth). r_f is shifted

@@ -2,7 +2,7 @@
 
 *A machine-learning and rent-capitalisation approach to residential valuation — Paris and Singapore.*
 
-> Status: Paris and Singapore (HDB resale) complete. Next: Singapore private market (URA, needs an access key), Kaggle dataset.
+> Status: Paris, Singapore HDB and Singapore private (URA) complete. Next: Kaggle dataset.
 
 Hedonic and ML models trained on transaction prices estimate **market** value. They cannot
 tell whether market value is justified. This project anchors **fundamental** value on rents
@@ -28,7 +28,8 @@ See [`docs/data_audit.md`](docs/data_audit.md) for licences, coverage, row count
 | City | Prices | Rents | Income |
 |---|---|---|---|
 | Paris | DGFiP DVF géolocalisées, apartment sales Jul 2021 – Jun 2026 | Ville de Paris reference rents 2019–2025 (regulatory values) | INSEE Filosofi 2021, IRIS |
-| Singapore | HDB resale flat prices, Jan 2017 – latest month | HDB "Renting out of flats", 2021 – latest month | Census of Population 2020, planning area |
+| Singapore (HDB) | HDB resale flat prices, Jan 2017 – latest month | HDB "Renting out of flats", 2021 – latest month | Census of Population 2020, planning area |
+| Singapore (private) | URA private transactions, Nov 2021 – latest month (needs a URA access key) | URA rental contracts, 2022 – latest quarter | Census of Population 2020, planning area |
 
 Every downloaded file is recorded in `data/raw/MANIFEST.csv` (URL, time, size, SHA-256).
 Raw files and transaction-level intermediates are **not** in the repository.

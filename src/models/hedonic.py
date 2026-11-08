@@ -40,6 +40,17 @@ SPEC = {
                 "lease_remaining_years", "block_max_floor"],
         "cat": ["rooms_or_flat_type", "flat_model"],
     },
+    "singapore_private": {
+        "file": "ratios_input_singapore_private.parquet", "target": "price_per_m2_local", "fe": "district_l2",
+        "num": ["log_area", "log_dist_rail", "log_dist_cbd", "log_dist_park", "storey_mid",
+                "lease_remaining_years", "freehold"],
+        "cat": ["rooms_or_flat_type", "sale_type", "market_segment"],
+    },
+    "singapore_private_rent": {
+        "file": "features_singapore_private_rent.parquet", "target": "monthly_rent", "fe": "subzone",
+        "num": ["log_area", "log_dist_rail", "log_dist_cbd", "log_dist_park"],
+        "cat": [],  # URA rental records carry no market segment; location enters via subzone FE and coordinates
+    },
     "singapore_rent": {
         "file": "features_singapore_rent.parquet", "target": "monthly_rent", "fe": "subzone",
         "num": ["log_dist_rail", "log_dist_cbd", "log_dist_park"],
@@ -51,6 +62,10 @@ SPEC = {
 def prepare(name: str) -> pd.DataFrame:
     s = SPEC[name]
     d = pd.read_parquet(INTERIM / s["file"])
+    if "area_mid_m2" in d:  # URA rentals: midpoint of the 10 m² area band
+        d["floor_area_m2"] = d["area_mid_m2"]
+    if "marketSegment" in d:
+        d["market_segment"] = d["marketSegment"]
     if "floor_area_m2" in d:
         d["log_area"] = np.log(d["floor_area_m2"])
     for v in ("rail", "cbd", "park"):
@@ -240,6 +255,26 @@ def rent_on_sales() -> pd.DataFrame:
     return out
 
 
+def rent_on_sales_private() -> pd.DataFrame:
+    """Predict the monthly rent of each URA private sale with the URA rent model (LightGBM on
+    all non-landed rental contracts), using the sold unit's floor area and location."""
+    s = SPEC["singapore_private_rent"]
+    rent = prepare("singapore_private_rent")
+    sales = prepare("singapore_private")
+    sales["subzone"] = sales["district_l2"]
+    origin = rent["date"].dt.year.min()
+    for d in (rent, sales):
+        d["t_month"] = (d["date"].dt.year - origin) * 12 + d["date"].dt.month
+    _, _, m = fit_predict("LightGBM", rent, rent.iloc[:10], s)
+    smear = _smear(rent["y"].to_numpy(), m.predict(_tree_X(rent, s)))
+    Xr, Xs = _tree_X(rent, s), _tree_X(sales, s)
+    for c in Xs.select_dtypes("category"):
+        Xs[c] = pd.Categorical(Xs[c].astype(str), categories=Xr[c].cat.categories)
+    out = pd.DataFrame({"source_id": sales["source_id"], "pred_rent_month": np.exp(m.predict(Xs)) * smear})
+    out.to_parquet(INTERIM / "rent_model_on_sales_singapore_private.parquet", index=False)
+    return out
+
+
 def versions() -> None:
     pk = ["pandas", "numpy", "geopandas", "statsmodels", "scikit-learn", "lightgbm", "shap", "h3", "esda", "libpysal"]
     info = {"python": platform.python_version(), "seed": SEED} | {p: version(p) for p in pk}
@@ -253,6 +288,7 @@ def main() -> None:
         ols_full(name)
         shap_outputs(name)
     rent_on_sales()
+    rent_on_sales_private()
 
 
 if __name__ == "__main__":

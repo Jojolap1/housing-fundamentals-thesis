@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Singapore (private) housing</title>
+<meta name="description" content="Prices, rents, yields and valuation gaps in Singapore (private).">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+</head>
+<body data-city="singapore_private">
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">Housing fundamentals</a>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="paris.html">Paris</a>
+    <a href="singapore.html">Singapore (HDB)</a>
+    <a href="singapore_private.html" aria-current="page">Singapore (private)</a>
+    <a href="methodology.html">Method &amp; limits</a>
+  </nav>
+</div></header>
+<main class="wrap">
+
+<h1>Singapore (private)</h1>
+<p class="lede">Sales of private apartments and condominiums (the open market: no eligibility rules, buy-to-let allowed), November 2021 onward, and the rental contracts stamped with IRAS. This is the Singapore market most comparable with Paris.</p>
+<p class="meta-line">Period: <span id="period">…</span> · retained transactions: <span id="ntotal">…</span> · source: URA private residential transactions and rental contracts (URA Data Service), Census of Population 2020</p>
+
+<div class="card">
+  <div class="controls">
+    <label>Geography<select id="layer">
+      <option value="hex">Hexagons (H3 res. 9, street scale)</option>
+      <option value="l1">Planning area</option>
+      <option value="l2">Subzone</option>
+    </select></label>
+    <label>Indicator<select id="metric">
+      <option value="ppm2">Price per m²</option>
+      <option value="rent">Monthly rent per home</option>
+      <option value="yield">Gross rental yield</option>
+      <option value="pti">Price-to-income</option>
+      <option value="gap">Valuation gap (model)</option>
+      <option value="mis">Relative mispricing</option>
+    </select></label>
+    <label>Year<select id="year"></select></label>
+  </div>
+  <div id="map-title" style="font-weight:600;margin-bottom:6px"></div>
+  <div id="map" style="position:relative"></div>
+  <div class="legend" id="legend"></div>
+  <p class="note" id="gap-note" hidden>The valuation gap compares the model's predicted market price with rents capitalised at an
+  assumed user cost. A positive value means prices are above what rents justify <em>under the baseline assumptions</em>;
+  see the sensitivity band below. It is a model-dependent hypothesis, not investment advice.</p>
+  <p class="note" id="mis-note" hidden>Relative mispricing is the median residual of the price model: positive = dearer than
+  comparable dwellings elsewhere in the city, negative = cheaper. It says nothing about a bubble.</p>
+  <p class="meta-line">Source: URA private residential transactions and rental contracts (URA Data Service), Census of Population 2020. Period shown: the selected year. Cells with fewer than 5 transactions in a year are
+  not published. Valuation gaps are model-dependent hypotheses, not investment advice.</p>
+</div>
+
+<h2>Fundamental vs market value per m²</h2>
+<div class="card">
+  <div class="legend"><span><span style="color:var(--series-market)">●</span> Market: median transaction price per m²</span>
+  <span><span style="color:var(--series-fund)">●</span> Fundamental: median V* per m², baseline assumptions</span>
+  <span><span style="display:inline-block;width:18px;height:10px;background:var(--band-fund)"></span> Range of V* over the sensitivity grid (r<sub>f</sub> ±1 pt, risk premium 1–4%, growth 0–4%)</span></div>
+  <div class="chart-wrap" id="chart"></div>
+  <details><summary>Table view</summary><div id="chart-table" class="table-scroll"></div></details>
+  <p class="note">Rent is predicted for each sold home from URA rental contracts (area recorded in 10 m² bands). Leasehold homes are valued over their remaining lease; freehold and 999-year homes in perpetuity. 2021 covers November and December only.</p>
+</div>
+
+<h2>Streets</h2>
+<div class="card">
+  <div class="controls">
+    <label>Year<select id="t-year"></select></label>
+    <label>Search street<input type="search" id="t-search" placeholder="e.g. ANSON ROAD"></label>
+    <span class="meta-line" id="t-count"></span>
+  </div>
+  <div class="table-scroll"><table>
+    <thead id="t-head"><tr><th>Street</th><th>Planning area</th><th class="num" data-k="n">n</th><th class="num" data-k="ppm2">Median S$/m²</th>
+    <th class="num">IQR</th><th class="num" data-k="yoy">YoY</th><th class="num" data-k="mis">Rel. mispricing</th></tr></thead>
+    <tbody id="t-body"></tbody>
+  </table></div>
+  <p class="meta-line">Only street-years with at least 5 transactions are listed. Relative mispricing = cheap/expensive versus
+  comparable dwellings, not a bubble indicator.</p>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="assets/app.js"></script>
+</main>
+<footer><div class="wrap">
+Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),
+INSEE, IGN, Île-de-France Mobilités, HDB / URA / LTA / NParks / SingStat via data.gov.sg (Singapore Open Data
+Licence), ECB. Map tiles © OpenStreetMap contributors © CARTO. Derived databases from ODbL sources are released
+under ODbL. Nothing here is investment advice.
+</div></footer>
+</body>
+</html>

@@ -7,6 +7,8 @@
              rentUnit: "€/m²/month (reference rent)", ptiNote: "years of IRIS median disposable income, couple = 1.5 UC" },
     singapore: { cur: "S$", center: [103.82, 1.355], zoom: 10.6, l1: "Planning area", l2: "Subzone",
                  rentUnit: "S$/month per flat (HDB approvals)", ptiNote: "4-room HDB price / planning-area median household income from work (2020)" },
+    singapore_private: { cur: "S$", center: [103.84, 1.33], zoom: 11, l1: "Planning area", l2: "Subzone",
+                 rentUnit: "S$/month per home (URA contracts)", ptiNote: "price / planning-area median household income from work (2020)" },
   }[CITY];
 
   const SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"];
@@ -15,7 +17,7 @@
 
   const METRICS = {
     ppm2: { label: "Median price per m²", unit: () => CFG.cur + "/m²", fmt: (v) => fmtInt(v), seq: true },
-    rent: { label: CITY === "paris" ? "Median reference rent per m²" : "Median monthly rent per flat",
+    rent: { label: CITY === "paris" ? "Median reference rent per m²" : "Median monthly rent per home",
             field: CITY === "paris" ? "rent_m2" : "rent_month", unit: () => CFG.rentUnit,
             fmt: (v) => (CITY === "paris" ? v.toFixed(1) : fmtInt(v)), seq: true },
     yield: { label: "Median gross rental yield", unit: () => "% per year", fmt: (v) => (100 * v).toFixed(2) + "%", seq: true },
@@ -48,7 +50,8 @@
   function yearLabel(y) {
     if (CITY === "paris" && y === 2021) return "2021 (Jul–Dec)";
     if (CITY === "paris" && y === 2026) return "2026 (Jan–Jun)";
-    if (CITY === "singapore" && y === 2026) return "2026 (to date)";
+    if (CITY.startsWith("singapore") && y === 2026) return "2026 (to date)";
+    if (CITY === "singapore_private" && y === 2021) return "2021 (Nov–Dec)";
     return String(y);
   }
 

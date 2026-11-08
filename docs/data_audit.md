@@ -146,3 +146,13 @@ data are used.
 - **Singapore datastore API.** The `total` field is unreliable and wide tables return
   "413 Payload Too Large" for 10,000-row pages. Downloads use full pagination, an adaptive
   page size and a check that `_id` values are contiguous.
+
+## 8. Addendum: URA private market, verified 2026-11-07 with the user's access key
+
+| Source | URL | Licence | Period | Granularity | n rows | Caveats |
+|---|---|---|---|---|---|---|
+| URA private residential transactions (`PMI_Resi_Transaction`, 4 batches) | https://eservice.ura.gov.sg/maps/api/ | URA Data Service terms: **not yet read** (the terms page could not be reached from the build environment) | 2021-11 to 2026-11 (rolling 5 years) | Project + street; project x/y (SVY21), missing for 22.7% of records (mostly new launches; 109 of 120 such projects geocoded with OneMap) | 132,192 transactions (103,850 Apartment/Condominium; 15,928 Executive Condominium; 12,414 landed) | Location is the project's, not the unit's; floor in 5-storey bands; some project names served in Windows-1252 |
+| URA private rental contracts (`PMI_Resi_Rental`, per quarter) | same | same | 2022 Q1 to 2026 Q3 (2026 Q4 not yet published) | Project + street; area in 10 m² bands; bedrooms | 430,973 contracts (397,046 non-landed) | Contracts stamped with IRAS (observed market rents) |
+
+Scope used: non-landed Apartment and Condominium, single-unit sales (open market). Executive
+Condominiums (eligibility and resale restrictions) and landed homes (land area) are excluded.

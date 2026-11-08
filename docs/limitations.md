@@ -28,9 +28,13 @@ These are stated plainly because they bound what the results can say.
   outbuildings are a model feature.
 - HDB resale prices are recorded by month only. Storey is a 3-floor band.
 - Exact duplicate HDB lines are kept: they cannot be told apart from distinct sales.
-- **Singapore private housing (URA) is not included yet.** It needs a personal access key.
-  Results for Singapore are for public housing only, and public housing is a regulated
-  market: eligibility rules, CPF financing and grants all shape HDB prices.
+- **Singapore private housing (URA)** covers non-landed apartments and condominiums only, from
+  November 2021 (URA serves the last 5 years). Rental areas are 10 m² bands, so rent/m² is
+  approximate. Transaction locations are the project's, not the unit's.
+- **URA terms of use not yet verified**: publication of aggregates derived from the URA API
+  depends on them.
+- HDB public housing is a regulated market: eligibility rules, CPF financing and grants all
+  shape HDB prices.
 
 ## Income
 - Paris: median disposable income **per consumption unit**, by IRIS, for **2021** only.

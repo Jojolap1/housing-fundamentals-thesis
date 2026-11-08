@@ -27,7 +27,8 @@ HEAD = """<!doctype html>
   <nav>
     <a href="index.html"{a_home}>Overview</a>
     <a href="paris.html"{a_paris}>Paris</a>
-    <a href="singapore.html"{a_sg}>Singapore</a>
+    <a href="singapore.html"{a_sg}>Singapore (HDB)</a>
+    <a href="singapore_private.html"{a_sgp}>Singapore (private)</a>
     <a href="methodology.html"{a_meth}>Method &amp; limits</a>
   </nav>
 </div></header>
@@ -47,10 +48,10 @@ under ODbL. Nothing here is investment advice.
 
 
 def head(title, desc, page, extra="", body_attr=""):
-    cur = {k: "" for k in ("home", "paris", "sg", "meth")}
+    cur = {k: "" for k in ("home", "paris", "sg", "sgp", "meth")}
     cur[page] = ' aria-current="page"'
     return HEAD.format(title=title, desc=desc, extra=extra, body_attr=body_attr,
-                       a_home=cur["home"], a_paris=cur["paris"], a_sg=cur["sg"], a_meth=cur["meth"])
+                       a_home=cur["home"], a_paris=cur["paris"], a_sg=cur["sg"], a_sgp=cur["sgp"], a_meth=cur["meth"])
 
 
 INDEX = """
@@ -73,7 +74,8 @@ hypothesis to test, not a premise.</p>
 
 <div class="grid2">
 <a class="card" href="paris.html" style="text-decoration:none;color:inherit"><b>Paris</b><br><span class="note" style="display:block;margin-top:6px">DVF apartment sales, Jul 2021 – Jun 2026 · reference rents 2021–2025 · INSEE Filosofi 2021</span></a>
-<a class="card" href="singapore.html" style="text-decoration:none;color:inherit"><b>Singapore</b><br><span class="note" style="display:block;margin-top:6px">HDB resale flats, Jan 2017 – latest month · HDB rental approvals from 2021 · Census 2020 income</span></a>
+<a class="card" href="singapore.html" style="text-decoration:none;color:inherit"><b>Singapore (HDB)</b><br><span class="note" style="display:block;margin-top:6px">Public resale flats, Jan 2017 – latest month · HDB rental approvals from 2021 · Census 2020 income</span></a>
+<a class="card" href="singapore_private.html" style="text-decoration:none;color:inherit"><b>Singapore (private)</b><br><span class="note" style="display:block;margin-top:6px">Private apartments and condominiums, Nov 2021 – latest month · URA rental contracts · the open market</span></a>
 </div>
 
 <h2>Data sources</h2>
@@ -90,6 +92,7 @@ hypothesis to test, not a premise.</p>
 <tr><td>Singapore</td><td>HDB renting out of flats</td><td><a href="https://data.gov.sg/datasets/d_c9f57187485a850908655db0e8cfe651/view">data.gov.sg</a></td><td>Singapore Open Data Licence</td><td>2026-11-07</td></tr>
 <tr><td>Singapore</td><td>Census 2020 household income by planning area</td><td><a href="https://data.gov.sg/datasets/d_4e150bbd35c3145ea43019212c7b46c2/view">data.gov.sg</a></td><td>Singapore Open Data Licence</td><td>2026-11-07</td></tr>
 <tr><td>Singapore</td><td>Planning areas, subzones (MP2019), MRT exits, parks</td><td><a href="https://data.gov.sg/">data.gov.sg (URA, LTA, NParks)</a></td><td>Singapore Open Data Licence</td><td>2026-11-07</td></tr>
+<tr><td>Singapore</td><td>Private transactions and rental contracts</td><td><a href="https://eservice.ura.gov.sg/maps/api/">URA Data Service</a></td><td>URA terms of use (access key)</td><td>2026-11-07</td></tr>
 <tr><td>Singapore</td><td>Block geocoding</td><td><a href="https://www.onemap.gov.sg/apidocs/">OneMap (SLA)</a></td><td>OneMap terms of use</td><td>2026-11-07</td></tr>
 <tr><td>Both</td><td>FX (ECB reference rates), 10-year government yields</td><td><a href="https://data.ecb.europa.eu/">ECB</a>, <a href="https://tablebuilder.singstat.gov.sg/table/TS/M700071">SingStat M700071</a></td><td>Reuse with attribution</td><td>2026-11-07</td></tr>
 </tbody></table></div>
@@ -171,7 +174,7 @@ CITIES = {
                   "against regulated-market rents. 2021 covers July–December and 2026 January–June.",
     ),
     "singapore": dict(
-        name="Singapore", page="sg", l1="Planning area", l2="Subzone", cur="S$", example="ANG MO KIO AVE 10",
+        name="Singapore (HDB)", page="sg", l1="Planning area", l2="Subzone", cur="S$", example="ANG MO KIO AVE 10",
         rent_label="Monthly rent per flat",
         source="HDB resale flat prices and HDB rental approvals (data.gov.sg), Census of Population 2020",
         lede="Resale transactions of public (HDB) flats on 99-year leases, January 2017 onward. Rents are HDB approvals to "
@@ -181,6 +184,17 @@ CITIES = {
                   "households (mainly citizens) may buy, owners must live in the flat for 5 years before renting it "
                   "out, and grants and CPF rules shape demand, so rent capitalisation is constrained. Private "
                   "condominiums (URA) are not included yet.",
+    ),
+    "singapore_private": dict(
+        name="Singapore (private)", page="sgp", l1="Planning area", l2="Subzone", cur="S$", example="ANSON ROAD",
+        rent_label="Monthly rent per home",
+        source="URA private residential transactions and rental contracts (URA Data Service), Census of Population 2020",
+        lede="Sales of private apartments and condominiums (the open market: no eligibility rules, buy-to-let allowed), "
+             "November 2021 onward, and the rental contracts stamped with IRAS. This is the Singapore market most "
+             "comparable with Paris.",
+        fund_note="Rent is predicted for each sold home from URA rental contracts (area recorded in 10 m² bands). "
+                  "Leasehold homes are valued over their remaining lease; freehold and 999-year homes in perpetuity. "
+                  "2021 covers November and December only.",
     ),
 }
 

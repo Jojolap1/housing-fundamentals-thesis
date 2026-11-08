@@ -119,7 +119,7 @@ def export_city(city: str) -> dict:
 
 
 def main() -> None:
-    for c in ("paris", "singapore"):
+    for c in ("paris", "singapore", "singapore_private"):
         print(export_city(c))
 
 

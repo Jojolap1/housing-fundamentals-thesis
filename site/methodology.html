@@ -15,7 +15,8 @@
   <nav>
     <a href="index.html">Overview</a>
     <a href="paris.html">Paris</a>
-    <a href="singapore.html">Singapore</a>
+    <a href="singapore.html">Singapore (HDB)</a>
+    <a href="singapore_private.html">Singapore (private)</a>
     <a href="methodology.html" aria-current="page">Method &amp; limits</a>
   </nav>
 </div></header>
@@ -304,6 +305,13 @@ gap = P̂ / V* − 1
 <h2>Models and spatial statistics</h2>
 <ul>
 <li>Spatial block CV uses H3 resolution-8 cells. Larger blocks would be stricter.</li>
+<li>OLS residuals remain spatially autocorrelated: Moran's I = 0.06 for Paris, 0.25 for Singapore
+  sales, 0.04 for Singapore rents. The tree models, which see coordinates, capture more of this.</li>
+<li>The HDB rent model has no floor area or storey (not in the source): its MAPE is about 15%,
+  against 5-7% for HDB prices.</li>
+<li>HDB demand is restricted (eligibility, 5-year minimum occupation before renting out, grants,
+  CPF rules), so the arbitrage behind rent capitalisation is constrained. A negative HDB gap is
+  not evidence that flats are available below their value to any buyer.</li>
 <li>Moran's I is computed on a 20,000-sale sample with k = 10 neighbours.</li>
 <li>Distances are straight-line, not walking distances. The CBD anchor is a single point.</li>
 </ul>

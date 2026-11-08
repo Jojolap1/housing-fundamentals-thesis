@@ -1,8 +1,7 @@
 # Singapore: status at 2026-11-07
 
-HDB resale is complete: data, geocoding (99.9%), cleaning (238,198 sales), ratios, models (price and
-rent), fundamental value over the remaining lease, valuation gap, sensitivity grid, site page.
-
-Still to do
-- Private market (URA transactions and rental contracts): needs a personal URA access key.
-- Kaggle dataset and notebook publication (on request).
+- HDB resale: complete (data, geocoding, cleaning, ratios, models, valuation, site page).
+- Private market (URA): complete locally (101,104 sales, 392,563 rental contracts, models,
+  valuation, site page). Publication pending a check of the URA Data Service terms of use.
+- To re-download URA data, a URA access key must be saved as a network secret
+  (host eservice.ura.gov.sg, header AccessKey) or as the URA_ACCESS_KEY variable.

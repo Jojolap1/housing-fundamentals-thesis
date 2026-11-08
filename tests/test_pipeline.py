@@ -111,3 +111,9 @@ def test_published_stats_respect_n_rule(city):
     for f in PROCESSED.glob(f"stats_{city}_street.csv"):
         s = pd.read_csv(f)
         assert (s.loc[s["publish"], "n"] >= MIN_N_PUBLISH).all()
+
+
+def test_freehold_is_perpetuity():
+    p = {"tau": 0.0, "delta": 0.0, "gamma": 0.02, "g": 0.02}
+    V, _ = _value(np.array([100.0, 100.0]), np.array([0.04, 0.04]), p, T=np.array([np.nan, 50.0]))
+    assert V[0] == pytest.approx(2500) and V[1] < V[0]

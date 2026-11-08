@@ -155,3 +155,23 @@ def singapore_features() -> tuple[pd.DataFrame, pd.DataFrame]:
 if __name__ == "__main__":
     singapore_features()
     paris_features()
+
+
+def singapore_private_features() -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Distances for URA private sales and rentals, keyed on project location."""
+    ex, cbd, parks = _sg_layers()
+
+    def geo(df: pd.DataFrame) -> pd.DataFrame:
+        keys = df[["lat", "lon"]].drop_duplicates().reset_index(drop=True)
+        g = gpd.GeoDataFrame(keys, geometry=gpd.points_from_xy(keys["lon"], keys["lat"]), crs=4326).to_crs(SVY21)
+        keys["dist_rail_m"] = _nearest_dist(g, ex)
+        keys["dist_cbd_m"] = g.geometry.distance(cbd).to_numpy()
+        keys["dist_park_m"] = _nearest_dist(g, parks)
+        return df.merge(keys, on=["lat", "lon"], how="left")
+
+    t = geo(pd.read_parquet(INTERIM / "transactions_singapore_private.parquet"))
+    t.to_parquet(INTERIM / "features_singapore_private.parquet", index=False)
+    r = geo(pd.read_parquet(INTERIM / "rents_singapore_private.parquet"))
+    r.to_parquet(INTERIM / "features_singapore_private_rent.parquet", index=False)
+    print("singapore private features", len(t), "rents", len(r))
+    return t, r
