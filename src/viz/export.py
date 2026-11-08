@@ -121,6 +121,28 @@ def export_city(city: str) -> dict:
 def main() -> None:
     for c in ("paris", "singapore", "singapore_private"):
         print(export_city(c))
+    export_hcmc()
+
+
+
+def export_hcmc() -> None:
+    """Ho Chi Minh City administrative land values (Resolution 87/2025), in million VND/m².
+    These are official per-segment values, not transactions, so no n >= 5 rule applies."""
+    w = pd.read_csv(PROCESSED / "hcmc_land_price_by_ward.csv")
+    s = pd.read_csv(PROCESSED / "hcmc_land_price_by_street.csv")
+    s["street"] = s["street"].fillna("(name unreadable)")
+    m = 1e6
+    wards = [{"ward": r.ward.title(), "type": r.ward_type.title(), "annex": r.annex, "segments": int(r.segments),
+              "median": round(r.median / m, 1), "q25": round(r.q25 / m, 1), "q75": round(r.q75 / m, 1),
+              "max": round(r.max / m, 1), "median_commercial": round(r.median_commercial / m, 1)}
+             for r in w.itertuples()]
+    streets = [{"ward": r.ward.title(), "street": r.street, "segments": int(r.segments),
+                "min": round(r.min / m, 1), "max": round(r.max / m, 1)} for r in s.itertuples()]
+    meta = {"segments": int(w.segments.sum()), "units": len(w), "source": "Resolution 87/2025/NQ-HĐND",
+            "in_force": "2026-01-01"}
+    _write("hcmc_wards.json", wards)
+    _write("hcmc_streets.json", streets)
+    _write("hcmc_meta.json", meta)
 
 
 if __name__ == "__main__":

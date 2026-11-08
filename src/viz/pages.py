@@ -29,6 +29,7 @@ HEAD = """<!doctype html>
     <a href="paris.html"{a_paris}>Paris</a>
     <a href="singapore.html"{a_sg}>Singapore (HDB)</a>
     <a href="singapore_private.html"{a_sgp}>Singapore (private)</a>
+    <a href="hcmc.html"{a_hcm}>Ho Chi Minh City</a>
     <a href="methodology.html"{a_meth}>Method &amp; limits</a>
   </nav>
 </div></header>
@@ -48,10 +49,10 @@ under ODbL. Nothing here is investment advice.
 
 
 def head(title, desc, page, extra="", body_attr=""):
-    cur = {k: "" for k in ("home", "paris", "sg", "sgp", "meth")}
+    cur = {k: "" for k in ("home", "paris", "sg", "sgp", "hcm", "meth")}
     cur[page] = ' aria-current="page"'
     return HEAD.format(title=title, desc=desc, extra=extra, body_attr=body_attr,
-                       a_home=cur["home"], a_paris=cur["paris"], a_sg=cur["sg"], a_sgp=cur["sgp"], a_meth=cur["meth"])
+                       a_home=cur["home"], a_paris=cur["paris"], a_sg=cur["sg"], a_sgp=cur["sgp"], a_hcm=cur["hcm"], a_meth=cur["meth"])
 
 
 INDEX = """
@@ -75,6 +76,7 @@ hypothesis to test, not a premise.</p>
 <div class="grid2">
 <a class="card" href="paris.html" style="text-decoration:none;color:inherit"><b>Paris</b><br><span class="note" style="display:block;margin-top:6px">DVF apartment sales, Jul 2021 – Jun 2026 · reference rents 2021–2025 · INSEE Filosofi 2021</span></a>
 <a class="card" href="singapore.html" style="text-decoration:none;color:inherit"><b>Singapore (HDB)</b><br><span class="note" style="display:block;margin-top:6px">Public resale flats, Jan 2017 – latest month · HDB rental approvals from 2021 · Census 2020 income</span></a>
+<a class="card" href="hcmc.html" style="text-decoration:none;color:inherit"><b>Ho Chi Minh City (exploratory)</b><br><span class="note" style="display:block;margin-top:6px">Official administrative land values by street segment, 2026 · not transactions, not asking prices · no rents</span></a>
 <a class="card" href="singapore_private.html" style="text-decoration:none;color:inherit"><b>Singapore (private)</b><br><span class="note" style="display:block;margin-top:6px">Private apartments and condominiums, Nov 2021 – latest month · URA rental contracts · the open market</span></a>
 </div>
 
@@ -94,6 +96,7 @@ hypothesis to test, not a premise.</p>
 <tr><td>Singapore</td><td>Planning areas, subzones (MP2019), MRT exits, parks</td><td><a href="https://data.gov.sg/">data.gov.sg (URA, LTA, NParks)</a></td><td>Singapore Open Data Licence</td><td>2026-11-07</td></tr>
 <tr><td>Singapore</td><td>Private transactions and rental contracts</td><td><a href="https://eservice.ura.gov.sg/maps/api/">URA Data Service</a></td><td>URA terms of use (access key)</td><td>2026-11-07</td></tr>
 <tr><td>Singapore</td><td>Block geocoding</td><td><a href="https://www.onemap.gov.sg/apidocs/">OneMap (SLA)</a></td><td>OneMap terms of use</td><td>2026-11-07</td></tr>
+<tr><td>Ho Chi Minh City</td><td>Land price table, Resolution 87/2025/NQ-HĐND (in force 1 Jan 2026)</td><td><a href="https://congbao.hochiminhcity.gov.vn/cong-bao/van-ban/nghi-quyet/so/87-2025-nq-hdnd/ngay/26-12-2025/48983?cbid=49002">HCMC Official Gazette</a></td><td>Official legal text</td><td>2026-11-08</td></tr>
 <tr><td>Both</td><td>FX (ECB reference rates), 10-year government yields</td><td><a href="https://data.ecb.europa.eu/">ECB</a>, <a href="https://tablebuilder.singstat.gov.sg/table/TS/M700071">SingStat M700071</a></td><td>Reuse with attribution</td><td>2026-11-07</td></tr>
 </tbody></table></div>
 <p class="note">Valuation gaps are model-dependent hypotheses, not investment advice. Street-level and hexagon statistics are published only for cells with at least five transactions in the year; no individual transaction or address is shown.</p>
@@ -199,6 +202,46 @@ CITIES = {
 }
 
 
+HCMC = """
+<h1>Ho Chi Minh City <span style="font-weight:400;color:var(--text-secondary)">(exploratory)</span></h1>
+<div class="note" style="border-left:3px solid var(--series-fund);margin:10px 0 14px">
+<b>Administrative land values, not market prices.</b> These are the land prices set by the city for taxes, fees and
+compensation (Resolution 87/2025/NQ-HĐND of the HCMC People's Council, in force since 1 January 2026). They are neither
+transaction prices nor asking prices, they cover land only, and they have historically been well below market values.
+Vietnam publishes no transaction register and no rents, so the rent-capitalisation test run for Paris and Singapore
+cannot be run here.</div>
+<p class="meta-line"><span id="n-seg">…</span> priced street segments in <span id="n-units">…</span> wards, communes and
+special zone (the new city after the July 2025 merger with Bình Dương and Bà Rịa–Vũng Tàu). Values: residential land,
+million VND per m². Source: HCMC Official Gazette, issues 62+63 to 84+85 of 1 March 2026, extracted from the signed
+PDFs; 2.4% of entries were unreadable and are excluded.</p>
+
+<h2>By ward or commune</h2>
+<div class="card">
+  <div class="controls"><label>Search<input type="search" id="w-search" placeholder="e.g. Bến Thành"></label>
+  <span class="meta-line" id="w-count"></span></div>
+  <div class="table-scroll"><table>
+    <thead id="w-head"><tr><th data-k="ward">Ward / commune</th><th data-k="type">Type</th><th class="num" data-k="segments">Segments</th>
+    <th class="num" data-k="median">Median</th><th class="num">IQR</th><th class="num" data-k="max">Max</th>
+    <th class="num" data-k="median_commercial">Median, commercial land</th></tr></thead>
+    <tbody id="w-body"></tbody></table></div>
+  <p class="meta-line">Million VND per m² of residential land (last column: commercial and service land). Click a column title to sort.</p>
+</div>
+
+<h2>By street</h2>
+<div class="card">
+  <div class="controls"><label>Search street or ward<input type="search" id="s-search" placeholder="e.g. Nguyễn Huệ"></label>
+  <span class="meta-line" id="s-count"></span></div>
+  <div class="table-scroll"><table>
+    <thead id="s-head"><tr><th data-k="street">Street</th><th data-k="ward">Ward / commune</th><th class="num" data-k="segments">Segments</th>
+    <th class="num" data-k="min">Min</th><th class="num" data-k="max">Max</th></tr></thead>
+    <tbody id="s-body"></tbody></table></div>
+  <p class="meta-line">A street crossing several wards appears once per ward. Some Vietnamese diacritics may be imperfect
+  where the source PDF encodes them inconsistently.</p>
+</div>
+<script src="assets/hcmc.js"></script>
+"""
+
+
 def methodology() -> str:
     """Methodology and limitations pages, rendered from docs/*.md."""
     import markdown
@@ -216,6 +259,9 @@ def main() -> None:
     (SITE / "methodology.html").write_text(
         head("Method and limits", "How prices, rents and fundamental values are computed, and what limits them.", "meth")
         + methodology() + FOOT)
+    (SITE / "hcmc.html").write_text(
+        head("Ho Chi Minh City land values", "Official administrative land values by street segment in Ho Chi Minh City, 2026.", "hcm")
+        + HCMC + FOOT)
     for key, c in CITIES.items():
         if not (SITE / "data" / f"{key}_meta.json").exists():
             (SITE / f"{key}.html").write_text(

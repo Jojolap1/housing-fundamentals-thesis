@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Ho Chi Minh City land values</title>
+<meta name="description" content="Official administrative land values by street segment in Ho Chi Minh City, 2026.">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html">Housing fundamentals</a>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="paris.html">Paris</a>
+    <a href="singapore.html">Singapore (HDB)</a>
+    <a href="singapore_private.html">Singapore (private)</a>
+    <a href="hcmc.html" aria-current="page">Ho Chi Minh City</a>
+    <a href="methodology.html">Method &amp; limits</a>
+  </nav>
+</div></header>
+<main class="wrap">
+
+<h1>Ho Chi Minh City <span style="font-weight:400;color:var(--text-secondary)">(exploratory)</span></h1>
+<div class="note" style="border-left:3px solid var(--series-fund);margin:10px 0 14px">
+<b>Administrative land values, not market prices.</b> These are the land prices set by the city for taxes, fees and
+compensation (Resolution 87/2025/NQ-HĐND of the HCMC People's Council, in force since 1 January 2026). They are neither
+transaction prices nor asking prices, they cover land only, and they have historically been well below market values.
+Vietnam publishes no transaction register and no rents, so the rent-capitalisation test run for Paris and Singapore
+cannot be run here.</div>
+<p class="meta-line"><span id="n-seg">…</span> priced street segments in <span id="n-units">…</span> wards, communes and
+special zone (the new city after the July 2025 merger with Bình Dương and Bà Rịa–Vũng Tàu). Values: residential land,
+million VND per m². Source: HCMC Official Gazette, issues 62+63 to 84+85 of 1 March 2026, extracted from the signed
+PDFs; 2.4% of entries were unreadable and are excluded.</p>
+
+<h2>By ward or commune</h2>
+<div class="card">
+  <div class="controls"><label>Search<input type="search" id="w-search" placeholder="e.g. Bến Thành"></label>
+  <span class="meta-line" id="w-count"></span></div>
+  <div class="table-scroll"><table>
+    <thead id="w-head"><tr><th data-k="ward">Ward / commune</th><th data-k="type">Type</th><th class="num" data-k="segments">Segments</th>
+    <th class="num" data-k="median">Median</th><th class="num">IQR</th><th class="num" data-k="max">Max</th>
+    <th class="num" data-k="median_commercial">Median, commercial land</th></tr></thead>
+    <tbody id="w-body"></tbody></table></div>
+  <p class="meta-line">Million VND per m² of residential land (last column: commercial and service land). Click a column title to sort.</p>
+</div>
+
+<h2>By street</h2>
+<div class="card">
+  <div class="controls"><label>Search street or ward<input type="search" id="s-search" placeholder="e.g. Nguyễn Huệ"></label>
+  <span class="meta-line" id="s-count"></span></div>
+  <div class="table-scroll"><table>
+    <thead id="s-head"><tr><th data-k="street">Street</th><th data-k="ward">Ward / commune</th><th class="num" data-k="segments">Segments</th>
+    <th class="num" data-k="min">Min</th><th class="num" data-k="max">Max</th></tr></thead>
+    <tbody id="s-body"></tbody></table></div>
+  <p class="meta-line">A street crossing several wards appears once per ward. Some Vietnamese diacritics may be imperfect
+  where the source PDF encodes them inconsistently.</p>
+</div>
+<script src="assets/hcmc.js"></script>
+</main>
+<footer><div class="wrap">
+Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),
+INSEE, IGN, Île-de-France Mobilités, HDB / URA / LTA / NParks / SingStat via data.gov.sg (Singapore Open Data
+Licence), ECB. Map tiles © OpenStreetMap contributors © CARTO. Derived databases from ODbL sources are released
+under ODbL. Nothing here is investment advice.
+</div></footer>
+</body>
+</html>
