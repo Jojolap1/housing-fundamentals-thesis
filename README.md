@@ -2,7 +2,7 @@
 
 *A machine-learning and rent-capitalisation approach to residential valuation — Paris and Singapore.*
 
-> Status: Paris, Singapore HDB and Singapore private (URA) complete. Next: Kaggle dataset.
+> **Status: work in progress.** Paris, Singapore HDB and Singapore private (URA) are built. Under way: data-licence checks, robustness of the valuation gaps to the rate assumption, and the Kaggle dataset.
 
 Hedonic and ML models trained on transaction prices estimate **market** value. They cannot
 tell whether market value is justified. This project anchors **fundamental** value on rents
@@ -11,7 +11,7 @@ tests overvaluation as a **hypothesis**, under explicit and varied assumptions.
 
 - Website (GitHub Pages): maps by street-scale hexagon, district and neighbourhood; a
   fundamental-vs-market chart with a sensitivity band; a street table.
-- Kaggle: the processed, aggregated dataset and a notebook that reproduces the main tables
+- Kaggle (planned): the processed, aggregated dataset and a notebook that reproduces the main tables
   and maps (`notebooks/reproduce_main_results.ipynb`).
 
 ![Paris: median price per m², H3 hexagons, 2025](docs/img/paris_hex_price.png)
