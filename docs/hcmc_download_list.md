@@ -8,7 +8,7 @@ For each issue: open the link, find **Nghị quyết 87/2025/NQ-HĐND** in the l
 click **Tải về** (download), and save the PDF into `data/raw/hcmc/` without renaming it.
 Issues that do not list Resolution 87 can be skipped.
 
-Already downloaded: issue 68+69 of 01-03-2026 (`nq87_resolution.pdf`, 94 pages).
+All 12 parts were downloaded on 2026-11-08 (issues 62+63 to 84+85 of 01-03-2026); the table is complete.
 
 - [ ] Số 01 — 01/01/2026: https://congbao.hochiminhcity.gov.vn/cong-bao/so/01/01-01-2026
 - [ ] Số 02 + 03 — 01/01/2026: https://congbao.hochiminhcity.gov.vn/cong-bao/so/02-03/01-01-2026

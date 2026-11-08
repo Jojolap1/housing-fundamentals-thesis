@@ -185,3 +185,12 @@ firewall blocks automated requests, even spaced 10-15 s apart, so the remaining 
 downloaded by hand (`docs/hcmc_download_list.md`). OSM is unreachable from the build
 environment and HCMC wards were redrawn in July 2025, so no ward or street geometry is
 available yet.
+
+**Update 2026-11-08: complete table.** All gazette issues carrying the annexes of Resolution
+87/2025 (issues 62+63 to 84+85 of 1 March 2026; 12 PDFs, downloaded by hand) were extracted
+by `src/clean/hcmc.py`: **10,812 priced street segments in all 168 wards, communes and the
+Côn Đảo special zone** of the new Ho Chi Minh City. Numbering is complete in every unit;
+247 of 10,307 numbered entries (2.4%) are unreadable (mostly under the signature stamp) and
+excluded. Checks against published figures: the maximum residential value is VND 687.2
+million/m² (Đồng Khởi, Nguyễn Huệ, Lê Lợi) and the zone-3 maximum VND 149.48 million/m²
+(Thùy Vân), both as announced. These remain administrative land values, not market prices.
