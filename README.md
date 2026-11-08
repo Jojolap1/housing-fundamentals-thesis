@@ -9,7 +9,7 @@ tell whether market value is justified. This project anchors **fundamental** val
 capitalised at the user cost of housing (Poterba 1984; Himmelberg, Mayer & Sinai 2005) and
 tests overvaluation as a **hypothesis**, under explicit and varied assumptions.
 
-- Website (GitHub Pages): maps by street-scale hexagon, district and neighbourhood; a
+- [Website (GitHub Pages)](https://jojolap1.github.io/housing-fundamentals-thesis/paris.html): maps by street-scale hexagon, district and neighbourhood; a
   fundamental-vs-market chart with a sensitivity band; a street table.
 - Kaggle (planned): the processed, aggregated dataset and a notebook that reproduces the main tables
   and maps (`notebooks/reproduce_main_results.ipynb`).
