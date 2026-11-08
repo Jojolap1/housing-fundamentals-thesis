@@ -156,3 +156,32 @@ data are used.
 
 Scope used: non-landed Apartment and Condominium, single-unit sales (open market). Executive
 Condominiums (eligibility and resale restrictions) and landed homes (land area) are excluded.
+
+## 9. Ho Chi Minh City (Tier 3, exploratory), audited 2026-11-08
+
+Vietnam has no public register of property transaction prices.
+
+| Candidate | What it is | Access verified | Usable? |
+|---|---|---|---|
+| batdongsan.com.vn, nhatot.com (listings) | Asking prices of listings, address/project level | Both serve a Cloudflare bot challenge to automated clients, even for robots.txt | **No.** Collecting them would mean circumventing an active anti-bot measure |
+| chotot.com | General classifieds (real estate is on nhatot.com) | robots.txt reachable; `Content-Signal: ai-train=no`; price-filter URLs disallowed | No for housing (listings are on nhatot.com) |
+| HCMC land price table, Resolution 87/2025/NQ-HĐND (in force 1 Jan 2026) | Official administrative land prices (VND/m²) per street segment, Annexes II-IV | Official text announced on hdnd.hochiminhcity.gov.vn; the annexes found online are third-party PDF copies, not yet the signed original | **Reliable but not market prices**: administrative values used for taxes and fees, land only, historically far below market |
+| Ministry of Construction quarterly housing bulletins | City-level average apartment prices (e.g. about VND 89 million/m² in Q2 2025) | moc.gov.vn press releases | Aggregate only: no district or street detail |
+| GSO (General Statistics Office) | National statistics; no open district-level house price series found | Not verified | Not at the needed granularity |
+| Kaggle "House Pricing HCM" and similar | Third-party compilations of scraped listings, provenance not stated | Not downloaded | **No**: unknown provenance and licence |
+| CBRE, Savills, Numbeo | Aggregated or crowdsourced | n/a | Excluded by design |
+
+**Conclusion:** no reliable, legally accessible dataset gives HCMC dwelling prices or rents at
+street or ward level. The only official street-level source is the administrative land
+price table, which measures regulated land values, not market prices or rents, so a
+rent-capitalisation test cannot be run for HCMC with public data.
+
+**Update 2026-11-08: Official Gazette.** The signed annexes are published in the HCMC Official
+Gazette (congbao.hochiminhcity.gov.vn), split over the issues of 1 January to 15 March 2026.
+One part was downloaded (issue 68+69, 94 pages, wards incl. Phước Long): the tables are
+machine-readable (street, segment from/to, residential, commercial and non-commercial land
+prices in thousand VND/m²), with some mis-encoded Vietnamese diacritics. The gazette's
+firewall blocks automated requests, even spaced 10-15 s apart, so the remaining parts are
+downloaded by hand (`docs/hcmc_download_list.md`). OSM is unreachable from the build
+environment and HCMC wards were redrawn in July 2025, so no ward or street geometry is
+available yet.
