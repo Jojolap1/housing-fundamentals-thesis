@@ -127,3 +127,4 @@ footer { color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--bor
 .doc table { margin: 10px 0; }
 .doc pre { background: var(--note-bg); padding: 10px 12px; border-radius: 8px; overflow-x: auto; }
 .doc code { font-size: 0.9em; }
+.legend .sw-hatch { background: repeating-linear-gradient(135deg, var(--note-bg) 0 3px, var(--axis) 3px 4.5px); border: 1px solid var(--border); }

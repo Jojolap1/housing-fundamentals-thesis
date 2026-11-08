@@ -62,18 +62,30 @@ def _write(name, obj):
     (SITE_DATA / name).write_text(json.dumps(obj, separators=(",", ":"), allow_nan=False))
 
 
+# HDB rents start in January 2021 and URA rental contracts in 2022: before that, the gap would rest on a rent
+# extrapolated from 2021, so it is not published for those years.
+NO_GAP_BEFORE = {"singapore": 2021, "singapore_private": 2022}
+
+
+def _mask_gap(a: pd.DataFrame, city: str) -> pd.DataFrame:
+    if city in NO_GAP_BEFORE:
+        a = a.copy()
+        a.loc[a["year"] < NO_GAP_BEFORE[city], "gap"] = np.nan
+    return a
+
+
 def export_city(city: str) -> dict:
     d = pd.read_parquet(INTERIM / f"valuation_{city}.parquet")
     years = sorted(int(y) for y in d["year"].unique())
     d["h3"] = [h3.latlng_to_cell(a, b, H3_RES) for a, b in zip(d["lat"], d["lon"])]
 
     # Hexagons
-    hx = _agg(d, ["h3"])
+    hx = _mask_gap(_agg(d, ["h3"]), city)
     props = _props(hx, "h3")
     feats = []
     for c, p in props.items():
         ring = [(lng, lat) for lat, lng in h3.cell_to_boundary(c)]
-        feats.append({"type": "Feature", "geometry": _round_geom(Polygon(ring)), "properties": p})
+        feats.append({"type": "Feature", "geometry": _round_geom(Polygon(ring)), "properties": p | {"has_homes": True}})
     _write(f"{city}_hex.json", _fc(feats))
 
     # Districts (l1, l2) with official geometries
@@ -91,13 +103,15 @@ def export_city(city: str) -> dict:
         l2 = l2.rename(columns={"SUBZONE_N": "key"}).assign(name=lambda x: x["key"].str.title())
         tol = 0.0002
     for lvl, gdf, col in (("l1", l1, "district_l1"), ("l2", l2, "district_l2")):
-        a = _agg(d, [col])
+        a = _mask_gap(_agg(d, [col]), city)
+        present = set(d[col].dropna().unique())
         p = _props(a, col)
         gdf = gdf.to_crs(4326)
         gdf["geometry"] = gdf.geometry.simplify(tol, preserve_topology=True)
         feats = []
         for _, r in gdf.iterrows():
-            pr = {"name": r["name"]} | p.get(r["key"], {})
+            # has_homes: at least one retained sale in any year (published or not); False = no homes of this type.
+            pr = {"name": r["name"], "has_homes": r["key"] in present} | p.get(r["key"], {})
             feats.append({"type": "Feature", "geometry": _round_geom(r.geometry), "properties": pr})
         _write(f"{city}_{lvl}.json", _fc(feats))
 
@@ -110,6 +124,9 @@ def export_city(city: str) -> dict:
 
     # Fundamental vs market and sensitivity
     fv = pd.read_csv(PROCESSED / f"fundamental_vs_market_{city}.csv")
+    if city in NO_GAP_BEFORE:
+        cols = [c for c in fv.columns if c.startswith(("vstar", "gap"))]
+        fv.loc[fv["year"] < NO_GAP_BEFORE[city], cols] = np.nan
     _write(f"{city}_fundamental.json", json.loads(fv.round(4).to_json(orient="records")))
     meta = {"city": city, "years": years, "n_total": int(len(d)),
             "period": [str(d["date"].min().date()), str(d["date"].max().date())],

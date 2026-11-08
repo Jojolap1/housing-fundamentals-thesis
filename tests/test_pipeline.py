@@ -117,3 +117,11 @@ def test_freehold_is_perpetuity():
     p = {"tau": 0.0, "delta": 0.0, "gamma": 0.02, "g": 0.02}
     V, _ = _value(np.array([100.0, 100.0]), np.array([0.04, 0.04]), p, T=np.array([np.nan, 50.0]))
     assert V[0] == pytest.approx(2500) and V[1] < V[0]
+
+
+@pytest.mark.parametrize("city,first", [("singapore", 2021), ("singapore_private", 2022)])
+def test_no_gap_before_rent_data(city, first):
+    for lvl in ("hex", "l1", "l2"):
+        fc = json.loads(need(SITE_DATA / f"{city}_{lvl}.json").read_text())
+        for f in fc["features"]:
+            assert not any(k.startswith("gap_") and int(k[4:]) < first for k in f["properties"])

@@ -5,9 +5,11 @@
   const CFG = {
     paris: { cur: "€", center: [2.343, 48.857], zoom: 11.2, l1: "Arrondissement", l2: "Quartier",
              rentUnit: "€/m²/month (reference rent)", ptiNote: "years of IRIS median disposable income, couple = 1.5 UC" },
-    singapore: { cur: "S$", center: [103.82, 1.355], zoom: 10.6, l1: "Planning area", l2: "Subzone",
+    singapore: { cur: "S$", center: [103.82, 1.355], zoom: 10.6, l1: "Planning area", l2: "Subzone", firstRentYear: 2021,
+                 noData: "HDB publishes rents from January 2021 only, so rents, yields and valuation gaps start in 2021.",
                  rentUnit: "S$/month per flat (HDB approvals)", ptiNote: "4-room HDB price / planning-area median household income from work (2020)" },
-    singapore_private: { cur: "S$", center: [103.84, 1.33], zoom: 11, l1: "Planning area", l2: "Subzone",
+    singapore_private: { cur: "S$", center: [103.84, 1.33], zoom: 11, l1: "Planning area", l2: "Subzone", firstRentYear: 2022,
+                 noData: "URA rental contracts start in 2022.",
                  rentUnit: "S$/month per home (URA contracts)", ptiNote: "price / planning-area median household income from work (2020)" },
   }[CITY];
 
@@ -99,36 +101,87 @@
         : "rgba(0,0,0,0)";
       if (map.getSource("d")) map.getSource("d").setData(fc);
       else {
+        map.addImage("hatch", hatch(), { pixelRatio: 2 });
         map.addSource("d", { type: "geojson", data: fc });
-        map.addLayer({ id: "fill", type: "fill", source: "d", paint: { "fill-opacity": 0.78 } });
-        map.addLayer({ id: "line", type: "line", source: "d", paint: { "line-color": isDark() ? "#1a1a19" : "#fcfcfb", "line-width": 0.6 } });
+        // Areas with no home sold in any year (non-residential land, or no stock of this type): hatched grey.
+        map.addLayer({ id: "nohomes", type: "fill", source: "d", filter: ["!", ["get", "has_homes"]],
+                       paint: { "fill-pattern": "hatch", "fill-opacity": 0.9 } });
+        map.addLayer({ id: "fill", type: "fill", source: "d", filter: ["get", "has_homes"], paint: { "fill-opacity": 0.78 } });
+        map.addLayer({ id: "line", type: "line", source: "d", paint: { "line-color": isDark() ? "#5a5955" : "#c3c2b7", "line-width": 0.5 } });
       }
       map.setPaintProperty("fill", "fill-color", expr);
+      coverage(fc, f, layer, year, metric);
       legend(metric, br, pal);
       $("#map-title").textContent = `${METRICS[metric].label}, ${yearLabel(year)} — ${layer === "hex" ? "H3 hexagons (res. 9)" : layer === "l1" ? CFG.l1 : CFG.l2}`;
       $("#gap-note").hidden = !(metric === "gap");
       $("#mis-note").hidden = !(metric === "mis");
     }
 
+    function hatch() {
+      const n = 16, c = document.createElement("canvas"); c.width = c.height = n;
+      const g = c.getContext("2d");
+      g.fillStyle = isDark() ? "#232321" : "#f0efec"; g.fillRect(0, 0, n, n);
+      g.strokeStyle = isDark() ? "#3a3a37" : "#d6d5cf"; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(0, n); g.lineTo(n, 0); g.moveTo(-n / 2, n / 2); g.lineTo(n / 2, -n / 2);
+      g.moveTo(n / 2, n + n / 2); g.lineTo(n + n / 2, n / 2); g.stroke();
+      return g.getImageData(0, 0, n, n);
+    }
+
+    function coverage(fc, f, layer, year, metric) {
+      const homes = fc.features.filter((x) => x.properties.has_homes).length;
+      const withVal = fc.features.filter((x) => x.properties[f] !== undefined).length;
+      const unit = layer === "hex" ? "hexagons" : layer === "l1" ? CFG.l1.toLowerCase() + "s" : CFG.l2.toLowerCase() + "s";
+      const none = fc.features.length - homes;
+      let txt = `${withVal} of ${homes} ${unit} with home sales have a value for this indicator in ${yearLabel(year)}`;
+      if (layer !== "hex" && none) txt += `; ${none} have no home sales in any year (hatched)`;
+      // The legend already explains years without rent data: no second message here.
+      if (withVal === 0 && CFG.noData && ["rent", "yield", "gap"].includes(metric) && year < CFG.firstRentYear) txt = "";
+      $("#coverage").textContent = txt ? txt + "." : "";
+    }
+
     function legend(metric, br, pal) {
       const L = $("#legend");
-      if (!br) { L.innerHTML = "<span>No published cells for this selection (n ≥ 5 rule).</span>"; return; }
+      if (!br) {
+        const { year } = key();
+        L.innerHTML = `<span>${CFG.noData && year < CFG.firstRentYear && ["rent", "yield", "gap"].includes(metric)
+          ? CFG.noData : "No published cells for this selection (n ≥ 5 rule)."}</span>`;
+        return;
+      }
       const M = METRICS[metric];
       const lab = (x) => M.fmt(x);
       const txt = pal.map((_, i) => (i === 0 ? `< ${lab(br[0])}` : i === pal.length - 1 ? `≥ ${lab(br[br.length - 1])}`
         : `${lab(br[i - 1])} – ${lab(br[i])}`));
       L.innerHTML = `<span style="flex-basis:100%"><b>${M.label}</b> (${M.unit()})</span>
         ${pal.map((c, i) => `<span class="cls"><span class="sw" style="background:${c}"></span>${txt[i]}</span>`).join("")}
-        <span class="cls"><span class="swatch-na"></span> not published (n &lt; 5) or no data</span>`;
+        <span class="cls"><span class="swatch-na"></span> not published this year (n &lt; 5)</span>
+        <span class="cls"><span class="sw sw-hatch"></span> no home sales in any year</span>`;
     }
 
     map.on("load", () => {
       render();
       ["#layer", "#metric", "#year"].forEach((s) => $(s).addEventListener("change", render));
+      map.on("mousemove", "nohomes", (e) => {
+        const p = e.features[0].properties;
+        tip.innerHTML = `<b>${p.name || "Hexagon"}</b><div class="k">No home sales in any year: not residential, or no homes of this type.</div>`;
+        tip.hidden = false;
+        const r = $("#map").getBoundingClientRect();
+        tip.style.left = Math.min(e.point.x + 14, r.width - 220) + "px"; tip.style.top = (e.point.y + 14) + "px";
+      });
+      map.on("mouseleave", "nohomes", () => { tip.hidden = true; });
       map.on("mousemove", "fill", (e) => {
         const p = e.features[0].properties; const { metric, year } = key();
         const g = (m) => p[`${m}_${year}`];
-        if (g("n") === undefined) { tip.hidden = true; return; }
+        if (!p.has_homes) {
+          tip.innerHTML = `<b>${p.name || "Hexagon"}</b><div class="k">No home sales in any year: not residential, or no homes of this type.</div>`;
+        } else if (g("n") === undefined) {
+          tip.innerHTML = `<b>${p.name || "Hexagon"}</b><div class="k">Fewer than 5 sales in ${yearLabel(year)}: not published.</div>`;
+        }
+        if (!p.has_homes || g("n") === undefined) {
+          tip.hidden = false;
+          const r = $("#map").getBoundingClientRect();
+          tip.style.left = Math.min(e.point.x + 14, r.width - 220) + "px"; tip.style.top = (e.point.y + 14) + "px";
+          return;
+        }
         const M = METRICS[metric]; const v = g(field(metric));
         tip.innerHTML = `<b>${p.name || (key().layer === "hex" ? "Hexagon" : "")}</b>
           <div>${M.label}: <b style="display:inline">${v !== undefined ? M.fmt(v) : "–"}</b></div>

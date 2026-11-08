@@ -127,6 +127,7 @@ CITY = """
   <div id="map-title" style="font-weight:600;margin-bottom:6px"></div>
   <div id="map" style="position:relative"></div>
   <div class="legend" id="legend"></div>
+  <p class="meta-line" id="coverage"></p>
   <p class="note" id="gap-note" hidden>The valuation gap compares the model's predicted market price with rents capitalised at an
   assumed user cost. A positive value means prices are above what rents justify <em>under the baseline assumptions</em>;
   see the sensitivity band below. It is a model-dependent hypothesis, not investment advice.</p>
@@ -182,11 +183,10 @@ CITIES = {
         source="HDB resale flat prices and HDB rental approvals (data.gov.sg), Census of Population 2020",
         lede="Resale transactions of public (HDB) flats on 99-year leases, January 2017 onward. Rents are HDB approvals to "
              "rent out whole flats. Fundamental value discounts rent over the remaining lease, not in perpetuity.",
-        fund_note="HDB rents are available from 2021; earlier years use the rent model's 2021 level and should be read "
-                  "with care. A negative gap does not mean HDB flats are a bargain anyone can take: only eligible "
+        fund_note="HDB rents are published from January 2021, so fundamental values and gaps start in 2021. A negative gap does not mean HDB flats are a bargain anyone can take: only eligible "
                   "households (mainly citizens) may buy, owners must live in the flat for 5 years before renting it "
-                  "out, and grants and CPF rules shape demand, so rent capitalisation is constrained. Private "
-                  "condominiums (URA) are not included yet.",
+                  "out, and grants and CPF rules shape demand, so rent capitalisation is constrained. The open "
+                  "private market is on the Singapore (private) page.",
     ),
     "singapore_private": dict(
         name="Singapore (private)", page="sgp", l1="Planning area", l2="Subzone", cur="S$", example="ANSON ROAD",
@@ -197,7 +197,7 @@ CITIES = {
              "comparable with Paris.",
         fund_note="Rent is predicted for each sold home from URA rental contracts (area recorded in 10 m² bands). "
                   "Leasehold homes are valued over their remaining lease; freehold and 999-year homes in perpetuity. "
-                  "2021 covers November and December only.",
+                  "URA rental contracts start in 2022, so fundamental values and gaps start in 2022.",
     ),
 }
 
