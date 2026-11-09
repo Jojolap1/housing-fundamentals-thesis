@@ -125,3 +125,20 @@ def test_no_gap_before_rent_data(city, first):
         fc = json.loads(need(SITE_DATA / f"{city}_{lvl}.json").read_text())
         for f in fc["features"]:
             assert not any(k.startswith("gap_") and int(k[4:]) < first for k in f["properties"])
+
+
+def test_liquidity_outputs():
+    p = pd.read_csv(need(PROCESSED / "liquidity_paris_city.csv"))
+    assert (p["turnover_per_1000"] > 0).all() and (p["turnover_per_1000"] < 200).all()
+    # year-on-year changes only between full calendar years
+    assert p.loc[p["year"].isin([2021, 2022, 2026]), "divergence_pts"].isna().all()
+    s = pd.read_csv(need(PROCESSED / "liquidity_singapore_city.csv"))
+    assert (s["turnover_per_1000"].between(1, 100)).all()
+    d = pd.read_csv(need(PROCESSED / "liquidity_singapore_private_developer.csv"))
+    assert (d["unsold_launched"] >= 0).all()
+
+
+def test_income_index_matches_census():
+    from src.ratios.levels import singapore_income_index
+    idx = singapore_income_index()
+    assert idx.loc[2020] == pytest.approx(1.0) and idx.loc[2025] > idx.loc[2020]

@@ -249,7 +249,97 @@ gap = P̂ / V* − 1
 <li><strong>Relative mispricing</strong> = log(actual price) − log(P̂), aggregated by street, hexagon or
   district. It measures cheap or expensive <strong>relative to comparable dwellings</strong>. It is
   <strong>not</strong> a bubble indicator.</li>
-</ul><h1>Limitations</h1>
+</ul>
+<h2>8. Second pillar: market tension and liquidity</h2>
+<p>Rents are a constrained expense: households must be housed, so rents can stay high when
+they are already too heavy, and a rent-capitalisation value then "justifies" high prices
+while the market is stuck. When prices are too high, sellers rarely cut them at once (loss
+aversion, Genesove &amp; Mayer 2001); the adjustment shows first in volumes and time on market
+(Stein 1995). Time on market needs listing data, which are not open for Paris or Singapore,
+so the pillar uses open data only (<code>src/ratios/liquidity.py</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Definition</th>
+<th>Paris</th>
+<th>Singapore HDB</th>
+<th>Singapore private</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Turnover</td>
+<td>sales per 1,000 dwellings of the segment</td>
+<td>every DVF sale with an apartment / apartments in the 2023 census (INSEE, IRIS); half-years annualised</td>
+<td>every HDB resale / flats sold by HDB (property information, by block → HDB town)</td>
+<td>not computed: no open stock series</td>
+</tr>
+<tr>
+<td>Volume − price divergence</td>
+<td>YoY % change of sales − YoY % change of median price/m², full calendar years</td>
+<td>2022-2025</td>
+<td>2017-2025</td>
+<td>2022-2025</td>
+</tr>
+<tr>
+<td>Months of supply</td>
+<td>unsold launched units / mean monthly developer sales over 12 months</td>
+<td>–</td>
+<td>–</td>
+<td>URA developer sales (served from Nov 2023 only); Executive Condominiums excluded</td>
+</tr>
+<tr>
+<td>Rent-to-income</td>
+<td>annual rent / annual income</td>
+<td>60 m² at the matched reference rent / (IRIS median income per UC × 1.5), Filosofi 2021</td>
+<td>matched flat rent / planning-area median household income from work</td>
+<td>matched home rent / same income</td>
+</tr>
+<tr>
+<td>Vacancy</td>
+<td>vacant / all dwellings</td>
+<td>2023 census</td>
+<td>–</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<p>Singapore incomes: the Census 2020 planning-area medians are scaled each year by the
+national median monthly household income from work of employed resident households, incl.
+employer CPF (SingStat table 17870 via data.gov.sg). Its 2020 value (S$9,208) matches the
+Census 2020 band median (S$9,222), so the definitions agree. 2026 uses the 2025 value.</p>
+<p>Reading the two pillars together:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Prices vs fundamentals</th>
+<th>Liquidity</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paris</td>
+<td>above (baseline)</td>
+<td>volumes −27% 2022→2024 against prices −10%</td>
+<td>a stuck market adjusting through quantities</td>
+</tr>
+<tr>
+<td>Singapore private</td>
+<td>above (baseline)</td>
+<td>volumes +23%, prices +25% 2022→2025; ~5 months of supply</td>
+<td>demand-driven boom</td>
+</tr>
+<tr>
+<td>Singapore HDB</td>
+<td>below (baseline)</td>
+<td>stable turnover</td>
+<td>regulated market; arbitrage restricted</td>
+</tr>
+</tbody>
+</table><h1>Limitations</h1>
 <p>These are stated plainly because they bound what the results can say.</p>
 <h2>Rents</h2>
 <ul>
@@ -326,6 +416,18 @@ gap = P̂ / V* − 1
   stations and parks come from official sources instead (IDFM, Ville de Paris, LTA,
   NParks). This is an improvement in provenance, but OSM-based features are not
   reproduced.</li>
+</ul>
+<h2>Second pillar (tension and liquidity)</h2>
+<ul>
+<li>Time on market and sale-to-list discounts, the most direct measures of a stuck market,
+  need listing data that are not open; turnover and volume-price divergence are proxies.</li>
+<li>Paris turnover uses the 2023 census stock for all years; DVF 2021 and 2026 are half-years
+  (annualised for turnover, excluded from year-on-year changes).</li>
+<li>HDB stock: 16,236 flats (1.5%) are in blocks whose HDB town could not be inferred from the
+  resale file and are left out of the denominators.</li>
+<li>URA serves developer sales for about the last three years only (from November 2023).</li>
+<li>Paris incomes are held at their 2021 level (Filosofi), so the Paris rent-to-income trend
+  is overstated by income growth since 2021.</li>
 </ul></div></main>
 <footer><div class="wrap">
 Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),

@@ -11,6 +11,7 @@ data:
 	$(PY) -m src.ingest.onemap
 	$(PY) -m src.ingest.ura          # needs a URA access key (see README)
 	$(PY) -m src.ingest.ura_geocode
+	$(PY) -c "from src.ingest.ura import developer_sales; developer_sales()"
 
 ## Clean + harmonise transactions, then build features
 features:
@@ -20,6 +21,7 @@ features:
 	$(PY) -m src.features.build
 	$(PY) -c "from src.features.build import singapore_private_features as f; f()"
 	$(PY) -m src.ratios.levels
+	$(PY) -m src.ratios.liquidity
 
 ## Hedonic / ML models, validation tables, SHAP, then fundamental values and gaps
 models: features

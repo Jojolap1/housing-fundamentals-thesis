@@ -22,6 +22,10 @@ TABLES = {
     "hdb_property_information.csv": "d_17f5382f26140b1fdae0ba2ef6239d2f",
     "census2020_hh_income_work_by_pa.csv": "d_4e150bbd35c3145ea43019212c7b46c2",
     "census2020_hh_income_work_by_pa_v2022.csv": "d_2d6793de474551149c438ba349a108fd",
+    # National median monthly household income from work incl. employer CPF, 2000-2025
+    # (SingStat table 17870): its 2020 value for employed households (S$9,208) matches the
+    # Census 2020 band median (S$9,222), so it is the same definition.
+    "hh_income_work_national_2000_2025.csv": "d_f4560da11b22b47050c75bdffb1d93e0",
 }
 GEO = {
     "hdb_existing_building.geojson": "d_16b157c52ed637edd6ba1232e026258d",

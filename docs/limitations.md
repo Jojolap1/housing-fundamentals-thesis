@@ -71,3 +71,14 @@ These are stated plainly because they bound what the results can say.
   stations and parks come from official sources instead (IDFM, Ville de Paris, LTA,
   NParks). This is an improvement in provenance, but OSM-based features are not
   reproduced.
+
+## Second pillar (tension and liquidity)
+- Time on market and sale-to-list discounts, the most direct measures of a stuck market,
+  need listing data that are not open; turnover and volume-price divergence are proxies.
+- Paris turnover uses the 2023 census stock for all years; DVF 2021 and 2026 are half-years
+  (annualised for turnover, excluded from year-on-year changes).
+- HDB stock: 16,236 flats (1.5%) are in blocks whose HDB town could not be inferred from the
+  resale file and are left out of the denominators.
+- URA serves developer sales for about the last three years only (from November 2023).
+- Paris incomes are held at their 2021 level (Filosofi), so the Paris rent-to-income trend
+  is overstated by income growth since 2021.

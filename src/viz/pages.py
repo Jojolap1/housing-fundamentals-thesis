@@ -147,6 +147,21 @@ CITY = """
   <p class="note">{fund_note}</p>
 </div>
 
+<h2>Market tension and liquidity</h2>
+<div class="card">
+  <p class="note" style="margin-top:0">Rents are a constrained expense: households must be housed, so a rent-based value can
+  "justify" high prices while the market is stuck. When prices are too high, sellers rarely cut them at once; sales volumes fall
+  first. This section tracks that adjustment. Time on market would be the ideal measure, but it needs listing data, which are
+  not open.</p>
+  <div class="kpis" id="kpis"></div>
+  <div class="legend"><span><span style="color:var(--series-volume)">●</span> Volume: number of sales</span>
+  <span><span style="color:var(--series-market)">●</span> Price: median price per m²</span>
+  <span>Both indexed to 100 in the first full year (dashed line); full calendar years only.</span></div>
+  <div class="chart-wrap" id="liq-chart"></div>
+  <details><summary>Table view</summary><div id="liq-table" class="table-scroll"></div></details>
+  <p class="meta-line">{liq_note}</p>
+</div>
+
 <h2>Streets</h2>
 <div class="card">
   <div class="controls">
@@ -174,6 +189,8 @@ CITIES = {
         lede="Single-apartment sales recorded by the tax administration, July 2021 – June 2026. Rents are the city's "
              "regulatory reference rents (unfurnished, by quartier, rooms and construction period): they are not "
              "observed contracts, and the rented stock differs from the stock that is sold.",
+        liq_note="Volume: every DVF sale containing an apartment (DGFiP). Stock: apartments in the 2023 census (INSEE). "
+                 "Rent-to-income uses Filosofi 2021 incomes, held at their 2021 level.",
         fund_note="Paris reference rents are regulatory values set from observed rents; the gap therefore measures prices "
                   "against regulated-market rents. 2021 covers July–December and 2026 January–June.",
     ),
@@ -183,6 +200,8 @@ CITIES = {
         source="HDB resale flat prices and HDB rental approvals (data.gov.sg), Census of Population 2020",
         lede="Resale transactions of public (HDB) flats on 99-year leases, January 2017 onward. Rents are HDB approvals to "
              "rent out whole flats. Fundamental value discounts rent over the remaining lease, not in perpetuity.",
+        liq_note="Volume: every HDB resale (data.gov.sg). Stock: flats sold by HDB, by block (HDB property information). "
+                 "Incomes: Census 2020 by planning area, scaled each year by the national median household income from work.",
         fund_note="HDB rents are published from January 2021, so fundamental values and gaps start in 2021. A negative gap does not mean HDB flats are a bargain anyone can take: only eligible "
                   "households (mainly citizens) may buy, owners must live in the flat for 5 years before renting it "
                   "out, and grants and CPF rules shape demand, so rent capitalisation is constrained. The open "
@@ -195,6 +214,9 @@ CITIES = {
         lede="Sales of private apartments and condominiums (the open market: no eligibility rules, buy-to-let allowed), "
              "November 2021 onward, and the rental contracts stamped with IRAS. This is the Singapore market most "
              "comparable with Paris.",
+        liq_note="Volume: every single-unit apartment and condominium sale (URA). Months of supply: unsold launched units / "
+                 "average monthly developer sales over 12 months (URA developer sales; served from Nov 2023 only). No open "
+                 "series of the private stock, so no turnover rate.",
         fund_note="Rent is predicted for each sold home from URA rental contracts (area recorded in 10 m² bands). "
                   "Leasehold homes are valued over their remaining lease; freehold and 999-year homes in perpetuity. "
                   "URA rental contracts start in 2022, so fundamental values and gaps start in 2022.",

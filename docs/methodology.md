@@ -163,3 +163,33 @@ Computed per year at city, `district_l1`, `district_l2` and street level
 - **Relative mispricing** = log(actual price) − log(P̂), aggregated by street, hexagon or
   district. It measures cheap or expensive **relative to comparable dwellings**. It is
   **not** a bubble indicator.
+
+## 8. Second pillar: market tension and liquidity
+
+Rents are a constrained expense: households must be housed, so rents can stay high when
+they are already too heavy, and a rent-capitalisation value then "justifies" high prices
+while the market is stuck. When prices are too high, sellers rarely cut them at once (loss
+aversion, Genesove & Mayer 2001); the adjustment shows first in volumes and time on market
+(Stein 1995). Time on market needs listing data, which are not open for Paris or Singapore,
+so the pillar uses open data only (`src/ratios/liquidity.py`):
+
+| Indicator | Definition | Paris | Singapore HDB | Singapore private |
+|---|---|---|---|---|
+| Turnover | sales per 1,000 dwellings of the segment | every DVF sale with an apartment / apartments in the 2023 census (INSEE, IRIS); half-years annualised | every HDB resale / flats sold by HDB (property information, by block → HDB town) | not computed: no open stock series |
+| Volume − price divergence | YoY % change of sales − YoY % change of median price/m², full calendar years | 2022-2025 | 2017-2025 | 2022-2025 |
+| Months of supply | unsold launched units / mean monthly developer sales over 12 months | – | – | URA developer sales (served from Nov 2023 only); Executive Condominiums excluded |
+| Rent-to-income | annual rent / annual income | 60 m² at the matched reference rent / (IRIS median income per UC × 1.5), Filosofi 2021 | matched flat rent / planning-area median household income from work | matched home rent / same income |
+| Vacancy | vacant / all dwellings | 2023 census | – | – |
+
+Singapore incomes: the Census 2020 planning-area medians are scaled each year by the
+national median monthly household income from work of employed resident households, incl.
+employer CPF (SingStat table 17870 via data.gov.sg). Its 2020 value (S$9,208) matches the
+Census 2020 band median (S$9,222), so the definitions agree. 2026 uses the 2025 value.
+
+Reading the two pillars together:
+
+| | Prices vs fundamentals | Liquidity | Interpretation |
+|---|---|---|---|
+| Paris | above (baseline) | volumes −27% 2022→2024 against prices −10% | a stuck market adjusting through quantities |
+| Singapore private | above (baseline) | volumes +23%, prices +25% 2022→2025; ~5 months of supply | demand-driven boom |
+| Singapore HDB | below (baseline) | stable turnover | regulated market; arbitrage restricted |

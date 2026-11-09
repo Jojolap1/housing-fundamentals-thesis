@@ -35,8 +35,8 @@
   const isDark = () => matchMedia("(prefers-color-scheme: dark)").matches && document.documentElement.dataset.theme !== "light"
     || document.documentElement.dataset.theme === "dark";
 
-  Promise.all(["meta", "hex", "l1", "l2", "fundamental", "streets"].map((k) =>
-    fetch(`data/${CITY}_${k}.json`).then((r) => r.json()))).then(([meta, hex, l1, l2, fund, streets]) => {
+  Promise.all(["meta", "hex", "l1", "l2", "fundamental", "streets", "liquidity"].map((k) =>
+    fetch(`data/${CITY}_${k}.json`).then((r) => r.json()))).then(([meta, hex, l1, l2, fund, streets, liq]) => {
     const DATA = { hex, l1, l2 };
     const years = meta.years;
     $("#period").textContent = `${meta.period[0]} → ${meta.period[1]}`;
@@ -47,6 +47,7 @@
     buildMap(DATA);
     buildChart(fund);
     buildTable(streets, years);
+    buildLiquidity(liq);
   });
 
   function yearLabel(y) {
@@ -269,6 +270,56 @@
     const step = [1, 2, 2.5, 5, 10].map((k) => k * mag).find((s) => s >= step0);
     const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) out.push(v);
     return out;
+  }
+
+  /* ------------------------------------------------- tension and liquidity */
+  function buildLiquidity(L) {
+    $("#kpis").innerHTML = L.kpi.map((k) => `<div class="kpi"><div class="k">${k.label}</div>
+      <div class="v">${k.value == null ? "–" : (k.value > 0 && (k.unit || "").includes("pts") ? "+" : "") + k.value.toLocaleString("en-GB") + (k.unit || "")}</div>
+      <div class="n">${k.note || ""}</div></div>`).join("");
+    const W = 760, H = 280, m = { l: 48, r: 90, t: 14, b: 32 };
+    const xs = L.years, all = [...L.volume_index, ...L.price_index];
+    const lo = Math.min(60, ...all) - 5, hi = Math.max(...all) + 8;
+    const X = (y) => m.l + ((y - xs[0]) / Math.max(1, xs[xs.length - 1] - xs[0])) * (W - m.l - m.r);
+    const Y = (v) => H - m.b - ((v - lo) / (hi - lo)) * (H - m.t - m.b);
+    const ticks = niceTicks(lo, hi, 4);
+    const path = (arr) => arr.map((v, i) => `${i ? "L" : "M"}${X(xs[i])},${Y(v)}`).join("");
+    const dots = (arr, c) => arr.map((v, i) => `<circle cx="${X(xs[i])}" cy="${Y(v)}" r="4" fill="var(${c})" stroke="var(--surface-1)" stroke-width="2"/>`).join("");
+    const n = xs.length - 1;
+    $("#liq-chart").innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Sales volume and median price per m², index">
+      ${ticks.map((t) => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--grid)"/>
+        <text x="${m.l - 8}" y="${Y(t) + 4}" text-anchor="end">${t}</text>`).join("")}
+      <line x1="${m.l}" x2="${W - m.r}" y1="${Y(100)}" y2="${Y(100)}" stroke="var(--axis)" stroke-dasharray="4 3"/>
+      ${xs.map((x) => `<text x="${X(x)}" y="${H - 10}" text-anchor="middle">${x}</text>`).join("")}
+      <path d="${path(L.price_index)}" fill="none" stroke="var(--series-market)" stroke-width="2"/>
+      <path d="${path(L.volume_index)}" fill="none" stroke="var(--series-volume)" stroke-width="2"/>
+      ${dots(L.price_index, "--series-market")}${dots(L.volume_index, "--series-volume")}
+      <text class="lbl" x="${X(xs[n]) + 10}" y="${Y(L.price_index[n]) + 4}">Price</text>
+      <text class="lbl" x="${X(xs[n]) + 10}" y="${Y(L.volume_index[n]) + (Math.abs(L.volume_index[n] - L.price_index[n]) < 6 ? 16 : 4)}">Volume</text>
+      <line id="lxh" y1="${m.t}" y2="${H - m.b}" stroke="var(--axis)" stroke-dasharray="3 3" visibility="hidden"/>
+      <rect x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent" id="lhit"/></svg>`;
+    const wrap = $("#liq-chart"), svg = wrap.querySelector("svg"), xh = svg.querySelector("#lxh");
+    const tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; wrap.appendChild(tip);
+    svg.querySelector("#lhit").addEventListener("mousemove", (e) => {
+      const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+      const i = xs.reduce((b, x, j) => (Math.abs(X(x) - p.x) < Math.abs(X(xs[b]) - p.x) ? j : b), 0);
+      xh.setAttribute("x1", X(xs[i])); xh.setAttribute("x2", X(xs[i])); xh.setAttribute("visibility", "visible");
+      const dv = L.divergence[i];
+      tip.innerHTML = `<b>${xs[i]}</b>
+        <div><span style="color:var(--series-volume)">●</span> Sales: ${fmtInt(L.sales[i])} (index ${L.volume_index[i]})</div>
+        <div><span style="color:var(--series-market)">●</span> Median ${CFG.cur}/m²: ${fmtInt(L.ppm2[i])} (index ${L.price_index[i]})</div>
+        <div class="k">Volume − price change: ${dv == null ? "–" : (dv >= 0 ? "+" : "") + dv + " pts"}</div>`;
+      const b = wrap.getBoundingClientRect(); tip.hidden = false;
+      let x = e.clientX - b.left + 14; if (x + 230 > b.width) x -= 250;
+      tip.style.left = x + "px"; tip.style.top = (e.clientY - b.top - 20) + "px";
+    });
+    svg.querySelector("#lhit").addEventListener("mouseleave", () => { tip.hidden = true; xh.setAttribute("visibility", "hidden"); });
+    $("#liq-table").innerHTML = `<table><thead><tr><th>Year</th><th class="num">Sales</th><th class="num">Volume index</th>
+      <th class="num">Median ${CFG.cur}/m²</th><th class="num">Price index</th><th class="num">Volume − price (pts)</th></tr></thead><tbody>
+      ${xs.map((y, i) => `<tr><td>${y}</td><td class="num">${fmtInt(L.sales[i])}</td><td class="num">${L.volume_index[i]}</td>
+      <td class="num">${fmtInt(L.ppm2[i])}</td><td class="num">${L.price_index[i]}</td>
+      <td class="num">${L.divergence[i] == null ? "–" : L.divergence[i]}</td></tr>`).join("")}</tbody></table>`;
   }
 
   /* ---------------------------------------------------------- street table */

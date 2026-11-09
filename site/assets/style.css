@@ -10,6 +10,7 @@
   --border: rgba(11, 11, 11, 0.10);
   --series-market: #2a78d6;
   --series-fund: #e34948;
+  --series-volume: #eb6834;
   --band-fund: rgba(227, 73, 72, 0.16);
   --accent: #2a78d6;
   --note-bg: #f3f2ee;
@@ -27,6 +28,7 @@
     --border: rgba(255, 255, 255, 0.10);
     --series-market: #3987e5;
     --series-fund: #e66767;
+    --series-volume: #d95926;
     --band-fund: rgba(230, 103, 103, 0.20);
     --accent: #3987e5;
     --note-bg: #232321;
@@ -44,6 +46,7 @@
   --border: rgba(255, 255, 255, 0.10);
   --series-market: #3987e5;
   --series-fund: #e66767;
+  --series-volume: #d95926;
   --band-fund: rgba(230, 103, 103, 0.20);
   --accent: #3987e5;
   --note-bg: #232321;
@@ -128,3 +131,8 @@ footer { color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--bor
 .doc pre { background: var(--note-bg); padding: 10px 12px; border-radius: 8px; overflow-x: auto; }
 .doc code { font-size: 0.9em; }
 .legend .sw-hatch { background: repeating-linear-gradient(135deg, var(--note-bg) 0 3px, var(--axis) 3px 4.5px); border: 1px solid var(--border); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.kpis .kpi { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; min-width: 0; }
+.kpis .v { font-size: 1.5rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.kpis .k { font-size: 0.8rem; color: var(--text-secondary); }
+.kpis .n { font-size: 0.75rem; color: var(--muted); }

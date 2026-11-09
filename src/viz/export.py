@@ -139,6 +139,7 @@ def main() -> None:
     for c in ("paris", "singapore", "singapore_private"):
         print(export_city(c))
     export_hcmc()
+    export_liquidity()
 
 
 
@@ -160,6 +161,58 @@ def export_hcmc() -> None:
     _write("hcmc_wards.json", wards)
     _write("hcmc_streets.json", streets)
     _write("hcmc_meta.json", meta)
+
+
+def export_liquidity() -> None:
+    """Second pillar for the site: volume and price indices (base 100 = first full year),
+    plus a few key figures per market. Full calendar years only."""
+    burden = pd.read_csv(PROCESSED / "rent_burden_pct.csv", index_col=0)
+
+    def series(df, years, vol="sales", price="ppm2_median"):
+        d = df[df["year"].isin(years)].sort_values("year")
+        b = d.iloc[0]
+        return {"years": d["year"].astype(int).tolist(),
+                "volume_index": (100 * d[vol] / b[vol]).round(1).tolist(),
+                "price_index": (100 * d[price] / b[price]).round(1).tolist(),
+                "sales": d[vol].astype(int).tolist(), "ppm2": d[price].round(0).tolist(),
+                "divergence": [None if pd.isna(x) else round(float(x), 1) for x in d.get("divergence_pts", [])]}
+
+    def last(df, col, year):
+        v = df.loc[df["year"] == year, col]
+        return None if v.empty or pd.isna(v.iloc[0]) else round(float(v.iloc[0]), 1)
+
+    p = pd.read_csv(PROCESSED / "liquidity_paris_city.csv")
+    out = {"paris": series(p, range(2022, 2026)) | {"kpi": [
+        {"label": "Sales per 1,000 apartments, 2025", "value": last(p, "turnover_per_1000", 2025),
+         "note": f"2022: {last(p, 'turnover_per_1000', 2022)}"},
+        {"label": "Volume − price change, 2023", "value": last(p, "divergence_pts", 2023), "unit": " pts",
+         "note": "volumes fell much faster than prices"},
+        {"label": "Rent-to-income, 2025", "value": round(float(burden.loc[2025, "Paris"]), 1), "unit": "%",
+         "note": "60 m² at the reference rent, median couple"},
+        {"label": "Vacant dwellings", "value": round(float(p["vacancy_pct"].iloc[0]), 1), "unit": "%",
+         "note": "2023 census"}]}}
+    h = pd.read_csv(PROCESSED / "liquidity_singapore_city.csv")
+    h["ppm2_median"] = h["year"].map(pd.read_csv(PROCESSED / "stats_singapore_city.csv").set_index("year")["ppm2_median"])
+    h["k"] = 1
+    from src.ratios.liquidity import _changes
+    h = h.merge(_changes(h, ["k"], range(2017, 2026))[["year", "divergence_pts"]], on="year", how="left")
+    out["singapore"] = series(h, range(2017, 2026)) | {"kpi": [
+        {"label": "Resales per 1,000 flats, 2025", "value": last(h, "turnover_per_1000", 2025),
+         "note": f"2017: {last(h, 'turnover_per_1000', 2017)}"},
+        {"label": "Volume − price change, 2025", "value": last(h, "divergence_pts", 2025), "unit": " pts", "note": ""},
+        {"label": "Rent-to-income, 2025", "value": round(float(burden.loc[2025, "Singapore HDB"]), 1), "unit": "%",
+         "note": "flat rent / planning-area median household income"}]}
+    s_ = pd.read_csv(PROCESSED / "liquidity_singapore_private_city.csv")
+    dev = pd.read_csv(PROCESSED / "liquidity_singapore_private_developer.csv").dropna(subset=["months_of_supply"])
+    out["singapore_private"] = series(s_, range(2022, 2026)) | {"kpi": [
+        {"label": f"Months of unsold new-launch supply, {dev['month'].iloc[-1]}", "value": round(float(dev["months_of_supply"].iloc[-1]), 1),
+         "note": f"{dev['month'].iloc[0]}: {round(float(dev['months_of_supply'].iloc[0]), 1)}"},
+        {"label": "Volume − price change, 2023", "value": last(s_, "divergence_pts", 2023), "unit": " pts",
+         "note": "stamp-duty increase of April 2023"},
+        {"label": "Rent-to-income, 2025", "value": round(float(burden.loc[2025, "Singapore private"]), 1), "unit": "%",
+         "note": "home rent / planning-area median household income"}]}
+    for city, obj in out.items():
+        _write(f"{city}_liquidity.json", obj)
 
 
 if __name__ == "__main__":

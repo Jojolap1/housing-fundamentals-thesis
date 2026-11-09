@@ -15,7 +15,8 @@ Definitions (also in docs/methodology.md):
   by the IRIS median annual disposable income per consumption unit (INSEE Filosofi 2021)
   (`pti_uc`), and by that income × 1.5 UC for a reference couple (`pti_hh`).
   Singapore = 4-room HDB resale price / (12 × planning-area median monthly household income
-  from work, Census 2020, interpolated from income bands).
+  from work, Census 2020, interpolated from income bands, scaled each year by the national
+  median income index, see singapore_income_index).
 Every group with n < MIN_N_PUBLISH is flagged `publish = False`; site exports drop those.
 """
 from __future__ import annotations
@@ -97,6 +98,25 @@ def paris_transactions() -> pd.DataFrame:
     return t
 
 
+def singapore_income_index() -> pd.Series:
+    """Ratio of the national median household income from work (employed resident households,
+    incl. employer CPF) in each year to its 2020 value. Planning-area incomes from the 2020
+    Census are scaled by it, so price- and rent-to-income ratios do not freeze incomes at
+    2020. Years after the last published one use the last value (flagged in the docs)."""
+    n = pd.read_csv(RAW / "singapore" / "hh_income_work_national_2000_2025.csv")
+    s = n.set_index(n["Dollar"].astype(int))["ResidentEmployedHouseholds_Median1"].astype(float)
+    idx = s / s.loc[2020]
+    for y in range(int(idx.index.max()) + 1, 2031):
+        idx.loc[y] = idx.loc[int(s.index.max())]
+    return idx.rename("income_index")
+
+
+def _scale_income(t: pd.DataFrame) -> pd.DataFrame:
+    t["income_index"] = t["year"].map(singapore_income_index())
+    t["median_hh_income_work_month"] = t["median_hh_income_work_month"] * t["income_index"]
+    return t
+
+
 def singapore_transactions() -> pd.DataFrame:
     t = pd.read_parquet(INTERIM / "features_singapore.parquet")
     r = pd.read_parquet(INTERIM / "features_singapore_rent.parquet")
@@ -119,7 +139,7 @@ def singapore_transactions() -> pd.DataFrame:
     t["price_to_rent"] = 1 / t["gross_yield"]
     t["rent_m2"] = t["rent_month"] / t["floor_area_m2"]  # secondary; area is the sold flat's
     inc = singapore_income().rename(columns={"planning_area": "district_l1"})
-    t = t.merge(inc, on="district_l1", how="left")
+    t = _scale_income(t.merge(inc, on="district_l1", how="left"))
     t["pti_hh"] = np.where(t["flat_type"].eq(PTI_REF["Singapore"]["flat_type"]),
                            t["price_local"] / (12 * t["median_hh_income_work_month"]), np.nan)
     return t
@@ -146,7 +166,7 @@ def singapore_private_transactions() -> pd.DataFrame:
     t["gross_yield"] = 12 * t["rent_month"] / t["price_local"]
     t["price_to_rent"] = 1 / t["gross_yield"]
     inc = singapore_income().rename(columns={"planning_area": "district_l1"})
-    t = t.merge(inc, on="district_l1", how="left")
+    t = _scale_income(t.merge(inc, on="district_l1", how="left"))
     t["pti_hh"] = t["price_local"] / (12 * t["median_hh_income_work_month"])
     return t
 

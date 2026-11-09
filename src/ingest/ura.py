@@ -89,3 +89,31 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def developer_sales(months: int = 60) -> None:
+    """Monthly developer sales by project (launched, sold to date, units, sold in month).
+    One request per month, spaced by one second."""
+    import time
+    from datetime import date
+
+    h = _key_header() | {"Token": token()}
+    out = OUT / "developer_sales"
+    out.mkdir(parents=True, exist_ok=True)
+    y, m = date.today().year, date.today().month
+    for _ in range(months):
+        m -= 1
+        if m == 0:
+            y, m = y - 1, 12
+        rp = f"{m:02d}{y % 100:02d}"
+        f = out / f"dev_sales_{y}{m:02d}.json"
+        if f.exists():
+            continue
+        url = f"{BASE}/invokeUraDS/v1?service=PMI_Resi_Developer_Sales&refPeriod={rp}"
+        d = _get(url, h)
+        if d.get("Status") != "Success":
+            print("developer sales", rp, d.get("Message"))
+            continue
+        f.write_text(json.dumps(d["Result"]))
+        record(f, url, f"{len(d['Result'])} projects")
+        time.sleep(1)
