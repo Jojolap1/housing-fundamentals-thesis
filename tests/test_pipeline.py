@@ -139,6 +139,8 @@ def test_liquidity_outputs():
 
 
 def test_income_index_matches_census():
+    from src.config import RAW
     from src.ratios.levels import singapore_income_index
+    need(RAW / "singapore" / "hh_income_work_national_2000_2025.csv")
     idx = singapore_income_index()
     assert idx.loc[2020] == pytest.approx(1.0) and idx.loc[2025] > idx.loc[2020]
