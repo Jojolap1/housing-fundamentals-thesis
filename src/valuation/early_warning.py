@@ -4,7 +4,9 @@ Singapore against that record?
 1. Panel: OECD analytical house price indicators, all countries, quarterly: real house
    prices, price-to-income and price-to-rent (the dataflow already used for France).
 2. Busts: a fall of real house prices of at least 15% from a peak, before the peak is
-   regained (`drawdowns`).
+   regained (`drawdowns`). Two narrower definitions are evaluated next to it (DEFINITIONS):
+   "crash", where nominal prices fell by at least 10% as well, which leaves out the erosion
+   of real prices by inflation; and "major", a real fall of at least 25%.
 3. Signal: for each country and quarter, the z-score of the log ratio against its own past
    only (expanding window, at least 10 years). Using only data known at the time avoids
    judging the past with hindsight.
@@ -65,33 +67,70 @@ def expanding_z(x: pd.Series, min_obs: int = MIN_OBS) -> pd.Series:
     return (lx - e.mean()) / e.std(ddof=1)
 
 
-def label_quarters(n: int, busts: list[dict], horizon: int = HORIZON) -> np.ndarray:
+def label_quarters(n: int, busts: list[dict], horizon: int = HORIZON, excluded: list[dict] | None = None) -> np.ndarray:
     """1 = pre-bust (a peak within the next `horizon` quarters, peak included), 0 = other,
-    -1 = inside a bust (after the peak, up to the trough)."""
+    -1 = left out: inside a bust (after the peak, up to the trough), or around an `excluded`
+    bust (one that does not meet the definition under study: neither a hit nor a false alarm)."""
     lab = np.zeros(n, dtype=int)
     for b in busts:
         lab[max(b["i_peak"] - horizon, 0):b["i_peak"] + 1] = 1
     for b in busts:
         lab[b["i_peak"] + 1:b["i_trough"] + 1] = -1
+    for b in excluded or []:
+        lab[max(b["i_peak"] - horizon, 0):b["i_trough"] + 1] = -1
     return lab
 
 
-def evaluate(panel: dict[str, pd.DataFrame], ratio: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """`panel`: country -> DataFrame (quarters in order) with RHP and the ratio.
-    Returns (threshold table, bust table with the z-score at and before each peak)."""
+# Definitions of a bust. All start from a fall of real prices of at least 15%.
+#   all      every such fall (includes the erosion of real prices by inflation, common before 1990)
+#   crash    housing crises proper: nominal prices also fell by at least 10% between peak and trough
+#   major    real fall of at least 25%
+DEFINITIONS = {"all": "real fall of at least 15%",
+               "crash": "real fall of at least 15% and nominal fall of at least 10%",
+               "major": "real fall of at least 25%"}
+NOMINAL_DROP, MAJOR_DROP = 0.10, 0.25
+
+
+def qualifies(b: dict, definition: str) -> bool:
+    if definition == "crash":
+        return b.get("nominal_drop", np.nan) <= -NOMINAL_DROP
+    if definition == "major":
+        return b["drop"] <= -MAJOR_DROP
+    return True
+
+
+def country_busts(d: pd.DataFrame) -> list[dict]:
+    """Busts of one country on real prices, with the fall of nominal prices over the same
+    peak-to-trough window (largest fall from the nominal value at the real peak)."""
+    busts = drawdowns(d["RHP"], BUST_DROP)
+    for b in busts:
+        if "HPI" in d and d["HPI"].notna().any():
+            w = d["HPI"].iloc[b["i_peak"]:b["i_trough"] + 1].dropna()
+            b["nominal_drop"] = float(w.min() / w.iloc[0] - 1) if len(w) else np.nan
+        else:
+            b["nominal_drop"] = np.nan
+    return busts
+
+
+def evaluate(panel: dict[str, pd.DataFrame], ratio: str, definition: str = "all") -> tuple[pd.DataFrame, pd.DataFrame]:
+    """`panel`: country -> DataFrame (quarters in order) with RHP, the ratio and, for the
+    "crash" definition, HPI. Returns (threshold table, table of the busts that meet
+    `definition`, with the z-score at and before each peak)."""
     zs, labs, bust_rows = [], [], []
     for c, d in panel.items():
         d = d.dropna(subset=["RHP"])
         if ratio not in d or d[ratio].notna().sum() < MIN_OBS + 8:
             continue
         z = expanding_z(d[ratio]).to_numpy()
-        busts = drawdowns(d["RHP"], BUST_DROP)
-        lab = label_quarters(len(d), busts)
+        every = country_busts(d)
+        busts = [b for b in every if qualifies(b, definition)]
+        lab = label_quarters(len(d), busts, excluded=[b for b in every if not qualifies(b, definition)])
         zs.append(z)
         labs.append(lab)
         for b in busts:
             w = z[max(b["i_peak"] - HORIZON, 0):b["i_peak"] + 1]
             bust_rows.append({"country": c, "peak": b["peak"], "trough": b["trough"], "real_drop_pct": 100 * b["drop"],
+                              "nominal_drop_pct": 100 * b["nominal_drop"],
                               "quarters_to_trough": b["i_trough"] - b["i_peak"],
                               "z_at_peak": z[b["i_peak"]], "z_max_before_peak": np.nanmax(w) if np.isfinite(w).any() else np.nan})
     if not zs:
@@ -99,18 +138,21 @@ def evaluate(panel: dict[str, pd.DataFrame], ratio: str) -> tuple[pd.DataFrame, 
     z, lab = np.concatenate(zs), np.concatenate(labs)
     ok = np.isfinite(z) & (lab >= 0)
     busts = pd.DataFrame(bust_rows)
-    scored = busts.dropna(subset=["z_max_before_peak"])
+    scored = busts.dropna(subset=["z_max_before_peak"]) if len(busts) else busts
     rows = []
     for th in THRESHOLDS:
         flag = z > th
         pre, other = ok & (lab == 1), ok & (lab == 0)
-        hit, fa = flag[pre].mean(), flag[other].mean()
-        rows.append({"ratio": RATIOS.get(ratio, ratio), "threshold_z": th, "hit_rate": hit, "false_alarm_rate": fa,
-                     "hit_minus_false_alarm": hit - fa,
+        hit = flag[pre].mean() if pre.any() else np.nan
+        fa = flag[other].mean() if other.any() else np.nan
+        rows.append({"definition": definition, "ratio": RATIOS.get(ratio, ratio), "threshold_z": th, "hit_rate": hit,
+                     "false_alarm_rate": fa, "hit_minus_false_alarm": hit - fa,
                      "busts_flagged_share": float((scored["z_max_before_peak"] > th).mean()) if len(scored) else np.nan,
                      "precision": flag[pre].sum() / max(flag[ok].sum(), 1),
                      "n_pre_bust_quarters": int(pre.sum()), "n_other_quarters": int(other.sum()), "n_busts": len(scored)})
-    busts.insert(1, "ratio", RATIOS.get(ratio, ratio))
+    if len(busts):
+        busts.insert(1, "ratio", RATIOS.get(ratio, ratio))
+        busts.insert(0, "definition", definition)
     return pd.DataFrame(rows), busts
 
 
@@ -173,13 +215,14 @@ def _z_at(z: pd.Series, period: str) -> float:
 def run() -> None:
     panel = load_panel()
     tables, busts, best = [], [], {}
-    for ratio in RATIOS:
-        t, b = evaluate(panel, ratio)
-        tables.append(t)
-        busts.append(b)
-        best[RATIOS[ratio]] = best_threshold(t)
+    for definition in DEFINITIONS:
+        for ratio in RATIOS:
+            t, b = evaluate(panel, ratio, definition)
+            tables.append(t)
+            busts.append(b)
+            best[(definition, RATIOS[ratio])] = best_threshold(t)
     thresholds = pd.concat(tables, ignore_index=True)
-    thresholds["retained"] = thresholds.apply(lambda r: r["threshold_z"] == best[r["ratio"]], axis=1)
+    thresholds["retained"] = thresholds.apply(lambda r: r["threshold_z"] == best[(r["definition"], r["ratio"])], axis=1)
     thresholds.to_csv(PROCESSED / "early_warning_thresholds.csv", index=False)
     pd.concat(busts, ignore_index=True).to_csv(PROCESSED / "early_warning_busts.csv", index=False)
 
@@ -191,10 +234,11 @@ def run() -> None:
             zz = z.dropna()
             if zz.empty:
                 continue
-            th = best[k]
+            th = best[("all", k)]
             above = zz[zz > th]
             today.append({"city": city, "ratio": k, "last_period": zz.index[-1], "z_last": float(zz.iloc[-1]),
                           "threshold_z": th, "above_threshold": bool(zz.iloc[-1] > th),
+                          "threshold_z_crash": best[("crash", k)], "threshold_z_major": best[("major", k)],
                           "z_max": float(zz.max()), "period_of_z_max": zz.idxmax(),
                           "last_period_above": above.index[-1] if len(above) else None,
                           "share_of_periods_above": float((zz > th).mean()), "n": len(zz)})

@@ -330,3 +330,23 @@ def test_signal_evaluation_finds_an_informative_threshold():
     best = table.set_index("threshold_z").loc[best_threshold(table)]
     assert best["hit_minus_false_alarm"] > 0.3 and best["busts_flagged_share"] == 1.0
     assert table["hit_rate"].is_monotonic_decreasing and table["false_alarm_rate"].is_monotonic_decreasing
+
+
+def test_bust_definitions_separate_crashes_from_inflation_erosion():
+    from src.valuation.early_warning import country_busts, evaluate, label_quarters, qualifies
+    n = 120
+    idx = [f"{1970 + k // 4}Q{k % 4 + 1}" for k in range(n)]
+    cpi = np.r_[np.ones(40), np.exp(0.03 * np.arange(1, 21)), np.full(60, np.exp(0.6))]  # inflation burst, quarters 40-59
+    nominal = np.r_[np.linspace(100, 140, 40), np.full(20, 140.0), np.linspace(140, 300, 30),
+                    np.linspace(298, 225, 10), np.linspace(228, 330, 20)]            # a nominal crash, quarters 90-99
+    d = pd.DataFrame({"HPI": nominal, "RHP": nominal / cpi, "HPI_YDH": 100.0}, index=idx)
+    b = country_busts(d)
+    assert len(b) == 2
+    assert b[0]["nominal_drop"] == pytest.approx(0.0) and not qualifies(b[0], "crash")   # erosion by inflation
+    assert b[1]["nominal_drop"] < -0.2 and qualifies(b[1], "crash") and qualifies(b[1], "major")
+    lab = label_quarters(n, [b[1]], excluded=[b[0]])
+    assert (lab[b[0]["i_peak"] - 5:b[0]["i_trough"] + 1] == -1).all() and lab[b[1]["i_peak"]] == 1
+    d["HPI_YDH"] = 100 * np.exp(np.random.default_rng(0).normal(0, 0.02, n))
+    _, crash = evaluate({"X": d}, "HPI_YDH", "crash")
+    _, every = evaluate({"X": d}, "HPI_YDH", "all")
+    assert len(crash) == 1 and len(every) == 2 and crash["nominal_drop_pct"].iloc[0] < -20
