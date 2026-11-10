@@ -77,6 +77,71 @@
 </table>
 <p>No market reaches the three agreeing anchors that "evidence of deviation" requires, and none
 meets the conditions for "consistent with fundamentals".</p>
+<h2>Two cross-checks of sale prices, 2025</h2>
+<p>Outside the verdict rule (method: <code>docs/methodology.md</code> §13; figures: <code>cross_checks.csv</code>).</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Paris</th>
+<th>HDB resale</th>
+<th>Singapore private</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rent growth the price requires (risk premium 1% / 2% / 4%)</td>
+<td>3.0% / 4.0% / 6.0% a year</td>
+<td>−1.2% / −0.2% / 1.8%</td>
+<td>2.4% / 3.4% / 5.4%</td>
+</tr>
+<tr>
+<td>Growth over the last 20 years: rents; incomes</td>
+<td>1.4%; 2.4% (national)</td>
+<td>no rent index; 4.7%</td>
+<td>4.6%; 4.7%</td>
+</tr>
+<tr>
+<td>Check 1</td>
+<td><strong>implausible</strong></td>
+<td>plausible</td>
+<td>depends on the premium</td>
+</tr>
+<tr>
+<td>Price ÷ what the reference household can finance (rate −1 pt / base / +1 pt)</td>
+<td>1.39 / 1.56 / 1.73</td>
+<td>0.64 / 0.71 / 0.79</td>
+<td>0.86 / 0.97 / 1.09</td>
+</tr>
+<tr>
+<td>Check 2</td>
+<td><strong>beyond capacity</strong></td>
+<td>within capacity</td>
+<td>depends on the rate</td>
+</tr>
+<tr>
+<td>Read together</td>
+<td><strong>fails both checks</strong></td>
+<td><strong>passes both checks</strong></td>
+<td>mixed</td>
+</tr>
+</tbody>
+</table>
+<p>Paris fails check 2 in every year from 2021 and check 1 in every year from 2023; in 2021
+and 2022, with yields near zero, check 1 depended on the risk premium. HDB passes both in
+every year where rents exist (2021 onward).</p>
+<p><strong>Why this does not contradict the "inconclusive" verdict.</strong> The verdict's ratios ask
+whether a market is far from its own history, and Paris's history since 1992 is mostly a
+high-price period, so today looks ordinary against it. The cross-checks ask whether the
+level itself holds against outside yardsticks: the growth of rents and incomes, and the
+lending rules. Paris prices are ordinary by the standard of the last thirty years and
+demanding by those yardsticks. Both statements are true, and the thesis should state both.</p>
+<p><strong>What weakens the Paris result.</strong> Rents are regulated reference rents, below market rents,
+which raises the required growth. Incomes are the 2021 neighbourhood medians, not updated,
+after tax, for a median local couple, whereas actual buyers are richer and bring equity
+from a previous home; all of this raises the price-to-capacity ratio. The yardsticks for
+rent and income growth are national. The direction of the result survives a 10 to 15%
+correction of incomes (1.56 would become about 1.4); its size does not.</p>
 <h2>What can be said firmly</h2>
 <ol>
 <li><strong>Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.</strong>
@@ -94,6 +159,11 @@ meets the conditions for "consistent with fundamentals".</p>
    agree (user cost, explosive dynamics since 2021), but prices are 3% below their
    2000–2025 average relative to household income and the price-to-rent ratio is at its
    historical norm.</li>
+<li><strong>Paris and HDB sit at opposite ends on outside yardsticks.</strong> In 2025 a Paris price
+   needs rents to grow 3 to 6% a year for ever, against 1.4% (rents) and 2.4% (incomes)
+   over twenty years, and is about one and a half times what a median local couple can
+   finance under the lending rule. An HDB resale price needs no more than 1.8% rent growth
+   and is about 0.7 times the financing capacity of the median household.</li>
 <li><strong>The methods can be trusted at the level they claim.</strong> The quality-adjusted indices
    reproduce the official ones (Paris −10.4% against −11.3%; HDB +56% against +51%;
    private +27.3% against +26.3%), and the rebuild from a fresh download reproduces the
@@ -626,6 +696,68 @@ fundamentals), 0, −1 or "not run":</p>
 <p>The thresholds (80%, one standard deviation) are conventions. <code>verdict.csv</code> lists, for
 each market, the signals, the anchors that agree and those that could not be run, with the
 reason. Liquidity (§8) is reported next to the verdict; it is not an anchor.</p>
+<h2>13. Two cross-checks of sale prices</h2>
+<p>Reported next to the verdict and outside its rule (<code>src/valuation/cross_checks.py</code>,
+<code>data/processed/cross_checks.csv</code>). The verdict's ratios compare each market with its own
+past; these two checks compare it with outside yardsticks.</p>
+<p><strong>Check 1, rent side: the rent growth a price requires.</strong> The user-cost equation is solved
+for g instead of V*:</p>
+<pre><code>freehold:             g* = r_f + τ + δ + γ − R/P
+lease, T years left:  P/R = [1 − ((1+g)/(1+i))^T] / (i − g),   i = r_f + τ + δ + γ
+</code></pre>
+<p>g<em> is the nominal growth of rents at which the sale price equals the capitalised rent. It
+removes the need to choose g, the most circular input of §7. It is computed for each sale
+and the median is reported for γ = 1%, 2% and 4%. Yardstick: the growth of incomes over the
+last 20 years, since rents cannot outgrow incomes indefinitely (rent growth is shown too).
+</em>Plausible<em> if g</em> at γ = 4% is at or below income growth; <em>implausible</em> if g<em> at γ = 1% is
+above it; otherwise </em>depends on the premium*.</p>
+<p><strong>Check 2, income side: the price a household can finance.</strong> No rent enters:</p>
+<pre><code>P_max = share × monthly income × annuity(rate, years) / (1 − down payment)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Share of income</th>
+<th>Years</th>
+<th>Down payment</th>
+<th>Rate</th>
+<th>Income</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paris</td>
+<td>35% (HCSF decision D-HCSF-2021-7, binding since 2022)</td>
+<td>25</td>
+<td>20% (convention: the rule sets none)</td>
+<td>average rate on new home loans in France (ECB MIR statistics)</td>
+<td>couple (1.5 consumption units) at the median disposable income of the IRIS, Filosofi 2021; 60 m²</td>
+</tr>
+<tr>
+<td>HDB</td>
+<td>30% (mortgage servicing ratio)</td>
+<td>25</td>
+<td>25% (loan-to-value limit 75%)</td>
+<td>MAS medium-term rate floor: 3.5%, then 4% from 2023</td>
+<td>median household income from work of the planning area; 4-room flat</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>55% (total debt servicing ratio)</td>
+<td>30</td>
+<td>25%</td>
+<td>same floor</td>
+<td>median household income from work of the planning area</td>
+</tr>
+</tbody>
+</table>
+<p>The result is P / P_max, also with the rate one point lower and higher: <em>within capacity</em>
+(at or below 1 at the three rates), <em>beyond capacity</em> (above 1 at the three rates),
+otherwise <em>depends on the rate</em>. The lending parameters were read in parliamentary answers
+and press explanations of the rules, not yet in the regulators' own texts.</p>
+<p>The two checks share the interest rate, so they are not fully independent, but they rest on
+different data: rents on one side, incomes and credit rules on the other.</p>
 <p>The price-to-income and price-to-rent ratios follow common practice in institutional
 monitoring: the OECD publishes both ratios by country and reads them against their long-term
 average, and the UBS Global Real Estate Bubble Index combines price-to-income and
@@ -801,6 +933,27 @@ standard errors.</p><h1>Limitations</h1>
   private market they differ slightly: URA serves a rolling five-year window, so the oldest
   weeks have dropped out and recent sales have been added (100,890 sales kept against
   101,104).</li>
+</ul>
+<h2>Two cross-checks (added 2026-11-10)</h2>
+<ul>
+<li><strong>They share the interest rate.</strong> When rates rise, both checks deteriorate together, so
+  two failures are less than two independent pieces of evidence.</li>
+<li><strong>Check 1 inherits the rent data.</strong> Paris reference rents are regulated and below market
+  rents, which raises the required growth; HDB and private rents are medians matched by
+  location and type, not the rent of the sold home. Rents are gross: vacancy and charges
+  are not deducted, which lowers the required growth.</li>
+<li><strong>Check 1's yardstick is national and backward-looking</strong>: twenty years of national rent
+  and income growth, not a forecast and not the city's own.</li>
+<li><strong>Check 2 describes a median local household, not buyers.</strong> Paris: neighbourhood median
+  disposable income of 2021 (after tax, not updated) for a couple; the lending rule applies
+  to income before tax, and buyers are richer than residents and often bring equity.
+  Singapore: income from work includes employer CPF contributions, which overstates the
+  income lenders count; CPF savings and housing grants, which finance much of an HDB
+  purchase, are ignored, which understates capacity.</li>
+<li><strong>The down payment for Paris (20%) is a convention</strong>; the rule sets none. At 10% the
+  price-to-capacity ratio rises by an eighth.</li>
+<li><strong>Lending parameters</strong> were read in secondary sources and remain to be checked in the
+  HCSF and MAS texts.</li>
 </ul></div></main>
 <footer><div class="wrap">
 Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),
