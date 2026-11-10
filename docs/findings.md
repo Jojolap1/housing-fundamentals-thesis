@@ -49,6 +49,82 @@ from a previous home; all of this raises the price-to-capacity ratio. The yardst
 rent and income growth are national. The direction of the result survives a 10 to 15%
 correction of incomes (1.56 would become about 1.4); its size does not.
 
+## What past housing busts say
+
+Method: `docs/methodology.md` §14; figures: `early_warning_*.csv`, `city_drawdowns.csv`.
+Panel: OECD indicators for 39 countries, quarterly. A bust is a fall of real house prices of
+at least 15% from a peak. Each ratio is measured as a z-score against the country's own past
+only.
+
+**Before a bust, the ratios were about two standard deviations above their past.** At the
+peak, the median z-score was 2.0 for price-to-income (27 busts with enough history) and 2.1
+for price-to-rent (31 busts); the median real fall that followed was 30%.
+
+| Bust (peak) | Real fall | Price-to-income z-score at the peak |
+|---|---|---|
+| Ireland 2007 | −52% | 2.6 |
+| Spain 2007 | −42% | 2.6 |
+| Denmark 2007 | −28% | 2.8 |
+| United States 2006 | −28% | 1.5 |
+| Netherlands 2007 | −26% | 1.7 |
+| United Kingdom 2007 | −20% | 1.9 |
+| Japan 1991 | −45% | 0.9 |
+| France 1991 | −17% | 0.9 |
+
+Japan 1991 and France 1991 show the limit: both busts came with a ratio less than one
+standard deviation above its past.
+
+**Calibrated thresholds.** The threshold that best separates pre-bust quarters (the three
+years before a peak) from other quarters:
+
+| Ratio | Threshold (z-score) | Pre-bust quarters flagged | Other quarters flagged | Busts flagged before their peak | Flagged quarters that were pre-bust |
+|---|---|---|---|---|---|
+| Price-to-income | 1.5 | 60% | 21% | 74% | 25% |
+| Price-to-rent | 1.75 | 60% | 23% | 77% | 25% |
+
+Three flagged quarters out of four were not followed by a bust within three years: a high
+ratio is a necessary-looking condition far more than a sufficient one. The verdict rule
+uses one standard deviation, chosen before this calibration; at that level about 35%
+(price-to-income) to 51% (price-to-rent) of ordinary quarters are flagged, so the calibrated
+thresholds are stricter. The rule has not been changed; no signal would change if it were,
+since every current ratio is below one standard deviation.
+
+**Where Paris and Singapore stand** (same z-score, against each market's own past):
+
+| Market | Ratio | Latest z-score | Threshold | Highest on record | Last time above the threshold |
+|---|---|---|---|---|---|
+| Paris | price-to-income | 0.4 | 1.5 | 2.1 (2011 Q3) | 2020 Q3 |
+| Paris | price-to-rent | 0.8 | 1.75 | 2.1 (2005 Q3) | 2012 Q3 |
+| HDB | price-to-income | 0.5 | 1.5 | 1.9 (2010) | 2011 |
+| Private | price-to-income | −0.3 | 1.5 | 1.0 (2010) | never (2010–2025) |
+| Private | price-to-rent | 0.3 | 1.75 | 2.1 (2018 Q2) | 2021 Q4 |
+
+None is above its threshold today. Paris was above the price-to-income threshold in 40% of
+the quarters since 2002 and at its 2020 Q3 peak (z = 1.6), before the fall of 12% that
+followed: the signal was on.
+
+**How the three markets behaved in their own downturns** (official indices, nominal):
+
+| Market | Peak → trough | Fall | Quarters to the trough | Peak regained |
+|---|---|---|---|---|
+| Paris | 1992 Q1* → 1998 Q1 | −29% | 24 | 2001 Q3 |
+| Paris | 2020 Q3 → 2024 Q2 | −12% | 15 | not yet |
+| HDB | 1996 Q4 → 2002 Q1 | −30% | 21 | 2008 Q3 |
+| HDB | 2013 Q2 → 2019 Q2 | −12% | 24 | 2021 Q3 |
+| Private | 1981 Q2 → 1986 Q2 | −47% | 20 | 1991 Q2 |
+| Private | 1996 Q2 → 1998 Q4 | −42% | 10 | 2007 Q4 |
+| Private | 2008 Q2 → 2009 Q2 | −26% | 4 | 2010 Q2 |
+| Private | 2013 Q3 → 2017 Q2 | −10% | 15 | 2019 Q3 |
+
+*The Paris series starts in 1992 Q1, after the actual peak, so the first fall is understated.
+
+Two patterns stand out. Falls are slow: four to six years to the trough in six cases out
+of eight, and around ten years to regain the peak after the large ones. And Singapore's
+private market has fallen much harder and faster than Paris (−42% in ten quarters from
+1996, −26% in four quarters from 2008), while Paris adjusts through long, shallow declines.
+Ratio z-scores exist for only three of these peaks (the income and rent series are too
+short before 2010), so this record cannot test the thresholds on Singapore.
+
 ## What can be said firmly
 
 1. **Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.**

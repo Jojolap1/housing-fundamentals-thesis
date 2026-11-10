@@ -335,6 +335,26 @@ and press explanations of the rules, not yet in the regulators' own texts.
 The two checks share the interest rate, so they are not fully independent, but they rest on
 different data: rents on one side, incomes and credit rules on the other.
 
+## 14. Calibrating the ratios on past busts
+
+`src/valuation/early_warning.py`. The one-standard-deviation convention of §12 is arbitrary;
+this step measures what the ratios looked like before past busts.
+
+- **Panel:** OECD analytical house price indicators, all countries, quarterly (real house
+  prices, price-to-income, price-to-rent).
+- **Bust:** a fall of real house prices of at least 15% from a peak, before the peak is regained.
+- **Signal:** z-score of the log ratio against the country's own past only (expanding
+  window, at least ten years), so that a quarter is never judged with later data.
+- **Evaluation:** a quarter is pre-bust if a bust peak falls within the next 12 quarters;
+  quarters inside a bust are left out. For each threshold: share of pre-bust quarters
+  flagged, share of other quarters flagged, share of busts flagged before their peak, share
+  of flagged quarters that were pre-bust. The retained threshold maximises the first minus
+  the second.
+- **Application:** the same z-score for Paris and Singapore, and the list of every fall of
+  at least 10% of the three official indices with the ratios at the peak.
+
+The calibrated thresholds are reported next to the verdict; the verdict rule is unchanged.
+
 The price-to-income and price-to-rent ratios follow common practice in institutional
 monitoring: the OECD publishes both ratios by country and reads them against their long-term
 average, and the UBS Global Real Estate Bubble Index combines price-to-income and

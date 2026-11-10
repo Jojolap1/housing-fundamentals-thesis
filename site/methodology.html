@@ -142,6 +142,240 @@ after tax, for a median local couple, whereas actual buyers are richer and bring
 from a previous home; all of this raises the price-to-capacity ratio. The yardsticks for
 rent and income growth are national. The direction of the result survives a 10 to 15%
 correction of incomes (1.56 would become about 1.4); its size does not.</p>
+<h2>What past housing busts say</h2>
+<p>Method: <code>docs/methodology.md</code> §14; figures: <code>early_warning_*.csv</code>, <code>city_drawdowns.csv</code>.
+Panel: OECD indicators for 39 countries, quarterly. A bust is a fall of real house prices of
+at least 15% from a peak. Each ratio is measured as a z-score against the country's own past
+only.</p>
+<p><strong>Before a bust, the ratios were about two standard deviations above their past.</strong> At the
+peak, the median z-score was 2.0 for price-to-income (27 busts with enough history) and 2.1
+for price-to-rent (31 busts); the median real fall that followed was 30%.</p>
+<table>
+<thead>
+<tr>
+<th>Bust (peak)</th>
+<th>Real fall</th>
+<th>Price-to-income z-score at the peak</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ireland 2007</td>
+<td>−52%</td>
+<td>2.6</td>
+</tr>
+<tr>
+<td>Spain 2007</td>
+<td>−42%</td>
+<td>2.6</td>
+</tr>
+<tr>
+<td>Denmark 2007</td>
+<td>−28%</td>
+<td>2.8</td>
+</tr>
+<tr>
+<td>United States 2006</td>
+<td>−28%</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>Netherlands 2007</td>
+<td>−26%</td>
+<td>1.7</td>
+</tr>
+<tr>
+<td>United Kingdom 2007</td>
+<td>−20%</td>
+<td>1.9</td>
+</tr>
+<tr>
+<td>Japan 1991</td>
+<td>−45%</td>
+<td>0.9</td>
+</tr>
+<tr>
+<td>France 1991</td>
+<td>−17%</td>
+<td>0.9</td>
+</tr>
+</tbody>
+</table>
+<p>Japan 1991 and France 1991 show the limit: both busts came with a ratio less than one
+standard deviation above its past.</p>
+<p><strong>Calibrated thresholds.</strong> The threshold that best separates pre-bust quarters (the three
+years before a peak) from other quarters:</p>
+<table>
+<thead>
+<tr>
+<th>Ratio</th>
+<th>Threshold (z-score)</th>
+<th>Pre-bust quarters flagged</th>
+<th>Other quarters flagged</th>
+<th>Busts flagged before their peak</th>
+<th>Flagged quarters that were pre-bust</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Price-to-income</td>
+<td>1.5</td>
+<td>60%</td>
+<td>21%</td>
+<td>74%</td>
+<td>25%</td>
+</tr>
+<tr>
+<td>Price-to-rent</td>
+<td>1.75</td>
+<td>60%</td>
+<td>23%</td>
+<td>77%</td>
+<td>25%</td>
+</tr>
+</tbody>
+</table>
+<p>Three flagged quarters out of four were not followed by a bust within three years: a high
+ratio is a necessary-looking condition far more than a sufficient one. The verdict rule
+uses one standard deviation, chosen before this calibration; at that level about 35%
+(price-to-income) to 51% (price-to-rent) of ordinary quarters are flagged, so the calibrated
+thresholds are stricter. The rule has not been changed; no signal would change if it were,
+since every current ratio is below one standard deviation.</p>
+<p><strong>Where Paris and Singapore stand</strong> (same z-score, against each market's own past):</p>
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Ratio</th>
+<th>Latest z-score</th>
+<th>Threshold</th>
+<th>Highest on record</th>
+<th>Last time above the threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paris</td>
+<td>price-to-income</td>
+<td>0.4</td>
+<td>1.5</td>
+<td>2.1 (2011 Q3)</td>
+<td>2020 Q3</td>
+</tr>
+<tr>
+<td>Paris</td>
+<td>price-to-rent</td>
+<td>0.8</td>
+<td>1.75</td>
+<td>2.1 (2005 Q3)</td>
+<td>2012 Q3</td>
+</tr>
+<tr>
+<td>HDB</td>
+<td>price-to-income</td>
+<td>0.5</td>
+<td>1.5</td>
+<td>1.9 (2010)</td>
+<td>2011</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>price-to-income</td>
+<td>−0.3</td>
+<td>1.5</td>
+<td>1.0 (2010)</td>
+<td>never (2010–2025)</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>price-to-rent</td>
+<td>0.3</td>
+<td>1.75</td>
+<td>2.1 (2018 Q2)</td>
+<td>2021 Q4</td>
+</tr>
+</tbody>
+</table>
+<p>None is above its threshold today. Paris was above the price-to-income threshold in 40% of
+the quarters since 2002 and at its 2020 Q3 peak (z = 1.6), before the fall of 12% that
+followed: the signal was on.</p>
+<p><strong>How the three markets behaved in their own downturns</strong> (official indices, nominal):</p>
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Peak → trough</th>
+<th>Fall</th>
+<th>Quarters to the trough</th>
+<th>Peak regained</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paris</td>
+<td>1992 Q1* → 1998 Q1</td>
+<td>−29%</td>
+<td>24</td>
+<td>2001 Q3</td>
+</tr>
+<tr>
+<td>Paris</td>
+<td>2020 Q3 → 2024 Q2</td>
+<td>−12%</td>
+<td>15</td>
+<td>not yet</td>
+</tr>
+<tr>
+<td>HDB</td>
+<td>1996 Q4 → 2002 Q1</td>
+<td>−30%</td>
+<td>21</td>
+<td>2008 Q3</td>
+</tr>
+<tr>
+<td>HDB</td>
+<td>2013 Q2 → 2019 Q2</td>
+<td>−12%</td>
+<td>24</td>
+<td>2021 Q3</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>1981 Q2 → 1986 Q2</td>
+<td>−47%</td>
+<td>20</td>
+<td>1991 Q2</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>1996 Q2 → 1998 Q4</td>
+<td>−42%</td>
+<td>10</td>
+<td>2007 Q4</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>2008 Q2 → 2009 Q2</td>
+<td>−26%</td>
+<td>4</td>
+<td>2010 Q2</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>2013 Q3 → 2017 Q2</td>
+<td>−10%</td>
+<td>15</td>
+<td>2019 Q3</td>
+</tr>
+</tbody>
+</table>
+<p>*The Paris series starts in 1992 Q1, after the actual peak, so the first fall is understated.</p>
+<p>Two patterns stand out. Falls are slow: four to six years to the trough in six cases out
+of eight, and around ten years to regain the peak after the large ones. And Singapore's
+private market has fallen much harder and faster than Paris (−42% in ten quarters from
+1996, −26% in four quarters from 2008), while Paris adjusts through long, shallow declines.
+Ratio z-scores exist for only three of these peaks (the income and rent series are too
+short before 2010), so this record cannot test the thresholds on Singapore.</p>
 <h2>What can be said firmly</h2>
 <ol>
 <li><strong>Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.</strong>
@@ -758,6 +992,24 @@ otherwise <em>depends on the rate</em>. The lending parameters were read in parl
 and press explanations of the rules, not yet in the regulators' own texts.</p>
 <p>The two checks share the interest rate, so they are not fully independent, but they rest on
 different data: rents on one side, incomes and credit rules on the other.</p>
+<h2>14. Calibrating the ratios on past busts</h2>
+<p><code>src/valuation/early_warning.py</code>. The one-standard-deviation convention of §12 is arbitrary;
+this step measures what the ratios looked like before past busts.</p>
+<ul>
+<li><strong>Panel:</strong> OECD analytical house price indicators, all countries, quarterly (real house
+  prices, price-to-income, price-to-rent).</li>
+<li><strong>Bust:</strong> a fall of real house prices of at least 15% from a peak, before the peak is regained.</li>
+<li><strong>Signal:</strong> z-score of the log ratio against the country's own past only (expanding
+  window, at least ten years), so that a quarter is never judged with later data.</li>
+<li><strong>Evaluation:</strong> a quarter is pre-bust if a bust peak falls within the next 12 quarters;
+  quarters inside a bust are left out. For each threshold: share of pre-bust quarters
+  flagged, share of other quarters flagged, share of busts flagged before their peak, share
+  of flagged quarters that were pre-bust. The retained threshold maximises the first minus
+  the second.</li>
+<li><strong>Application:</strong> the same z-score for Paris and Singapore, and the list of every fall of
+  at least 10% of the three official indices with the ratios at the peak.</li>
+</ul>
+<p>The calibrated thresholds are reported next to the verdict; the verdict rule is unchanged.</p>
 <p>The price-to-income and price-to-rent ratios follow common practice in institutional
 monitoring: the OECD publishes both ratios by country and reads them against their long-term
 average, and the UBS Global Real Estate Bubble Index combines price-to-income and
@@ -954,6 +1206,21 @@ standard errors.</p><h1>Limitations</h1>
   price-to-capacity ratio rises by an eighth.</li>
 <li><strong>Lending parameters</strong> were read in secondary sources and remain to be checked in the
   HCSF and MAS texts.</li>
+</ul>
+<h2>Calibration on past busts (added 2026-11-11)</h2>
+<ul>
+<li><strong>Few events:</strong> 27 to 31 busts with enough history, so the thresholds are imprecise; they
+  were chosen and evaluated on the same sample (no out-of-sample test).</li>
+<li><strong>Countries, not cities:</strong> the calibration is national; Paris and Singapore are cities,
+  and Singapore is not in the OECD panel.</li>
+<li><strong>A z-score measures how unusual a ratio is against its own past, not its right level.</strong>
+  A market that has been dear for twenty years looks ordinary (Paris), and a bust can come
+  with a ratio that was not unusual (Japan 1991, France 1991).</li>
+<li><strong>Ratios only.</strong> Credit growth, construction and lending standards, which the literature
+  on housing busts gives at least as much weight, are not in the data.</li>
+<li><strong>The thresholds depend on the definitions</strong> (15% real fall, 12-quarter horizon, ten years
+  of history); these were set once and not tuned.</li>
+<li><strong>City downturns are in nominal terms</strong>, and the Paris series starts after the 1991 peak.</li>
 </ul></div></main>
 <footer><div class="wrap">
 Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),

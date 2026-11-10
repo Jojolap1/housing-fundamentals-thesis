@@ -162,3 +162,17 @@ These are stated plainly because they bound what the results can say.
   price-to-capacity ratio rises by an eighth.
 - **Lending parameters** were read in secondary sources and remain to be checked in the
   HCSF and MAS texts.
+
+## Calibration on past busts (added 2026-11-11)
+- **Few events:** 27 to 31 busts with enough history, so the thresholds are imprecise; they
+  were chosen and evaluated on the same sample (no out-of-sample test).
+- **Countries, not cities:** the calibration is national; Paris and Singapore are cities,
+  and Singapore is not in the OECD panel.
+- **A z-score measures how unusual a ratio is against its own past, not its right level.**
+  A market that has been dear for twenty years looks ordinary (Paris), and a bust can come
+  with a ratio that was not unusual (Japan 1991, France 1991).
+- **Ratios only.** Credit growth, construction and lending standards, which the literature
+  on housing busts gives at least as much weight, are not in the data.
+- **The thresholds depend on the definitions** (15% real fall, 12-quarter horizon, ten years
+  of history); these were set once and not tuned.
+- **City downturns are in nominal terms**, and the Paris series starts after the 1991 peak.
