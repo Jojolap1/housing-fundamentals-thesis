@@ -501,7 +501,7 @@ fundamentals), 0, −1 or "not run":</p>
 <tr>
 <td>Price-to-rent</td>
 <td>yes</td>
-<td>the latest log ratio is more than one standard deviation above its historical mean</td>
+<td>the latest log ratio is more than one standard deviation above its historical mean (URA price and rental indices for private housing; Paris price index over the national rent index)</td>
 </tr>
 <tr>
 <td>Explosive root</td>
@@ -511,7 +511,7 @@ fundamentals), 0, −1 or "not run":</p>
 <tr>
 <td>Affordability</td>
 <td>no</td>
-<td>price-to-income more than one standard deviation above its history (not run without a history)</td>
+<td>the latest log price-to-income ratio is more than one standard deviation above its historical mean (official price index over national median household income from work for Singapore, annual from 2000; over national disposable income per head for Paris, quarterly from 1992)</td>
 </tr>
 </tbody>
 </table>
@@ -523,6 +523,11 @@ fundamentals), 0, −1 or "not run":</p>
 <p>The thresholds (80%, one standard deviation) are conventions. <code>verdict.csv</code> lists, for
 each market, the signals, the anchors that agree and those that could not be run, with the
 reason. Liquidity (§8) is reported next to the verdict; it is not an anchor.</p>
+<p>The price-to-income and price-to-rent ratios follow common practice in institutional
+monitoring: the OECD publishes both ratios by country and reads them against their long-term
+average, and the UBS Global Real Estate Bubble Index combines price-to-income and
+price-to-rent with credit, construction and city-to-country price indicators. Only the two
+valuation ratios are reproduced here; credit and construction indicators are not.</p>
 <h2>References</h2>
 <p>Checked on 2026-11-10 (authors, year, journal, volume and pages; DOI where given).</p>
 <ul>
@@ -637,12 +642,17 @@ standard errors.</p><h1>Limitations</h1>
 <ul>
 <li><strong>Coverage.</strong> Built for Paris, Singapore HDB and Singapore private from a fresh download
   of the sources on 2026-11-10 (see <code>data/processed/build_report.txt</code>).</li>
-<li><strong>Verdicts are inconclusive in all three markets.</strong> Paris: user-cost gap positive in 86%
-  of the grid, no explosive episode at the end of the sample. HDB: gap positive in 19% of
-  the grid, but an explosive episode running since 2021. Private: gap positive in 87% of
-  the grid and an explosive episode since 2021, price-to-rent ratio within one standard
-  deviation of its history. No market reaches three agreeing anchors; affordability has no
-  history to be judged against, and Paris has no long rent series.</li>
+<li><strong>Verdicts stay inconclusive in all three markets, with every anchor now run</strong> (except
+  price-to-rent for HDB). The anchors disagree, which is a result and not a gap: see
+  <code>docs/findings.md</code>. The rule was not changed after seeing the results.</li>
+<li><strong>Paris ratios use national denominators.</strong> No city-level rent or income history is open,
+  so the Paris price index is set against the national rent index and national disposable
+  income per head (OECD). Paris rents and incomes have not moved exactly like the national
+  ones, so the level of these ratios is indicative; their history starts in 1992, inside a
+  period of high prices, which raises the mean they are compared with.</li>
+<li><strong>Singapore price-to-income is annual and national</strong> (26 observations, 2000 to 2025):
+  median household income from work of resident employed households, not the income of
+  buyers of each segment.</li>
 <li><strong>Agreement with official indices.</strong> Paris, 2021 Q3 to 2026 Q2: hedonic −10.4%,
   stratified −11.0%, Notaires-INSEE −11.3%; correlation of quarterly changes 0.94 to 0.95.
   HDB, 2017 Q1 to 2026 Q3: hedonic +56%, stratified +48%, HDB resale price index +51%;
