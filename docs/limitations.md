@@ -142,3 +142,23 @@ These are stated plainly because they bound what the results can say.
   private market they differ slightly: URA serves a rolling five-year window, so the oldest
   weeks have dropped out and recent sales have been added (100,890 sales kept against
   101,104).
+
+## Two cross-checks (added 2026-11-10)
+- **They share the interest rate.** When rates rise, both checks deteriorate together, so
+  two failures are less than two independent pieces of evidence.
+- **Check 1 inherits the rent data.** Paris reference rents are regulated and below market
+  rents, which raises the required growth; HDB and private rents are medians matched by
+  location and type, not the rent of the sold home. Rents are gross: vacancy and charges
+  are not deducted, which lowers the required growth.
+- **Check 1's yardstick is national and backward-looking**: twenty years of national rent
+  and income growth, not a forecast and not the city's own.
+- **Check 2 describes a median local household, not buyers.** Paris: neighbourhood median
+  disposable income of 2021 (after tax, not updated) for a couple; the lending rule applies
+  to income before tax, and buyers are richer than residents and often bring equity.
+  Singapore: income from work includes employer CPF contributions, which overstates the
+  income lenders count; CPF savings and housing grants, which finance much of an HDB
+  purchase, are ignored, which understates capacity.
+- **The down payment for Paris (20%) is a convention**; the rule sets none. At 10% the
+  price-to-capacity ratio rises by an eighth.
+- **Lending parameters** were read in secondary sources and remain to be checked in the
+  HCSF and MAS texts.

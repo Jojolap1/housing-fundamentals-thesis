@@ -298,6 +298,43 @@ The thresholds (80%, one standard deviation) are conventions. `verdict.csv` list
 each market, the signals, the anchors that agree and those that could not be run, with the
 reason. Liquidity (§8) is reported next to the verdict; it is not an anchor.
 
+## 13. Two cross-checks of sale prices
+
+Reported next to the verdict and outside its rule (`src/valuation/cross_checks.py`,
+`data/processed/cross_checks.csv`). The verdict's ratios compare each market with its own
+past; these two checks compare it with outside yardsticks.
+
+**Check 1, rent side: the rent growth a price requires.** The user-cost equation is solved
+for g instead of V*:
+
+    freehold:             g* = r_f + τ + δ + γ − R/P
+    lease, T years left:  P/R = [1 − ((1+g)/(1+i))^T] / (i − g),   i = r_f + τ + δ + γ
+
+g* is the nominal growth of rents at which the sale price equals the capitalised rent. It
+removes the need to choose g, the most circular input of §7. It is computed for each sale
+and the median is reported for γ = 1%, 2% and 4%. Yardstick: the growth of incomes over the
+last 20 years, since rents cannot outgrow incomes indefinitely (rent growth is shown too).
+*Plausible* if g* at γ = 4% is at or below income growth; *implausible* if g* at γ = 1% is
+above it; otherwise *depends on the premium*.
+
+**Check 2, income side: the price a household can finance.** No rent enters:
+
+    P_max = share × monthly income × annuity(rate, years) / (1 − down payment)
+
+| Market | Share of income | Years | Down payment | Rate | Income |
+|---|---|---|---|---|---|
+| Paris | 35% (HCSF decision D-HCSF-2021-7, binding since 2022) | 25 | 20% (convention: the rule sets none) | average rate on new home loans in France (ECB MIR statistics) | couple (1.5 consumption units) at the median disposable income of the IRIS, Filosofi 2021; 60 m² |
+| HDB | 30% (mortgage servicing ratio) | 25 | 25% (loan-to-value limit 75%) | MAS medium-term rate floor: 3.5%, then 4% from 2023 | median household income from work of the planning area; 4-room flat |
+| Private | 55% (total debt servicing ratio) | 30 | 25% | same floor | median household income from work of the planning area |
+
+The result is P / P_max, also with the rate one point lower and higher: *within capacity*
+(at or below 1 at the three rates), *beyond capacity* (above 1 at the three rates),
+otherwise *depends on the rate*. The lending parameters were read in parliamentary answers
+and press explanations of the rules, not yet in the regulators' own texts.
+
+The two checks share the interest rate, so they are not fully independent, but they rest on
+different data: rents on one side, incomes and credit rules on the other.
+
 The price-to-income and price-to-rent ratios follow common practice in institutional
 monitoring: the OECD publishes both ratios by country and reads them against their long-term
 average, and the UBS Global Real Estate Bubble Index combines price-to-income and

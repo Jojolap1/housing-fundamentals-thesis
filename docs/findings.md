@@ -18,6 +18,37 @@ All figures come from `data/processed/` (`verdict.csv`, `ratio_history.csv`,
 No market reaches the three agreeing anchors that "evidence of deviation" requires, and none
 meets the conditions for "consistent with fundamentals".
 
+## Two cross-checks of sale prices, 2025
+
+Outside the verdict rule (method: `docs/methodology.md` §13; figures: `cross_checks.csv`).
+
+| | Paris | HDB resale | Singapore private |
+|---|---|---|---|
+| Rent growth the price requires (risk premium 1% / 2% / 4%) | 3.0% / 4.0% / 6.0% a year | −1.2% / −0.2% / 1.8% | 2.4% / 3.4% / 5.4% |
+| Growth over the last 20 years: rents; incomes | 1.4%; 2.4% (national) | no rent index; 4.7% | 4.6%; 4.7% |
+| Check 1 | **implausible** | plausible | depends on the premium |
+| Price ÷ what the reference household can finance (rate −1 pt / base / +1 pt) | 1.39 / 1.56 / 1.73 | 0.64 / 0.71 / 0.79 | 0.86 / 0.97 / 1.09 |
+| Check 2 | **beyond capacity** | within capacity | depends on the rate |
+| Read together | **fails both checks** | **passes both checks** | mixed |
+
+Paris fails check 2 in every year from 2021 and check 1 in every year from 2023; in 2021
+and 2022, with yields near zero, check 1 depended on the risk premium. HDB passes both in
+every year where rents exist (2021 onward).
+
+**Why this does not contradict the "inconclusive" verdict.** The verdict's ratios ask
+whether a market is far from its own history, and Paris's history since 1992 is mostly a
+high-price period, so today looks ordinary against it. The cross-checks ask whether the
+level itself holds against outside yardsticks: the growth of rents and incomes, and the
+lending rules. Paris prices are ordinary by the standard of the last thirty years and
+demanding by those yardsticks. Both statements are true, and the thesis should state both.
+
+**What weakens the Paris result.** Rents are regulated reference rents, below market rents,
+which raises the required growth. Incomes are the 2021 neighbourhood medians, not updated,
+after tax, for a median local couple, whereas actual buyers are richer and bring equity
+from a previous home; all of this raises the price-to-capacity ratio. The yardsticks for
+rent and income growth are national. The direction of the result survives a 10 to 15%
+correction of incomes (1.56 would become about 1.4); its size does not.
+
 ## What can be said firmly
 
 1. **Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.**
@@ -35,11 +66,16 @@ meets the conditions for "consistent with fundamentals".
    agree (user cost, explosive dynamics since 2021), but prices are 3% below their
    2000–2025 average relative to household income and the price-to-rent ratio is at its
    historical norm.
-4. **The methods can be trusted at the level they claim.** The quality-adjusted indices
+4. **Paris and HDB sit at opposite ends on outside yardsticks.** In 2025 a Paris price
+   needs rents to grow 3 to 6% a year for ever, against 1.4% (rents) and 2.4% (incomes)
+   over twenty years, and is about one and a half times what a median local couple can
+   finance under the lending rule. An HDB resale price needs no more than 1.8% rent growth
+   and is about 0.7 times the financing capacity of the median household.
+5. **The methods can be trusted at the level they claim.** The quality-adjusted indices
    reproduce the official ones (Paris −10.4% against −11.3%; HDB +56% against +51%;
    private +27.3% against +26.3%), and the rebuild from a fresh download reproduces the
    published cell statistics.
-5. **The rent-capitalisation anchor alone would have given a confident and unstable
+6. **The rent-capitalisation anchor alone would have given a confident and unstable
    answer.** It says "overvalued" for Paris and Singapore private in 2025 and said
    "undervalued" for Paris in 2021, with the same model and the same rents. This is
    Difficulty 2 measured on the data, and it is the main reason the verdicts are

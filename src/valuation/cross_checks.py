@@ -121,8 +121,8 @@ def read_check2(lo: float, base: float, hi: float) -> str:
 
 
 READING = {
-    ("plausible", "within capacity"): "consistent on both sides",
-    ("implausible", "beyond capacity"): "too dear on both sides",
+    ("plausible", "within capacity"): "passes both checks",
+    ("implausible", "beyond capacity"): "fails both checks",
     ("implausible", "within capacity"): "financeable, but the price needs more rent growth than history shows",
     ("plausible", "beyond capacity"): "rents support the price, local incomes cannot finance it",
 }
@@ -131,7 +131,7 @@ READING = {
 def combine(c1: str, c2: str) -> str:
     if "not run" in (c1, c2):
         return "incomplete"
-    return READING.get((c1, c2), "mixed: one check depends on an assumption")
+    return READING.get((c1, c2), "mixed: at least one check depends on an assumption")
 
 
 # ---------------------------------------------------------------------- data

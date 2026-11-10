@@ -273,7 +273,7 @@ def test_borrowing_capacity_and_readings():
     assert read_check1(0.02, 0.05, 0.03) == "depends on the premium" and read_check1(np.nan, 0.05, 0.03) == "not run"
     assert read_check2(0.7, 0.8, 0.9) == "within capacity" and read_check2(1.1, 1.2, 1.3) == "beyond capacity"
     assert read_check2(0.9, 1.0, 1.1) == "depends on the rate"
-    assert combine("implausible", "beyond capacity") == "too dear on both sides"
+    assert combine("implausible", "beyond capacity") == "fails both checks"
     assert combine("plausible", "not run") == "incomplete" and combine("depends on the premium", "within capacity").startswith("mixed")
 
 
@@ -286,5 +286,5 @@ def test_cross_check_table_on_schema_like_data():
     out = city_table("paris", t, rf, bench, pd.Series({2024: 0.037, 2025: 0.032}), "ECB")
     r = out.set_index("year").loc[2025]
     assert r["g_star_gamma2"] == pytest.approx(0.033 + 0.0025 + 0.015 + 0.02 - 0.03)
-    assert r["check1"] == "implausible" and r["check2"] == "beyond capacity" and r["reading"] == "too dear on both sides"
+    assert r["check1"] == "implausible" and r["check2"] == "beyond capacity" and r["reading"] == "fails both checks"
     assert r["mortgage_rate"] == 0.032 and len(out) == 2

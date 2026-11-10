@@ -219,3 +219,68 @@ def home_section() -> str:
   changes sign with the interest rate (Paris: 34% below its user-cost value in 2021, 64% above in 2023, baseline
   assumptions). Details on each city page and on the <a href="methodology.html">method page</a>.</p>
 </div>"""
+
+
+RULE_TEXT = {
+    "paris": "35% of income, 25 years, 20% down payment (HCSF rule; the down payment is a convention), at the average "
+             "rate on new French home loans",
+    "singapore": "30% of income (mortgage servicing ratio), 25 years, 25% down payment, at the regulatory rate floor",
+    "singapore_private": "55% of income (total debt servicing ratio), 30 years, 25% down payment, at the regulatory rate floor",
+}
+INCOME_TEXT = {
+    "paris": "a couple at the median disposable income of the neighbourhood (INSEE Filosofi 2021, held at its 2021 level), 60 m²",
+    "singapore": "the median household income from work of the planning area, 4-room flat",
+    "singapore_private": "the median household income from work of the planning area",
+}
+
+
+def _pct(v, d=1):
+    return "–" if pd.isna(v) else f"{100 * v:.{d}f}%"
+
+
+def cross_section(city: str) -> str:
+    f = PROCESSED / "cross_checks.csv"
+    if not f.exists():
+        return ""
+    d = pd.read_csv(f)
+    d = d[d["city"] == city].sort_values("year")
+    if d.empty:
+        return ""
+    full = d.iloc[:-1] if len(d) > 1 else d  # the last year is still running
+    r = full.iloc[-1]
+    hist = [f"incomes {_pct(r['income_growth_20y'])} a year"]
+    if not pd.isna(r["rent_growth_20y"]):
+        hist.insert(0, f"rents {_pct(r['rent_growth_20y'])} a year")
+    if pd.isna(r["g_star_gamma2"]):
+        c1 = "Not run: no rent matched for this year."
+    else:
+        c1 = (f"Sale prices require rents to grow by <b>{_pct(r['g_star_gamma2'])} a year</b> "
+              f"({_pct(r['g_star_gamma1'])} to {_pct(r['g_star_gamma4'])} for a risk premium of 1% to 4%). "
+              f"Over the last 20 years: {' and '.join(hist)}.")
+    c2 = (f"The median sale price is <b>{r['price_over_capacity']:.2f} times</b> what the reference household can finance "
+          f"({r['price_over_capacity_rate_minus1']:.2f} to {r['price_over_capacity_rate_plus1']:.2f} with the rate one "
+          f"point lower or higher; rate used {_pct(r['mortgage_rate'])}).")
+    rows = "".join(
+        f"<tr><td>{int(x.year)}</td><td class='num'>{_pct(x.gross_yield_median)}</td><td class='num'>{_pct(x.g_star_gamma1)}</td>"
+        f"<td class='num'>{_pct(x.g_star_gamma2)}</td><td class='num'>{_pct(x.g_star_gamma4)}</td><td>{x.check1}</td>"
+        f"<td class='num'>{_pct(x.mortgage_rate)}</td><td class='num'>{_num(x.price_over_capacity, 2)}</td><td>{x.check2}</td></tr>"
+        for x in d.itertuples())
+    return f"""
+<h2>Two cross-checks of sale prices</h2>
+<div class="card">
+  <div class="kpis">
+    <div class="kpi"><div class="v">{r['check1'].capitalize()}</div><div class="k">Check 1, rent side, {int(r['year'])}:
+    is the rent growth the price requires plausible?</div><div class="n">{c1}</div></div>
+    <div class="kpi"><div class="v">{r['check2'].capitalize()}</div><div class="k">Check 2, income side, {int(r['year'])}:
+    can a local household finance the price?</div><div class="n">{c2}</div></div>
+  </div>
+  <p class="note">Check 1 solves the rent-capitalisation formula for the growth of rents instead of the value; incomes are
+  the ceiling, since rents cannot outgrow them for ever. Check 2 ignores rents: it applies the lending rules
+  ({RULE_TEXT[city]}) to {INCOME_TEXT[city]}. Read together for {int(r['year'])}: <b>{r['reading']}</b>. Both checks move with
+  interest rates, and check 2 describes a median local household, not the people who actually buy. They are reported next
+  to the verdict and are not part of its rule. Model-dependent hypotheses, not investment advice.</p>
+  <details><summary>Table view, by year</summary><div class="table-scroll"><table><thead><tr><th>Year</th>
+  <th class="num">Gross yield</th><th class="num">Required growth, premium 1%</th><th class="num">2%</th><th class="num">4%</th>
+  <th>Check 1</th><th class="num">Loan rate</th><th class="num">Price / capacity</th><th>Check 2</th></tr></thead>
+  <tbody>{rows}</tbody></table></div></details>
+</div>"""
