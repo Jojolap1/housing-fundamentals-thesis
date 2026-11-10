@@ -1,4 +1,4 @@
-build started 2026-11-10T12:36:46Z
+build started 2026-11-10T12:45:55Z
 Python 3.13.18
 OK    ingest_fx (0s)
 OK    ingest_rates (1s)
@@ -7,18 +7,18 @@ OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
 OK    ingest_official (0s)
 URA access key provided to the build: yes
-OK    ingest_ura (89s)
-OK    ingest_ura_geocode (118s)
-OK    ingest_ura_dev (118s)
-OK    clean_paris (5s)
-OK    clean_singapore (6s)
-OK    clean_private (6s)
-OK    features_paris (15s)
+OK    ingest_ura (80s)
+OK    ingest_ura_geocode (112s)
+OK    ingest_ura_dev (117s)
+OK    clean_paris (7s)
+OK    clean_singapore (7s)
+OK    clean_private (7s)
+OK    features_paris (19s)
 OK    features_singapore (2s)
-OK    features_private (2s)
-OK    levels (16s)
-OK    robust (53s)
-OK    indices (6s)
+OK    features_private (1s)
+OK    levels (19s)
+OK    robust (63s)
+OK    indices (8s)
 OK    verdict (5s)
 OK    tests (4s)
 --- probe: files of DVF+ open-data on data.gouv.fr
@@ -27,7 +27,7 @@ licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Données DVF+ open-data (csv + shp) | csv | None | https://cerema.app.box.com/v/dvfplus-opendata
   Données DVF+ open-data (dump PostgreSQL/PostGIS) | sql | None | https://cerema.app.box.com/v/dvfplus-opendata
 --- index metadata
-{ "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}{ "periods": [  "2021Q4",  "2026Q4" ], "n_sales": 100890, "hedonic_numeric": [  "log_area",  "storey_mid" ], "hedonic_categorical": [  "district_l1",  "tenure" ], "strata": [  "district_l1" ], "strata_used": 32, "strata_coverage": 0.9624, "repeat_pairs": 36016, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
+{ "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}{ "periods": [  "2021Q4",  "2026Q4" ], "n_sales": 100890, "hedonic_numeric": [  "log_area",  "storey_mid",  "freehold",  "lease_term" ], "hedonic_categorical": [  "district_l1",  "rooms_or_flat_type",  "sale_type",  "market_segment" ], "strata": [  "market_segment",  "sale_type" ], "strata_used": 8, "strata_coverage": 0.9976, "repeat_pairs": 36016, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
 
 --- official index series
 --- raw files
@@ -152,4 +152,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T12:44:13Z
+build finished 2026-11-10T12:53:29Z

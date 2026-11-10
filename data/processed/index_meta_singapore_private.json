@@ -6,17 +6,22 @@
  "n_sales": 100890,
  "hedonic_numeric": [
   "log_area",
-  "storey_mid"
+  "storey_mid",
+  "freehold",
+  "lease_term"
  ],
  "hedonic_categorical": [
   "district_l1",
-  "tenure"
+  "rooms_or_flat_type",
+  "sale_type",
+  "market_segment"
  ],
  "strata": [
-  "district_l1"
+  "market_segment",
+  "sale_type"
  ],
- "strata_used": 32,
- "strata_coverage": 0.9624,
+ "strata_used": 8,
+ "strata_coverage": 0.9976,
  "repeat_pairs": 36016,
  "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"
 }
