@@ -1,0 +1,22 @@
+{
+ "periods": [
+  "2021Q4",
+  "2026Q4"
+ ],
+ "n_sales": 100890,
+ "hedonic_numeric": [
+  "log_area",
+  "storey_mid"
+ ],
+ "hedonic_categorical": [
+  "district_l1",
+  "tenure"
+ ],
+ "strata": [
+  "district_l1"
+ ],
+ "strata_used": 32,
+ "strata_coverage": 0.9624,
+ "repeat_pairs": 36016,
+ "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"
+}

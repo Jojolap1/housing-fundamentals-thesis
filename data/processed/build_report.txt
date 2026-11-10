@@ -1,4 +1,4 @@
-build started 2026-11-10T09:58:36Z
+build started 2026-11-10T12:36:46Z
 Python 3.13.18
 OK    ingest_fx (0s)
 OK    ingest_rates (1s)
@@ -6,16 +6,20 @@ OK    ingest_paris (0s)
 OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
 OK    ingest_official (0s)
-URA access key provided to the build: no
-SKIP  ura (no URA_ACCESS_KEY secret): Singapore private market not rebuilt
-OK    clean_paris (6s)
-OK    clean_singapore (5s)
-OK    features_paris (17s)
+URA access key provided to the build: yes
+OK    ingest_ura (89s)
+OK    ingest_ura_geocode (118s)
+OK    ingest_ura_dev (118s)
+OK    clean_paris (5s)
+OK    clean_singapore (6s)
+OK    clean_private (6s)
+OK    features_paris (15s)
 OK    features_singapore (2s)
-OK    levels (13s)
-OK    robust (43s)
-OK    indices (5s)
-OK    verdict (4s)
+OK    features_private (2s)
+OK    levels (16s)
+OK    robust (53s)
+OK    indices (6s)
+OK    verdict (5s)
 OK    tests (4s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
@@ -23,7 +27,7 @@ licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Données DVF+ open-data (csv + shp) | csv | None | https://cerema.app.box.com/v/dvfplus-opendata
   Données DVF+ open-data (dump PostgreSQL/PostGIS) | sql | None | https://cerema.app.box.com/v/dvfplus-opendata
 --- index metadata
-{ "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
+{ "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}{ "periods": [  "2021Q4",  "2026Q4" ], "n_sales": 100890, "hedonic_numeric": [  "log_area",  "storey_mid" ], "hedonic_categorical": [  "district_l1",  "tenure" ], "strata": [  "district_l1" ], "strata_used": 32, "strata_coverage": 0.9624, "repeat_pairs": 36016, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
 
 --- official index series
 --- raw files
@@ -65,6 +69,48 @@ licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
 3095917 singapore/nparks_parks_nature_reserves.geojson
 1121524 singapore/onemap_blocks.csv
 168423 singapore/parks.geojson
+2 singapore/ura/developer_sales/dev_sales_202111.json
+2 singapore/ura/developer_sales/dev_sales_202112.json
+2 singapore/ura/developer_sales/dev_sales_202201.json
+2 singapore/ura/developer_sales/dev_sales_202202.json
+2 singapore/ura/developer_sales/dev_sales_202203.json
+2 singapore/ura/developer_sales/dev_sales_202204.json
+2 singapore/ura/developer_sales/dev_sales_202205.json
+2 singapore/ura/developer_sales/dev_sales_202206.json
+2 singapore/ura/developer_sales/dev_sales_202207.json
+2 singapore/ura/developer_sales/dev_sales_202208.json
+2 singapore/ura/developer_sales/dev_sales_202209.json
+2 singapore/ura/developer_sales/dev_sales_202210.json
+2 singapore/ura/developer_sales/dev_sales_202211.json
+2 singapore/ura/developer_sales/dev_sales_202212.json
+2 singapore/ura/developer_sales/dev_sales_202301.json
+2 singapore/ura/developer_sales/dev_sales_202302.json
+2 singapore/ura/developer_sales/dev_sales_202303.json
+2 singapore/ura/developer_sales/dev_sales_202304.json
+2 singapore/ura/developer_sales/dev_sales_202305.json
+2 singapore/ura/developer_sales/dev_sales_202306.json
+2 singapore/ura/developer_sales/dev_sales_202307.json
+2 singapore/ura/developer_sales/dev_sales_202308.json
+2 singapore/ura/developer_sales/dev_sales_202309.json
+49295 singapore/ura/developer_sales/dev_sales_202310.json
+48958 singapore/ura/developer_sales/dev_sales_202311.json
+48351 singapore/ura/developer_sales/dev_sales_202312.json
+47845 singapore/ura/developer_sales/dev_sales_202401.json
+48209 singapore/ura/developer_sales/dev_sales_202402.json
+44863 singapore/ura/developer_sales/dev_sales_202403.json
+43182 singapore/ura/developer_sales/dev_sales_202404.json
+41506 singapore/ura/developer_sales/dev_sales_202405.json
+40598 singapore/ura/developer_sales/dev_sales_202406.json
+40516 singapore/ura/developer_sales/dev_sales_202407.json
+41226 singapore/ura/developer_sales/dev_sales_202408.json
+42710 singapore/ura/developer_sales/dev_sales_202409.json
+42536 singapore/ura/developer_sales/dev_sales_202410.json
+43459 singapore/ura/developer_sales/dev_sales_202411.json
+44855 singapore/ura/developer_sales/dev_sales_202412.json
+45272 singapore/ura/developer_sales/dev_sales_202501.json
+45037 singapore/ura/developer_sales/dev_sales_202502.json
+44244 singapore/ura/developer_sales/dev_sales_202503.json
+43438 singapore/ura/developer_sales/dev_sales_202504.json
 --- official index headers
 data/raw/official/hdb_resale_price_index.csv
 quarter,index,_id
@@ -106,4 +152,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T10:00:17Z
+build finished 2026-11-10T12:44:13Z
