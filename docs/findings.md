@@ -96,7 +96,7 @@ since every current ratio is below one standard deviation.
 | Paris | price-to-income | 0.4 | 1.5 | 2.1 (2011 Q3) | 2020 Q3 |
 | Paris | price-to-rent | 0.8 | 1.75 | 2.1 (2005 Q3) | 2012 Q3 |
 | HDB | price-to-income | 0.5 | 1.5 | 1.9 (2010) | 2011 |
-| Private | price-to-income | −0.3 | 1.5 | 1.0 (2010) | never (2010–2025) |
+| Private | price-to-income | −0.3 | 1.5 | 1.0 (2010) | never (2009–2025) |
 | Private | price-to-rent | 0.3 | 1.75 | 2.1 (2018 Q2) | 2021 Q4 |
 
 None is above its threshold today. Paris was above the price-to-income threshold in 40% of
@@ -118,8 +118,8 @@ followed: the signal was on.
 
 *The Paris series starts in 1992 Q1, after the actual peak, so the first fall is understated.
 
-Two patterns stand out. Falls are slow: four to six years to the trough in six cases out
-of eight, and around ten years to regain the peak after the large ones. And Singapore's
+Two patterns stand out. Falls are slow: close to four years or more to the trough in six cases
+out of eight, and ten to twelve years to regain the peak after the four large ones. And Singapore's
 private market has fallen much harder and faster than Paris (−42% in ten quarters from
 1996, −26% in four quarters from 2008), while Paris adjusts through long, shallow declines.
 Ratio z-scores exist for only three of these peaks (the income and rent series are too
