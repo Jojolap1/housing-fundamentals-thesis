@@ -286,9 +286,9 @@ fundamentals), 0, −1 or "not run":
 | Anchor | Rent-based | +1 when |
 |---|---|---|
 | User cost | yes | the gap is positive in at least 80% of the defined sensitivity-grid cells of the latest full year (−1 when in at most 20%) |
-| Price-to-rent | yes | the latest log ratio is more than one standard deviation above its historical mean |
+| Price-to-rent | yes | the latest log ratio is more than one standard deviation above its historical mean (URA price and rental indices for private housing; Paris price index over the national rent index) |
 | Explosive root | no | GSADF rejects at 5% and a dated episode includes the latest quarter |
-| Affordability | no | price-to-income more than one standard deviation above its history (not run without a history) |
+| Affordability | no | the latest log price-to-income ratio is more than one standard deviation above its historical mean (official price index over national median household income from work for Singapore, annual from 2000; over national disposable income per head for Paris, quarterly from 1992) |
 
 - **Evidence of deviation:** at least three anchors at +1, one of them not rent-based.
 - **Consistent with fundamentals:** at least two anchors run, none at +1, user cost at −1.
@@ -297,6 +297,12 @@ fundamentals), 0, −1 or "not run":
 The thresholds (80%, one standard deviation) are conventions. `verdict.csv` lists, for
 each market, the signals, the anchors that agree and those that could not be run, with the
 reason. Liquidity (§8) is reported next to the verdict; it is not an anchor.
+
+The price-to-income and price-to-rent ratios follow common practice in institutional
+monitoring: the OECD publishes both ratios by country and reads them against their long-term
+average, and the UBS Global Real Estate Bubble Index combines price-to-income and
+price-to-rent with credit, construction and city-to-country price indicators. Only the two
+valuation ratios are reproduced here; credit and construction indicators are not.
 
 ## References
 

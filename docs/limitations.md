@@ -86,12 +86,17 @@ These are stated plainly because they bound what the results can say.
 ## Robust statistics, indices and tests (added 2026-11-10)
 - **Coverage.** Built for Paris, Singapore HDB and Singapore private from a fresh download
   of the sources on 2026-11-10 (see `data/processed/build_report.txt`).
-- **Verdicts are inconclusive in all three markets.** Paris: user-cost gap positive in 86%
-  of the grid, no explosive episode at the end of the sample. HDB: gap positive in 19% of
-  the grid, but an explosive episode running since 2021. Private: gap positive in 87% of
-  the grid and an explosive episode since 2021, price-to-rent ratio within one standard
-  deviation of its history. No market reaches three agreeing anchors; affordability has no
-  history to be judged against, and Paris has no long rent series.
+- **Verdicts stay inconclusive in all three markets, with every anchor now run** (except
+  price-to-rent for HDB). The anchors disagree, which is a result and not a gap: see
+  `docs/findings.md`. The rule was not changed after seeing the results.
+- **Paris ratios use national denominators.** No city-level rent or income history is open,
+  so the Paris price index is set against the national rent index and national disposable
+  income per head (OECD). Paris rents and incomes have not moved exactly like the national
+  ones, so the level of these ratios is indicative; their history starts in 1992, inside a
+  period of high prices, which raises the mean they are compared with.
+- **Singapore price-to-income is annual and national** (26 observations, 2000 to 2025):
+  median household income from work of resident employed households, not the income of
+  buyers of each segment.
 - **Agreement with official indices.** Paris, 2021 Q3 to 2026 Q2: hedonic −10.4%,
   stratified −11.0%, Notaires-INSEE −11.3%; correlation of quarterly changes 0.94 to 0.95.
   HDB, 2017 Q1 to 2026 Q3: hedonic +56%, stratified +48%, HDB resale price index +51%;

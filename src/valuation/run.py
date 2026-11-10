@@ -57,6 +57,9 @@ def _explosive(label: str, s: pd.Series, summary: list) -> int | None:
                     "sadf": r["sadf"], "sadf_cv95": r["cv"]["sadf"][0.95],
                     "gsadf": r["gsadf"], "gsadf_cv95": r["cv"]["gsadf"][0.95],
                     "episodes": "; ".join(f"{a} to {b}" for a, b in r["episodes"]) or "none",
+                    # direction of the last episode: the statistic also rises in an accelerating fall
+                    "last_episode_change_pct": (100 * (s[r["episodes"][-1][1]] / s[r["episodes"][-1][0]] - 1)
+                                                if r["episodes"] else float("nan")),
                     "explosive_at_end": r["explosive_at_end"]})
     return int(r["reject_gsadf_95"] and r["explosive_at_end"])
 

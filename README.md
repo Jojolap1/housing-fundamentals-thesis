@@ -95,7 +95,7 @@ src/valuation/    SADF/GSADF explosive-root tests, price-to-rent dynamics, verdi
 src/models/       OLS (district FE, robust SEs, Moran's I), Random Forest, LightGBM, SHAP
 src/viz/          site data export and page generation
 site/             static site (MapLibre GL), deployed by .github/workflows/pages.yml
-docs/             data_audit.md, methodology.md (with references), limitations.md
+docs/             data_audit.md, methodology.md (with references), findings.md, limitations.md
 notebooks/        Kaggle notebook
 tests/            schema, sanity and privacy checks
 ```
