@@ -1,45 +1,41 @@
-build started 2026-11-10T08:39:26Z
+build started 2026-11-10T09:04:19Z
 Python 3.13.18
 OK    ingest_fx (1s)
 OK    ingest_rates (3s)
-OK    ingest_paris (332s)
-OK    ingest_singapore (897s)
-OK    ingest_onemap (0s)
+OK    ingest_paris (379s)
+OK    ingest_singapore (899s)
+OK    ingest_onemap (1s)
 OK    ingest_official (5s)
 SKIP  ura (no URA_ACCESS_KEY secret): Singapore private market not rebuilt
-OK    clean_paris (5s)
-OK    clean_singapore (5s)
-OK    features_paris (16s)
-OK    features_singapore (2s)
-OK    levels (13s)
-OK    robust (42s)
-FAIL  indices (5s)
-            result = self._reindex_and_concat(join_index, left_indexer, right_indexer)
-          File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/pandas/core/reshape/merge.py", line 1094, in _reindex_and_concat
-            llabels, rlabels = _items_overlap_with_suffix(
-                               ~~~~~~~~~~~~~~~~~~~~~~~~~~^
-                self.left._info_axis, self.right._info_axis, self.suffixes
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-            )
-            ^
-          File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/pandas/core/reshape/merge.py", line 3092, in _items_overlap_with_suffix
-            raise ValueError(f"columns overlap but no suffix specified: {to_rename}")
-        ValueError: columns overlap but no suffix specified: Index(['official'], dtype='str')
-        paris {'periods': ['2021Q3', '2026Q2'], 'n_sales': 139829, 'hedonic_numeric': ['log_area', 'n_dependances'], 'hedonic_categorical': ['district_l2', 'rooms_or_flat_type', 'epoque'], 'strata': ['district_l1', 'rooms_cap'], 'strata_used': 79, 'strata_coverage': 0.9973, 'repeat_pairs': 4249, 'repeat_sales_kind': 'repeat-sales', 'official': 'not compared: notaires_insee_paris_apartments.csv not downloa
-OK    verdict (5s)
-OK    tests (3s)
+OK    clean_paris (7s)
+OK    clean_singapore (6s)
+OK    features_paris (18s)
+OK    features_singapore (3s)
+OK    levels (15s)
+OK    robust (50s)
+OK    indices (6s)
+OK    verdict (6s)
+OK    tests (4s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Documentation DVF+ | html | None | https://datafoncier.cerema.fr/donnees/autres-donnees-foncieres/dvfplus-open-data
   Données DVF+ open-data (csv + shp) | csv | None | https://cerema.app.box.com/v/dvfplus-opendata
   Données DVF+ open-data (dump PostgreSQL/PostGIS) | sql | None | https://cerema.app.box.com/v/dvfplus-opendata
---- probe: INSEE series, existing apartments, Paris
+--- index metadata
+{ "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
+
+--- official index series
+ura_private_residential_price_index.csv 621
+hdb_resale_price_index.csv 147
+ura_private_residential_rental_index.csv 525
+notaires_insee_paris_apartments.csv 010567012 138 1992-Q1 2026-Q2
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-34796 MANIFEST.csv
+35142 MANIFEST.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
+1866 official/notaires_insee_paris_apartments.csv
 18260 official/ura_private_residential_price_index.csv
 24736 official/ura_private_residential_rental_index.csv
 202223 paris/arrondissements.geojson
@@ -85,6 +81,18 @@ quarter,index,_id
       1 112.1
       1 116.6
       1 121.3
+data/raw/official/notaires_insee_paris_apartments.csv
+period,index
+1992-Q1,39.7
+1992-Q2,38.6
+      1 100.0
+      1 100.5
+      2 100.8
+      1 101.8
+      3 102.3
+      2 102.4
+      1 103.3
+      2 103.9
 data/raw/official/ura_private_residential_price_index.csv
 quarter,property_type,index,_id
 1975-Q1,All Residential,8.9,1
@@ -101,4 +109,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T09:01:42Z
+build finished 2026-11-10T09:27:43Z

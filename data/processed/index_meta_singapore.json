@@ -1,0 +1,25 @@
+{
+ "periods": [
+  "2017Q1",
+  "2026Q4"
+ ],
+ "n_sales": 238198,
+ "hedonic_numeric": [
+  "log_area",
+  "storey_mid",
+  "lease_remaining_years"
+ ],
+ "hedonic_categorical": [
+  "hdb_town",
+  "rooms_or_flat_type",
+  "flat_model"
+ ],
+ "strata": [
+  "hdb_town",
+  "rooms_or_flat_type"
+ ],
+ "strata_used": 79,
+ "strata_coverage": 0.951,
+ "repeat_pairs": 128596,
+ "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"
+}

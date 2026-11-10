@@ -20,6 +20,5 @@
  "strata_used": 79,
  "strata_coverage": 0.9973,
  "repeat_pairs": 4249,
- "repeat_sales_kind": "repeat-sales",
- "official": "not compared: notaires_insee_paris_apartments.csv not downloaded"
+ "repeat_sales_kind": "repeat-sales"
 }
