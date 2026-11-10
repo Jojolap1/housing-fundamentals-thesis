@@ -1,40 +1,28 @@
-build started 2026-11-10T17:17:04Z
+build started 2026-11-10T17:26:25Z
 Python 3.13.18
 OK    ingest_fx (0s)
-OK    ingest_rates (0s)
-OK    ingest_paris (1s)
+OK    ingest_rates (1s)
+OK    ingest_paris (0s)
 OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
-OK    ingest_official (0s)
+OK    ingest_official (1s)
 URA access key provided to the build: yes
-OK    ingest_ura (85s)
-OK    ingest_ura_geocode (118s)
-OK    ingest_ura_dev (117s)
-OK    clean_paris (5s)
-OK    clean_singapore (6s)
-OK    clean_private (5s)
-OK    features_paris (16s)
-OK    features_singapore (1s)
-OK    features_private (2s)
-OK    levels (16s)
-OK    robust (53s)
-OK    indices (6s)
-OK    verdict (8s)
+OK    ingest_ura (82s)
+OK    ingest_ura_geocode (109s)
+OK    ingest_ura_dev (114s)
+OK    clean_paris (6s)
+OK    clean_singapore (7s)
+OK    clean_private (7s)
+OK    features_paris (19s)
+OK    features_singapore (2s)
+OK    features_private (1s)
+OK    levels (25s)
+OK    robust (67s)
+OK    indices (8s)
+OK    verdict (9s)
 OK    cross_checks (35s)
-FAIL  early_warning (2s)
-          File "<frozen runpy>", line 203, in _run_module_as_main
-          File "<frozen runpy>", line 88, in _run_code
-          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/valuation/early_warning.py", line 216, in <module>
-            run()
-            ~~~^^
-          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/valuation/early_warning.py", line 175, in run
-            t, b = evaluate(panel, ratio)
-                   ~~~~~~~~^^^^^^^^^^^^^^
-          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/valuation/early_warning.py", line 97, in evaluate
-            z, lab = np.concatenate(zs), np.concatenate(labs)
-                     ~~~~~~~~~~~~~~^^^^
-        ValueError: need at least one array to concatenate
-OK    tests (3s)
+OK    early_warning (1s)
+OK    tests (5s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Documentation DVF+ | html | None | https://datafoncier.cerema.fr/donnees/autres-donnees-foncieres/dvfplus-open-data
@@ -48,12 +36,12 @@ oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-36140 MANIFEST.csv
+36145 MANIFEST.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
 1866 official/notaires_insee_paris_apartments.csv
 19089 official/oecd_house_prices_fra.csv
-39 official/oecd_house_prices_panel.csv
+982971 official/oecd_house_prices_panel.csv
 18260 official/ura_private_residential_price_index.csv
 24736 official/ura_private_residential_rental_index.csv
 202223 paris/arrondissements.geojson
@@ -165,7 +153,13 @@ period,HPI,RPI,HPI_YDH,HPI_RPI,RHP
       1 100.4
 data/raw/official/oecd_house_prices_panel.csv
 REF_AREA,MEASURE,TIME_PERIOD,OBS_VALUE
+FIN,HPI,1970-Q1,6.69442620600123
+FIN,HPI,1970-Q2,6.70203835720166
+   7587 HPI
+   6800 HPI_RPI
+   6371 HPI_YDH
       1 MEASURE
+   7587 RHP
 data/raw/official/ura_private_residential_price_index.csv
 quarter,property_type,index,_id
 1975-Q1,All Residential,8.9,1
@@ -182,4 +176,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T17:25:05Z
+build finished 2026-11-10T17:34:45Z
