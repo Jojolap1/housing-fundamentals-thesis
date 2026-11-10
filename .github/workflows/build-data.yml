@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [indices-tests-verdict]
-    paths: [".github/workflows/build-data.yml", "scripts/ci_build.sh"]
+    paths: [".github/workflows/build-data.yml", "scripts/ci_build.sh", "src/**"]
 
 permissions:
   contents: write

@@ -42,9 +42,10 @@ CONFIG = {
         "official": "hdb_resale_price_index.csv",
     },
     "singapore_private": {
-        "numeric": ["log_area", "storey_mid", "lease_remaining_years"],
-        "categorical": ["district_l1", "tenure"],
-        "strata": ["district_l1"],
+        # lease_term: remaining lease in years, 0 for freehold (the freehold dummy carries the level)
+        "numeric": ["log_area", "storey_mid", "freehold", "lease_term"],
+        "categorical": ["district_l1", "rooms_or_flat_type", "sale_type", "market_segment"],
+        "strata": ["market_segment", "sale_type"],
         # URA publishes the project and a floor band, not the unit: a proxy as well.
         "unit": ["project", "floor_area_m2", "storey_mid"], "unit_is_dwelling": False,
         "official": "ura_private_residential_price_index.csv",
@@ -57,6 +58,8 @@ def prepare(t: pd.DataFrame) -> pd.DataFrame:
     t["period"] = pd.PeriodIndex(pd.to_datetime(t["date"]), freq="Q").astype(str)
     t["log_ppm2"] = np.log(t["price_per_m2_local"])
     t["log_area"] = np.log(t["floor_area_m2"])
+    if "freehold" in t and "lease_remaining_years" in t:
+        t["lease_term"] = t["lease_remaining_years"].where(t["freehold"] != 1, 0.0)
     rooms = pd.to_numeric(t["rooms_or_flat_type"], errors="coerce")
     t["rooms_cap"] = rooms.clip(upper=4) if rooms.notna().any() else t["rooms_or_flat_type"]
     return t
