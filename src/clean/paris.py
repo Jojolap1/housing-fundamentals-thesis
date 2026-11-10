@@ -126,6 +126,9 @@ def clean() -> pd.DataFrame:
         "n_dependances": df["n_dep"].astype(int),
         "carrez_m2": pd.to_numeric(df["lot1_surface_carrez"], errors="coerce"),
         "id_parcelle": df["id_parcelle"],
+        # lot number of the apartment: with the parcel it identifies a dwelling across sales
+        # (repeat-sales index). Interim only, never published.
+        "lot1_numero": df.get("lot1_numero"),
         "fx_usd_per_eur": df["fx_usd_per_eur"],
     })
     assert list(out.columns[: len(SCHEMA)]) == SCHEMA
