@@ -33,7 +33,10 @@ def fetch_bytes(url: str, retries: int = 15, timeout: int = 180) -> bytes:
         if p.returncode == 0:
             return p.stdout
         last = p.stderr.decode(errors="ignore").strip()
-        if "returned error: 4" in last:  # 4xx: retrying will not help
+        if "returned error: 429" in last:  # rate limited: wait longer, then try again
+            time.sleep(min(30 * (k + 1), 180))
+            continue
+        if "returned error: 4" in last:  # other 4xx: retrying will not help
             break
         time.sleep(min(2 * (k + 1), 20))
     raise RuntimeError(f"failed after retries: {url}: {last}")

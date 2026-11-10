@@ -39,7 +39,8 @@ step clean_singapore  python -m src.clean.singapore
 if [ -n "${URA_ACCESS_KEY:-}" ]; then
   step clean_private    python -m src.clean.singapore_private
 fi
-step features         python -m src.features.build
+step features_paris     python -c "from src.features.build import paris_features as f; f()"
+step features_singapore python -c "from src.features.build import singapore_features as f; f()"
 if [ -n "${URA_ACCESS_KEY:-}" ]; then
   step features_private python -c "from src.features.build import singapore_private_features as f; f()"
 fi
@@ -49,7 +50,24 @@ step indices          python -m src.indices.run
 step verdict          python -m src.valuation.run
 step tests            python -m pytest -q tests
 
+# Probes for two open questions of the data audit (results are only printed, nothing is used).
+{ echo "--- probe: files of DVF+ open-data on data.gouv.fr";
+  python - <<'PY'
+from src.ingest.http import fetch_json
+try:
+    d = fetch_json("https://www.data.gouv.fr/api/1/datasets/dvf-open-data/", retries=3)
+    print("licence:", d.get("license"), "| temporal:", d.get("temporal_coverage"))
+    for r in d.get("resources", []):
+        print(" ", r.get("title"), "|", r.get("format"), "|", r.get("filesize"), "|", r.get("url"))
+except Exception as e:
+    print("probe failed:", e)
+PY
+  echo "--- probe: INSEE series, existing apartments, Paris";
+  curl -sS -L -m 60 -A "Mozilla/5.0" "https://www.insee.fr/fr/plan-du-site/famille-bdm/105071770" \
+    | grep -o '<a[^>]*href="[^"]*"[^>]*>[^<]*Paris - Appartements[^<]*</a>' | cut -c1-300 | head -8 || echo "probe failed";
+} >> "$REPORT" 2>&1
+
 { echo "--- raw files"; find data/raw -type f -not -name '*.pdf' -printf '%s %P\n' | sort -k2 | head -80;
-  echo "--- official index headers"; for f in data/raw/official/*.csv; do [ -f "$f" ] && { echo "$f"; head -n 3 "$f" | cut -c1-300; }; done;
+  echo "--- official index headers"; for f in data/raw/official/*.csv; do [ -f "$f" ] && { echo "$f"; head -n 3 "$f" | cut -c1-300; cut -d, -f2 "$f" | sort | uniq -c | head -8; }; done;
   echo "build finished $(date -u +%Y-%m-%dT%H:%M:%SZ)"; } >> "$REPORT"
 exit 0

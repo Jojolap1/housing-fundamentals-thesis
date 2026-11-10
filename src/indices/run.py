@@ -138,7 +138,7 @@ def run() -> None:
         o = None
         if off.exists():
             try:
-                o = load_quarterly(off, cfg.get("official_where"))
+                o = load_quarterly(off)
             except ValueError as e:
                 meta["official"] = f"not compared: {e}"
         if o is not None:

@@ -211,6 +211,8 @@ def test_official_index_loader(tmp_path):
     with pytest.raises(ValueError):  # two series in one file: refuse to guess
         load_quarterly(tmp_path / "b.csv")
     assert load_quarterly(tmp_path / "b.csv", {"type": "Landed"}).iloc[0] == 1
+    with pytest.raises(ValueError, match="available"):  # a filter value that is not in the file
+        load_quarterly(tmp_path / "b.csv", {"type": "Strata"})
 
 
 def test_index_build_and_validation_on_schema_like_data():

@@ -31,6 +31,12 @@ TABLES = {
     "hdb_resale_price_index.csv": "d_14f63e595975691e7c24a27ae4c07c79",
     "ura_private_residential_rental_index.csv": "d_8e4c50283fb7052a391dfb746a05c853",
 }
+# Files that hold several series: the one used by default (the project's private-market
+# sample is non-landed apartments and condominiums).
+DEFAULT_WHERE = {
+    "ura_private_residential_price_index.csv": {"property_type": "Non-Landed"},
+    "ura_private_residential_rental_index.csv": {"property_type": "Non-Landed"},
+}
 _Q = re.compile(r"^\s*(\d{4})\s*[-_ ]?\s*Q\s*([1-4])\s*$", re.I)
 _Q_REV = re.compile(r"^\s*([1-4])\s*Q\s*[-_ ]?\s*(\d{4})\s*$", re.I)
 
@@ -51,8 +57,12 @@ def load_quarterly(path: Path, where: dict | None = None) -> pd.Series:
     ({column: value}) to pick one; otherwise an error lists the choices."""
     d = pd.read_csv(path, dtype=str)
     d = d.drop(columns=[c for c in d.columns if c == "_id"])
+    where = DEFAULT_WHERE.get(Path(path).name) if where is None else where
     for col, val in (where or {}).items():
-        d = d[d[col] == val]
+        if col not in d.columns or val not in set(d[col]):
+            have = sorted(d[col].unique())[:12] if col in d.columns else list(d.columns)
+            raise ValueError(f"{Path(path).name}: no rows with {col} = {val!r}; available: {have}")
+        d = d[d[col] == val].drop(columns=col)
     pcol = [c for c in d.columns if d[c].map(to_quarter).notna().all()]
     if len(pcol) != 1:
         raise ValueError(f"{path.name}: expected one quarter column, found {pcol} among {list(d.columns)}")
