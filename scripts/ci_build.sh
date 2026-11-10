@@ -2,7 +2,7 @@
 # Rebuild the public-data part of the pipeline on a machine with open internet access
 # (GitHub Actions runner). Raw and transaction-level files stay on the runner; only
 # aggregates in data/processed and the download manifest are committed by the workflow.
-# Every step is attempted; its exit status and, on failure, the end of its output are
+# Every step is attempted, including after a failure; its exit status and, on failure, the end of its output are
 # written to data/processed/build_report.txt.
 set -u
 REPORT=data/processed/build_report.txt
