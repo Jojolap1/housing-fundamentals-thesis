@@ -26,6 +26,7 @@ step ingest_paris     python -m src.ingest.paris
 step ingest_singapore python -m src.ingest.singapore
 step ingest_onemap    python -m src.ingest.onemap
 step ingest_official  python -m src.ingest.official_indices
+echo "URA access key provided to the build: $([ -n "${URA_ACCESS_KEY:-}" ] && echo yes || echo no)" >> "$REPORT"
 if [ -n "${URA_ACCESS_KEY:-}" ]; then
   step ingest_ura         python -m src.ingest.ura
   step ingest_ura_geocode python -m src.ingest.ura_geocode
