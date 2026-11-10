@@ -4,10 +4,10 @@
 
 > **Status: work in progress.** Paris, Singapore HDB and Singapore private (URA) are built.
 > Robust cell statistics (bootstrap CI, shrinkage), quality-adjusted price indices checked
-> against the official ones, explosive-root tests and a verdict table are computed for Paris
-> and HDB (`data/processed/robust_*`, `index_*`, `explosive_*`, `verdict.csv`); they are not
-> on the website yet. Open: the same for the private market (needs the URA key), a longer
-> Paris history, data-licence checks (URA) and the Kaggle dataset.
+> against the official ones, explosive-root tests and a verdict table are computed for the
+> three markets (`data/processed/robust_*`, `index_*`, `explosive_*`, `verdict.csv`); they
+> are not on the website yet. Open: a longer Paris history, data-licence checks (URA) and
+> the Kaggle dataset.
 
 Hedonic and ML models trained on transaction prices estimate **market** value. They cannot
 tell whether market value is justified. This project anchors **fundamental** value on rents

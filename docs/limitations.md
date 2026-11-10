@@ -84,10 +84,8 @@ These are stated plainly because they bound what the results can say.
   is overstated by income growth since 2021.
 
 ## Robust statistics, indices and tests (added 2026-11-10)
-- **Coverage.** Built for Paris and Singapore HDB from a fresh download of the public
-  sources (see `data/processed/build_report.txt`). The Singapore private market is not
-  rebuilt there because the URA access key is not available to the build; only its
-  explosive-root and price-to-rent tests run, on URA's public indices.
+- **Coverage.** Built for Paris, Singapore HDB and Singapore private from a fresh download
+  of the sources on 2026-11-10 (see `data/processed/build_report.txt`).
 - **Verdicts are inconclusive in all three markets.** Paris: user-cost gap positive in 86%
   of the grid, no explosive episode at the end of the sample. HDB: gap positive in 19% of
   the grid, but an explosive episode running since 2021. Private: gap positive in 87% of
@@ -97,15 +95,22 @@ These are stated plainly because they bound what the results can say.
 - **Agreement with official indices.** Paris, 2021 Q3 to 2026 Q2: hedonic −10.4%,
   stratified −11.0%, Notaires-INSEE −11.3%; correlation of quarterly changes 0.94 to 0.95.
   HDB, 2017 Q1 to 2026 Q3: hedonic +56%, stratified +48%, HDB resale price index +51%;
-  correlation 0.94 to 0.98. The gaps are reported, not corrected.
+  correlation 0.94 to 0.98. Singapore private, 2021 Q4 to 2026 Q3: hedonic +27.3%,
+  stratified +24.3%, URA non-landed index +26.3%. The gaps are reported, not corrected.
+- **The private-market index tracks the level, not the quarters.** Its quarterly changes
+  correlate weakly with URA's (0.39 hedonic, 0.80 stratified): each quarter's sales depend
+  on which projects are launched. A first specification without sale type, market segment
+  and lease gave +16% against +26% for URA; those controls were missing, not optional, and
+  were added. This is the one case where the specification was changed after a comparison
+  with the official index.
 - **The Paris repeat-sales index is not usable** (+10.8% against −11.3% for the official
   index, 4,249 pairs). Within a five-year window, dwellings sold twice are mostly short
   holds, often resold after works, so the "same dwelling" assumption fails; the lot number
   of a DVF line may also not identify the same apartment in both deeds. It is published as
   a documented failure of the method on this sample, not as a price measure.
-- **The HDB pseudo repeat-sales index** (+42%) understates the official index: pairs match
-  a block, flat type, storey band and floor area, not a flat, and the lease is shorter at
-  the second sale.
+- **The pseudo repeat-sales indices understate the official ones** (HDB +42% against +51%,
+  private +19% against +26%): pairs match a block or project, a storey band and a floor
+  area, not a dwelling, and the lease is shorter at the second sale.
 - **Bootstrap intervals** treat the sales of a cell as independent draws; sales in the same
   building or project are not, so intervals are somewhat too narrow. For cells of five to
   ten sales the bootstrap distribution of a median is coarse, and so is the shrinkage weight
@@ -127,5 +132,8 @@ These are stated plainly because they bound what the results can say.
   Paris results rest on July 2021 to June 2026.
 - **HDB history before 2017** is not ingested, so the HDB index starts in 2017.
 - **Dates of the inputs differ.** Robust statistics, indices and tests come from the
-  download of 2026-11-10; model, valuation and site outputs from that of 2026-11-07. The
-  cell statistics common to both are identical up to rounding.
+  download of 2026-11-10; model, valuation and site outputs from that of 2026-11-07. For
+  Paris and HDB the cell statistics common to both are identical up to rounding. For the
+  private market they differ slightly: URA serves a rolling five-year window, so the oldest
+  weeks have dropped out and recent sales have been added (100,890 sales kept against
+  101,104).
