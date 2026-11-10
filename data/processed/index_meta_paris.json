@@ -1,0 +1,25 @@
+{
+ "periods": [
+  "2021Q3",
+  "2026Q2"
+ ],
+ "n_sales": 139829,
+ "hedonic_numeric": [
+  "log_area",
+  "n_dependances"
+ ],
+ "hedonic_categorical": [
+  "district_l2",
+  "rooms_or_flat_type",
+  "epoque"
+ ],
+ "strata": [
+  "district_l1",
+  "rooms_cap"
+ ],
+ "strata_used": 79,
+ "strata_coverage": 0.9973,
+ "repeat_pairs": 4249,
+ "repeat_sales_kind": "repeat-sales",
+ "official": "not compared: notaires_insee_paris_apartments.csv not downloaded"
+}
