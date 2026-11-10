@@ -288,3 +288,45 @@ def test_cross_check_table_on_schema_like_data():
     assert r["g_star_gamma2"] == pytest.approx(0.033 + 0.0025 + 0.015 + 0.02 - 0.03)
     assert r["check1"] == "implausible" and r["check2"] == "beyond capacity" and r["reading"] == "fails both checks"
     assert r["mortgage_rate"] == 0.032 and len(out) == 2
+
+
+# --------------------------------------------------------- early-warning record
+def test_drawdowns_and_labels():
+    from src.valuation.early_warning import drawdowns, label_quarters
+    s = pd.Series([100, 110, 120, 100, 96, 108, 121, 130, 125, 104], index=list("abcdefghij"), dtype=float)
+    d = drawdowns(s, 0.15)
+    assert [(e["peak"], e["trough"], e["recovered"]) for e in d] == [("c", "e", "g"), ("h", "j", None)]
+    assert d[0]["drop"] == pytest.approx(-0.2) and d[1]["drop"] == pytest.approx(-0.2)
+    assert drawdowns(s, 0.25) == []
+    lab = label_quarters(10, d, horizon=1)
+    assert list(lab) == [0, 1, 1, -1, -1, 0, 1, 1, -1, -1]
+
+
+def test_expanding_z_uses_the_past_only():
+    from src.valuation.early_warning import expanding_z
+    x = pd.Series(np.r_[np.full(40, 100.0) * np.exp(np.random.default_rng(0).normal(0, 0.02, 40)), 150.0, 150.0])
+    z = expanding_z(x, 40)
+    assert z.iloc[:39].isna().all() and z.iloc[40] > 3  # a jump is unusual against the past...
+    assert z.iloc[41] < z.iloc[40]                      # ...and less so once it is part of the past
+
+
+def test_signal_evaluation_finds_an_informative_threshold():
+    from src.valuation.early_warning import best_threshold, evaluate
+    rng = np.random.default_rng(1)
+    panel = {}
+    for c in range(12):
+        n = 160
+        ratio = 100 * np.exp(rng.normal(0, 0.03, n))
+        price = 100 * np.exp(np.cumsum(rng.normal(0.004, 0.004, n)))
+        if c < 8:  # a boom in the ratio, then a 25% bust
+            ratio[100:121] *= np.linspace(1.0, 1.5, 21)
+            price[121:137] = price[120] * np.linspace(0.98, 0.75, 16)
+            price[137:] = price[136] * np.exp(np.cumsum(rng.normal(0.004, 0.004, n - 137)))
+            ratio[121:] = ratio[121:] * np.r_[np.linspace(1.5, 1.0, 16), np.ones(n - 137)]
+        idx = [f"{1980 + k // 4}Q{k % 4 + 1}" for k in range(n)]
+        panel[f"C{c}"] = pd.DataFrame({"RHP": price, "HPI_YDH": ratio}, index=idx)
+    table, busts = evaluate(panel, "HPI_YDH")
+    assert len(busts) == 8 and (busts["real_drop_pct"] < -15).all()
+    best = table.set_index("threshold_z").loc[best_threshold(table)]
+    assert best["hit_minus_false_alarm"] > 0.3 and best["busts_flagged_share"] == 1.0
+    assert table["hit_rate"].is_monotonic_decreasing and table["false_alarm_rate"].is_monotonic_decreasing

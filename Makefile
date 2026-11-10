@@ -38,6 +38,7 @@ models: features
 verdict:
 	$(PY) -m src.valuation.run
 	$(PY) -m src.valuation.cross_checks
+	$(PY) -m src.valuation.early_warning
 
 ## Static website data and pages (site/)
 site:

@@ -50,6 +50,7 @@ step robust           python -m src.ratios.robust
 step indices          python -m src.indices.run
 step verdict          python -m src.valuation.run
 step cross_checks     python -m src.valuation.cross_checks
+step early_warning    python -m src.valuation.early_warning
 step tests            python -m pytest -q tests
 
 # Probes for two open questions of the data audit (results are only printed, nothing is used).
