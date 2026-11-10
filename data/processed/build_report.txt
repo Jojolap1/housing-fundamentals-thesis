@@ -1,20 +1,21 @@
-build started 2026-11-10T09:04:19Z
+build started 2026-11-10T09:58:36Z
 Python 3.13.18
-OK    ingest_fx (1s)
-OK    ingest_rates (3s)
-OK    ingest_paris (379s)
-OK    ingest_singapore (899s)
+OK    ingest_fx (0s)
+OK    ingest_rates (1s)
+OK    ingest_paris (0s)
+OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
-OK    ingest_official (5s)
+OK    ingest_official (0s)
+URA access key provided to the build: no
 SKIP  ura (no URA_ACCESS_KEY secret): Singapore private market not rebuilt
-OK    clean_paris (7s)
-OK    clean_singapore (6s)
-OK    features_paris (18s)
-OK    features_singapore (3s)
-OK    levels (15s)
-OK    robust (50s)
-OK    indices (6s)
-OK    verdict (6s)
+OK    clean_paris (6s)
+OK    clean_singapore (5s)
+OK    features_paris (17s)
+OK    features_singapore (2s)
+OK    levels (13s)
+OK    robust (43s)
+OK    indices (5s)
+OK    verdict (4s)
 OK    tests (4s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
@@ -25,10 +26,6 @@ licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
 { "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
 
 --- official index series
-ura_private_residential_price_index.csv 621
-hdb_resale_price_index.csv 147
-ura_private_residential_rental_index.csv 525
-notaires_insee_paris_apartments.csv 010567012 138 1992-Q1 2026-Q2
 --- raw files
 0 .gitkeep
 0 .manifest.lock
@@ -109,4 +106,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T09:27:43Z
+build finished 2026-11-10T10:00:17Z
