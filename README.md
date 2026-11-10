@@ -3,11 +3,11 @@
 *A machine-learning and rent-capitalisation approach to residential valuation — Paris and Singapore.*
 
 > **Status: work in progress.** Paris, Singapore HDB and Singapore private (URA) are built.
-> Added on 2026-11-10, **code and unit tests only**: robust cell statistics (bootstrap CI,
-> shrinkage), quality-adjusted price indices, explosive-root tests and the verdict rule. Their
-> outputs are not in the repository yet, apart from `data/processed/verdict.csv`, which so far
-> rests on the user-cost anchor alone: run `make indices` and `make verdict` on a machine that
-> holds the raw data. Also open: data-licence checks (URA) and the Kaggle dataset.
+> Robust cell statistics (bootstrap CI, shrinkage), quality-adjusted price indices checked
+> against the official ones, explosive-root tests and a verdict table are computed for Paris
+> and HDB (`data/processed/robust_*`, `index_*`, `explosive_*`, `verdict.csv`); they are not
+> on the website yet. Open: the same for the private market (needs the URA key), a longer
+> Paris history, data-licence checks (URA) and the Kaggle dataset.
 
 Hedonic and ML models trained on transaction prices estimate **market** value. They cannot
 tell whether market value is justified. This project anchors **fundamental** value on rents
@@ -71,6 +71,10 @@ make site      # site/data/*.json and site/*.html
 ```bash
 make test
 ```
+
+Without a local copy of the raw data, the workflow `Rebuild data (public sources)`
+(`.github/workflows/build-data.yml`) downloads the public sources on a GitHub runner, rebuilds
+the aggregates and commits only those; raw and transaction-level files stay on the runner.
 
 Seeds are fixed in `src/config.py`; package versions are written to
 `data/processed/package_versions.json`.

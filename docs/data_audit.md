@@ -197,16 +197,19 @@ million/m² (Đồng Khởi, Nguyễn Huệ, Lê Lợi) and the zone-3 maximum V
 
 ## 10. Addendum: review of 2026-11-10
 
-Checked on official pages on 2026-11-10. Nothing below was downloaded on that date: the
-review environment could not reach the data hosts, so file contents remain to be confirmed.
+Checked on official pages on 2026-11-10. The public sources were then downloaded again on a
+GitHub runner the same day (`data/raw/MANIFEST.csv`, `data/processed/build_report.txt`): the
+Paris and HDB files have the same sizes as on 2026-11-07 and reproduce the published cell
+statistics up to rounding. data.gov.sg rate-limits unauthenticated requests (HTTP 429): the
+download waits and retries, and takes about 15 minutes.
 
 | Topic | Finding | Status |
 |---|---|---|
-| **DVF+ open-data** (Cerema / DGALN) | Listed on data.gouv.fr under Licence Ouverte 2.0, temporal coverage "2014 à 2025", updated twice a year (https://www.data.gouv.fr/datasets/dvf-open-data). §6.1 above called DVF+ "not open data"; that describes DV3F, the enriched restricted base, not DVF+ open-data | **To test:** do the files contain 2014 to 2020 for département 75, and how do the DGFiP reuse terms apply outside the 5-year window? If confirmed, Paris gains about seven years of history |
-| Notaires-INSEE, existing apartments, Paris | Quarterly hedonic index, series published from 1991 Q1 (INSEE Méthodes n°132, 2019) | Series identifier not verified: manual download, see `src/ingest/official_indices.py` |
-| URA private residential property price index | data.gov.sg `d_97f8a2e995022d311c6c68cfda6d034c`, quarterly from 1975 Q1, stratified hedonic regression | Download script written, not run |
-| HDB resale price index (1Q2009 = 100) | data.gov.sg `d_14f63e595975691e7c24a27ae4c07c79`, quarterly | Start date not checked; script written, not run |
-| URA private residential rental index | data.gov.sg `d_8e4c50283fb7052a391dfb746a05c853`, quarterly from 2004 Q1, private homes only | Script written, not run |
+| **DVF+ open-data** (Cerema / DGALN) | Listed on data.gouv.fr under Licence Ouverte 2.0, temporal coverage "2014 à 2025", updated twice a year (https://www.data.gouv.fr/datasets/dvf-open-data). §6.1 above called DVF+ "not open data"; that describes DV3F, the enriched restricted base, not DVF+ open-data | The data.gouv.fr API confirms the licence (`lov2`) and the coverage 2014-01-01 to 2025-12-31, but the two resources point to a shared folder (cerema.app.box.com/v/dvfplus-opendata), not to files: **manual download needed**. Still to check: the content for département 75 and how the DGFiP reuse terms apply outside the 5-year window |
+| Notaires-INSEE, existing apartments, Paris | Quarterly hedonic index, series published from 1991 Q1 (INSEE Méthodes n°132, 2019) | **Downloaded 2026-11-10:** INSEE series 010567012 ("Paris - Appartements - Base 100 en moyenne annuelle 2015 - Série brute"), 138 quarters, 1992 Q1 to 2026 Q2, from INSEE's SDMX service |
+| URA private residential property price index | data.gov.sg `d_97f8a2e995022d311c6c68cfda6d034c`, quarterly from 1975 Q1, stratified hedonic regression | **Downloaded 2026-11-10:** 621 rows (three property types × 207 quarters, to 2026 Q3); the non-landed series is used |
+| HDB resale price index (1Q2009 = 100) | data.gov.sg `d_14f63e595975691e7c24a27ae4c07c79`, quarterly | **Downloaded 2026-11-10:** 147 quarters, 1990 Q1 to 2026 Q3 |
+| URA private residential rental index | data.gov.sg `d_8e4c50283fb7052a391dfb746a05c853`, quarterly from 2004 Q1, private homes only | **Downloaded 2026-11-10:** 525 rows by property type and locality; non-landed, whole island is used (2004 Q1 to 2026 Q3) |
 | Long rent series for Paris | None identified | Open: without one, no Paris price-to-rent test |
 | HDB resale before 2017 | Collection 189 on data.gov.sg goes back to January 1990 (approval date before March 2012, registration date after) | Not ingested: dataset identifiers and schemas of the older files to confirm |
 | Census 2020 income table | `d_2d6793de474551149c438ba349a108fd` is adapted from SingStat table CT/17779; the copy `d_4e150bbd…` notes an update for Additional MediSave contributions, the likely source of the small band differences noted in §2 | To confirm on SingStat |

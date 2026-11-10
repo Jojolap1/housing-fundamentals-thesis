@@ -84,27 +84,48 @@ These are stated plainly because they bound what the results can say.
   is overstated by income growth since 2021.
 
 ## Robust statistics, indices and tests (added 2026-11-10)
-- **Status.** These modules are tested on synthetic data only (`tests/test_indices_valuation.py`).
-  Their outputs on the real data have not been produced yet, so nothing here has been
-  compared with an official index so far.
-- **Verdicts are inconclusive for now.** `verdict.csv` currently rests on the user-cost
-  anchor alone (share of sensitivity-grid cells with a positive gap in 2025: Paris 86%,
-  Singapore private 87%, HDB 19%). One anchor cannot give a verdict under the rule.
+- **Coverage.** Built for Paris and Singapore HDB from a fresh download of the public
+  sources (see `data/processed/build_report.txt`). The Singapore private market is not
+  rebuilt there because the URA access key is not available to the build; only its
+  explosive-root and price-to-rent tests run, on URA's public indices.
+- **Verdicts are inconclusive in all three markets.** Paris: user-cost gap positive in 86%
+  of the grid, no explosive episode at the end of the sample. HDB: gap positive in 19% of
+  the grid, but an explosive episode running since 2021. Private: gap positive in 87% of
+  the grid and an explosive episode since 2021, price-to-rent ratio within one standard
+  deviation of its history. No market reaches three agreeing anchors; affordability has no
+  history to be judged against, and Paris has no long rent series.
+- **Agreement with official indices.** Paris, 2021 Q3 to 2026 Q2: hedonic −10.4%,
+  stratified −11.0%, Notaires-INSEE −11.3%; correlation of quarterly changes 0.94 to 0.95.
+  HDB, 2017 Q1 to 2026 Q3: hedonic +56%, stratified +48%, HDB resale price index +51%;
+  correlation 0.94 to 0.98. The gaps are reported, not corrected.
+- **The Paris repeat-sales index is not usable** (+10.8% against −11.3% for the official
+  index, 4,249 pairs). Within a five-year window, dwellings sold twice are mostly short
+  holds, often resold after works, so the "same dwelling" assumption fails; the lot number
+  of a DVF line may also not identify the same apartment in both deeds. It is published as
+  a documented failure of the method on this sample, not as a price measure.
+- **The HDB pseudo repeat-sales index** (+42%) understates the official index: pairs match
+  a block, flat type, storey band and floor area, not a flat, and the lease is shorter at
+  the second sale.
 - **Bootstrap intervals** treat the sales of a cell as independent draws; sales in the same
-  building or project are not, so intervals are somewhat too narrow. For very small cells
-  the bootstrap distribution of a median is coarse.
+  building or project are not, so intervals are somewhat too narrow. For cells of five to
+  ten sales the bootstrap distribution of a median is coarse, and so is the shrinkage weight
+  that depends on it.
 - **Shrinkage** assumes the cells of a parent are exchangeable. A street that truly differs
   from its arrondissement and has few sales is pulled towards it: the shrunk map is smoother
   than reality, which is why raw values stay published.
 - **Hedonic indices** hold observed characteristics constant, not condition, view or energy
   class. The pooled version fixes the characteristic prices over the whole period.
-- **Repeat-sales.** Paris: at most five years of DVF, so few dwellings sell twice and those
-  that do (short holding periods) are not representative. Singapore: no unit identifier, so
-  only a pseudo repeat-sales index on a proxy unit, where two different flats can be paired.
 - **Explosive-root tests** use nominal official indices, a fixed lag order of 0 and simulated
-  critical values; they date explosive episodes at city level and say nothing about streets
-  or about the level of fundamental value. No long rent series has been found for Paris, so
-  the price-to-rent version runs for Singapore private housing only.
-- **Paris window.** DVF+ open-data is listed as covering 2014 to 2025 (see the data audit,
-  §10). Until that is tested, all Paris results rest on July 2021 to June 2026.
+  critical values. They date explosive episodes at city level and say nothing about streets
+  or the level of fundamental value. On a nominal index a long period of steady growth is
+  dated as one long episode (Paris: 2000 Q3 to 2022 Q4), so the dates are indications, not
+  turning points. The statistic also rises when a series falls at an accelerating pace, so
+  the direction of each episode must be read from the series itself; this matters for the
+  price-to-rent ratio.
+- **Paris window.** DVF+ open-data is listed as covering 2014 to 2025, but its files sit in
+  a shared folder that needs a manual download (data audit, §10). Until that is done, all
+  Paris results rest on July 2021 to June 2026.
 - **HDB history before 2017** is not ingested, so the HDB index starts in 2017.
+- **Dates of the inputs differ.** Robust statistics, indices and tests come from the
+  download of 2026-11-10; model, valuation and site outputs from that of 2026-11-07. The
+  cell statistics common to both are identical up to rounding.
