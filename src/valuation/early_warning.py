@@ -94,6 +94,8 @@ def evaluate(panel: dict[str, pd.DataFrame], ratio: str) -> tuple[pd.DataFrame, 
             bust_rows.append({"country": c, "peak": b["peak"], "trough": b["trough"], "real_drop_pct": 100 * b["drop"],
                               "quarters_to_trough": b["i_trough"] - b["i_peak"],
                               "z_at_peak": z[b["i_peak"]], "z_max_before_peak": np.nanmax(w) if np.isfinite(w).any() else np.nan})
+    if not zs:
+        raise RuntimeError(f"no country has enough {ratio} history: panel of {len(panel)} areas")
     z, lab = np.concatenate(zs), np.concatenate(labs)
     ok = np.isfinite(z) & (lab >= 0)
     busts = pd.DataFrame(bust_rows)
@@ -123,7 +125,7 @@ def load_panel(force: bool = False) -> dict[str, pd.DataFrame]:
     dest = OUT / "oecd_house_prices_panel.csv"
     if force or not dest.exists():
         d = pd.read_csv(io.BytesIO(fetch_bytes(PANEL_URL, retries=4)))
-        d = d[d["TIME_PERIOD"].astype(str).str.match(r"^\\d{4}-Q[1-4]$")][["REF_AREA", "MEASURE", "TIME_PERIOD", "OBS_VALUE"]]
+        d = d[d["TIME_PERIOD"].astype(str).str.match(r"^\d{4}-Q[1-4]$")][["REF_AREA", "MEASURE", "TIME_PERIOD", "OBS_VALUE"]]
         OUT.mkdir(parents=True, exist_ok=True)
         d.to_csv(dest, index=False)
         record(dest, PANEL_URL, f"OECD analytical house price indicators, all areas, quarterly; {d['REF_AREA'].nunique()} areas")
