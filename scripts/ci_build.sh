@@ -62,10 +62,10 @@ try:
 except Exception as e:
     print("probe failed:", e)
 PY
-  echo "--- probe: INSEE series, existing apartments, Paris";
-  curl -sS -L -m 60 -A "Mozilla/5.0" "https://www.insee.fr/fr/plan-du-site/famille-bdm/105071770" \
-    | grep -o '<a[^>]*href="[^"]*"[^>]*>[^<]*Paris - Appartements[^<]*</a>' | cut -c1-300 | head -8 || echo "probe failed";
 } >> "$REPORT" 2>&1
+
+{ echo "--- index metadata"; cat data/processed/index_meta_*.json 2>/dev/null | tr -d '\n' | cut -c1-3000; echo;
+  echo "--- official index series"; tail -n 4 logs/ingest_official.log | cut -c1-600; } >> "$REPORT"
 
 { echo "--- raw files"; find data/raw -type f -not -name '*.pdf' -printf '%s %P\n' | sort -k2 | head -80;
   echo "--- official index headers"; for f in data/raw/official/*.csv; do [ -f "$f" ] && { echo "$f"; head -n 3 "$f" | cut -c1-300; cut -d, -f2 "$f" | sort | uniq -c | head -8; }; done;

@@ -6,12 +6,13 @@ Singapore (data.gov.sg, Singapore Open Data Licence), downloaded by this script:
   hdb_resale_price_index.csv                d_14f63e595975691e7c24a27ae4c07c79  (quarterly, 1Q2009 = 100)
   ura_private_residential_rental_index.csv  d_8e4c50283fb7052a391dfb746a05c853  (quarterly, from 2004)
 
-Paris: the Notaires-INSEE index of existing apartments in Paris (quarterly, from 1991) is
-published by INSEE. Its series identifier has not been verified here, so it is NOT
-downloaded automatically: save the series by hand as
-  data/raw/official/notaires_insee_paris_apartments.csv
-with two columns, `period` (e.g. 1991-Q1 or 1991Q1) and `index`, and record the source URL
-and date in docs/data_audit.md.
+Paris: the Notaires-INSEE index of existing apartments in Paris (quarterly, from 1991),
+  notaires_insee_paris_apartments.csv
+The series identifier is looked up by its exact title on INSEE's list of the series of the
+family "Indices des prix des logements anciens" (family 105071770), then the series is read
+from INSEE's SDMX service; it is kept only if the title returned with the data names Paris
+and apartments. If either step fails, nothing is written: save the series by hand under
+that name with two columns, `period` (e.g. 1991-Q1) and `index`.
 
 `load_quarterly` reads any of these files into a Series indexed by 'YYYYQn'. It refuses a
 file it cannot read unambiguously rather than guessing.
@@ -35,7 +36,7 @@ TABLES = {
 # sample is non-landed apartments and condominiums).
 DEFAULT_WHERE = {
     "ura_private_residential_price_index.csv": {"property_type": "Non-Landed"},
-    "ura_private_residential_rental_index.csv": {"property_type": "Non-Landed"},
+    "ura_private_residential_rental_index.csv": {"property_type": "Non-Landed", "locality": "Whole Island"},
 }
 _Q = re.compile(r"^\s*(\d{4})\s*[-_ ]?\s*Q\s*([1-4])\s*$", re.I)
 _Q_REV = re.compile(r"^\s*([1-4])\s*Q\s*[-_ ]?\s*(\d{4})\s*$", re.I)
@@ -78,11 +79,48 @@ def load_quarterly(path: Path, where: dict | None = None) -> pd.Series:
     return s.dropna().sort_index()
 
 
+INSEE_FAMILY = "https://www.insee.fr/fr/plan-du-site/famille-bdm/105071770"
+INSEE_SDMX = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/{idbank}"
+PARIS_TITLE = ("Indice des prix des logements anciens - Paris - Appartements - "
+               "Base 100 en moyenne annuelle 2015 - Série brute")
+
+
+def paris_notaires(force: bool = False) -> None:
+    import html
+
+    from src.ingest.http import fetch_bytes, record
+    dest = OUT / "notaires_insee_paris_apartments.csv"
+    if dest.exists() and not force:
+        return
+    page = html.unescape(fetch_bytes(INSEE_FAMILY, retries=4).decode("utf-8", "ignore"))
+    m = re.search(r'href="[^"]*?(\d{9})[^"]*"[^>]*>\s*' + re.escape(PARIS_TITLE) + r"\s*<", page)
+    if not m:
+        k = page.find("Paris - Appartements")
+        raise RuntimeError("series title not found on the INSEE family page; context: "
+                           + repr(page[max(k - 300, 0):k + 200] if k >= 0 else page[:300]))
+    idbank = m.group(1)
+    url = INSEE_SDMX.format(idbank=idbank)
+    xml = fetch_bytes(url, retries=4).decode("utf-8", "ignore")
+    title = re.search(r'TITLE_FR="([^"]*)"', xml)
+    if not title or "Paris" not in title.group(1) or "Appartements" not in title.group(1):
+        raise RuntimeError(f"series {idbank}: unexpected title {title.group(1) if title else None!r}")
+    obs = re.findall(r'<(?:\w+:)?Obs\b[^>]*?TIME_PERIOD="(\d{4}-Q[1-4])"[^>]*?OBS_VALUE="([-0-9.]+)"', xml)
+    obs += [(t, v) for v, t in re.findall(
+        r'<(?:\w+:)?Obs\b[^>]*?OBS_VALUE="([-0-9.]+)"[^>]*?TIME_PERIOD="(\d{4}-Q[1-4])"', xml)]
+    if len(obs) < 40:
+        raise RuntimeError(f"series {idbank}: only {len(obs)} observations parsed")
+    d = pd.DataFrame(sorted(set(obs)), columns=["period", "index"])
+    d.to_csv(dest, index=False)
+    record(dest, url, f"INSEE series {idbank}: {title.group(1)}; {len(d)} quarters")
+    print(dest.name, idbank, len(d), d["period"].iloc[0], d["period"].iloc[-1])
+
+
 def main(force: bool = False) -> None:
     from src.ingest.singapore import table
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rid in TABLES.items():
         table(rid, OUT / name, force)
+    paris_notaires(force)
 
 
 if __name__ == "__main__":

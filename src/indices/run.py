@@ -110,7 +110,7 @@ def build(t: pd.DataFrame, cfg: dict, min_n: int = 5) -> tuple[pd.DataFrame, dic
 def validate(idx: pd.DataFrame, official: pd.Series) -> pd.DataFrame:
     """Compare each index with the official one on the quarters they share: correlation of
     quarterly log changes, and the gap in cumulative log change over the common window."""
-    d = idx.set_index("period").join(official.rename("official"), how="inner")
+    d = idx.drop(columns="official", errors="ignore").set_index("period").join(official.rename("official"), how="inner")
     rows = []
     for c in ("hedonic", "hedonic_rolling", "stratified", "repeat_sales"):
         s = d[[c, "official"]].dropna()
