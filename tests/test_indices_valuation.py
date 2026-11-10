@@ -240,3 +240,51 @@ def test_index_build_and_validation_on_schema_like_data():
     # without the lot number there is no dwelling identifier: no repeat-sales index, and it says why
     idx2, meta2 = build(t.drop(columns="lot1_numero"), CONFIG["paris"])
     assert idx2["repeat_sales"].isna().all() and "lot1_numero" in meta2["repeat_sales_error"]
+
+
+# ------------------------------------------------------------ two cross-checks
+def test_implied_g_inverts_the_valuation_formula():
+    from src.ratios.params import BASE
+    from src.ratios.valuation import _value
+    from src.valuation.cross_checks import implied_g
+    p, rf, g_true = BASE["Singapore"], 0.03, 0.025
+    R = np.array([30000.0, 30000.0, 30000.0])
+    T = np.array([60.0, 95.0, np.nan])  # two leases and a freehold
+    V, _ = _value(R, rf, p, T, g=g_true)
+    i = rf + p["tau"] + p["delta"] + p["gamma"]
+    assert np.allclose(implied_g(R / V, i, T), g_true, atol=1e-6)
+    assert np.allclose(implied_g(R / V, i)[2], g_true, atol=1e-9)  # freehold: closed form
+    # a dearer home needs more rent growth; a shorter lease needs more growth for the same price
+    assert implied_g(0.02, i, 60.0) > implied_g(0.03, i, 60.0)
+    assert implied_g(0.03, i, 40.0) > implied_g(0.03, i, 90.0)
+    assert np.isnan(implied_g(np.nan, i, 60.0))
+
+
+def test_borrowing_capacity_and_readings():
+    from src.valuation.cross_checks import (annuity, cagr, combine, price_over_capacity, read_check1,
+                                            read_check2)
+    assert annuity(0.0, 25) == 300 and annuity(0.04, 25) == pytest.approx(189.45, abs=0.01)
+    # income 16,000 a month, 55% at 4% over 25 years: loan of about 1.667 million (MAS worked example in the press)
+    assert 0.55 * 16000 * annuity(0.04, 25) == pytest.approx(1.667e6, rel=0.002)
+    pmax = 0.55 * 16000 * annuity(0.04, 25) / 0.75
+    assert price_over_capacity(pmax / (12 * 16000), 0.04, 0.55, 25, 0.25) == pytest.approx(1.0)
+    assert cagr(pd.Series([100.0, 110.0, 121.0]), 2) == pytest.approx(0.10)
+    assert read_check1(0.01, 0.02, 0.03) == "plausible" and read_check1(0.04, 0.07, 0.03) == "implausible"
+    assert read_check1(0.02, 0.05, 0.03) == "depends on the premium" and read_check1(np.nan, 0.05, 0.03) == "not run"
+    assert read_check2(0.7, 0.8, 0.9) == "within capacity" and read_check2(1.1, 1.2, 1.3) == "beyond capacity"
+    assert read_check2(0.9, 1.0, 1.1) == "depends on the rate"
+    assert combine("implausible", "beyond capacity") == "too dear on both sides"
+    assert combine("plausible", "not run") == "incomplete" and combine("depends on the premium", "within capacity").startswith("mixed")
+
+
+def test_cross_check_table_on_schema_like_data():
+    from src.valuation.cross_checks import city_table
+    t = pd.DataFrame({"year": [2024] * 3 + [2025] * 3, "gross_yield": [0.03, 0.031, 0.029] * 2,
+                      "pti_hh": [13.0, 14.0, 15.0] * 2})
+    rf = pd.Series({2024: 0.03, 2025: 0.033})
+    bench = {"rent_growth": 0.012, "income_growth": 0.02, "bench_note": "x"}
+    out = city_table("paris", t, rf, bench, pd.Series({2024: 0.037, 2025: 0.032}), "ECB")
+    r = out.set_index("year").loc[2025]
+    assert r["g_star_gamma2"] == pytest.approx(0.033 + 0.0025 + 0.015 + 0.02 - 0.03)
+    assert r["check1"] == "implausible" and r["check2"] == "beyond capacity" and r["reading"] == "too dear on both sides"
+    assert r["mortgage_rate"] == 0.032 and len(out) == 2

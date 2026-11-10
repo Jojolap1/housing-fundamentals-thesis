@@ -37,6 +37,7 @@ models: features
 ## Explosive-root tests, price-to-rent dynamics and the verdict table (after `make models`)
 verdict:
 	$(PY) -m src.valuation.run
+	$(PY) -m src.valuation.cross_checks
 
 ## Static website data and pages (site/)
 site:
