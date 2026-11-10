@@ -1,25 +1,25 @@
-build started 2026-11-10T12:45:55Z
+build started 2026-11-10T12:57:52Z
 Python 3.13.18
 OK    ingest_fx (0s)
 OK    ingest_rates (1s)
 OK    ingest_paris (0s)
 OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
-OK    ingest_official (0s)
+OK    ingest_official (2s)
 URA access key provided to the build: yes
-OK    ingest_ura (80s)
-OK    ingest_ura_geocode (112s)
-OK    ingest_ura_dev (117s)
-OK    clean_paris (7s)
+OK    ingest_ura (90s)
+OK    ingest_ura_geocode (119s)
+OK    ingest_ura_dev (119s)
+OK    clean_paris (8s)
 OK    clean_singapore (7s)
 OK    clean_private (7s)
-OK    features_paris (19s)
+OK    features_paris (20s)
 OK    features_singapore (2s)
-OK    features_private (1s)
-OK    levels (19s)
-OK    robust (63s)
-OK    indices (8s)
-OK    verdict (5s)
+OK    features_private (2s)
+OK    levels (26s)
+OK    robust (67s)
+OK    indices (9s)
+OK    verdict (9s)
 OK    tests (4s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
@@ -30,13 +30,15 @@ licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
 { "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}{ "periods": [  "2021Q4",  "2026Q4" ], "n_sales": 100890, "hedonic_numeric": [  "log_area",  "storey_mid",  "freehold",  "lease_term" ], "hedonic_categorical": [  "district_l1",  "rooms_or_flat_type",  "sale_type",  "market_segment" ], "strata": [  "market_segment",  "sale_type" ], "strata_used": 8, "strata_coverage": 0.9976, "repeat_pairs": 36016, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
 
 --- official index series
+oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/data/OECD.ECO.MPD,DSD_AN_H
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-35142 MANIFEST.csv
+35505 MANIFEST.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
 1866 official/notaires_insee_paris_apartments.csv
+19089 official/oecd_house_prices_fra.csv
 18260 official/ura_private_residential_price_index.csv
 24736 official/ura_private_residential_rental_index.csv
 202223 paris/arrondissements.geojson
@@ -110,7 +112,6 @@ licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
 45272 singapore/ura/developer_sales/dev_sales_202501.json
 45037 singapore/ura/developer_sales/dev_sales_202502.json
 44244 singapore/ura/developer_sales/dev_sales_202503.json
-43438 singapore/ura/developer_sales/dev_sales_202504.json
 --- official index headers
 data/raw/official/hdb_resale_price_index.csv
 quarter,index,_id
@@ -136,6 +137,18 @@ period,index
       2 102.4
       1 103.3
       2 103.9
+data/raw/official/oecd_house_prices_fra.csv
+period,HPI,RPI,HPI_YDH,HPI_RPI,RHP
+1970-Q1,6.62326752542258,10.6370404230387,,62.2658942667031,42.6762310845401
+1970-Q2,6.57391164843011,10.7404373219334,,61.2069361034719,41.7566614843514
+      1 
+      1 10.0449487965261
+      1 10.3210472130481
+      1 10.4919036535456
+      1 10.7321365559371
+      1 100.1
+      3 100.2
+      1 100.4
 data/raw/official/ura_private_residential_price_index.csv
 quarter,property_type,index,_id
 1975-Q1,All Residential,8.9,1
@@ -152,4 +165,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T12:53:29Z
+build finished 2026-11-10T13:06:06Z
