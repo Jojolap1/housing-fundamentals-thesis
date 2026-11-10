@@ -11,6 +11,8 @@
   --series-market: #2a78d6;
   --series-fund: #e34948;
   --series-volume: #eb6834;
+  --series-strat: #1baf7a;
+  --series-official: #6250d6;
   --band-fund: rgba(227, 73, 72, 0.16);
   --accent: #2a78d6;
   --note-bg: #f3f2ee;
@@ -29,6 +31,8 @@
     --series-market: #3987e5;
     --series-fund: #e66767;
     --series-volume: #d95926;
+    --series-strat: #199e70;
+    --series-official: #9085e9;
     --band-fund: rgba(230, 103, 103, 0.20);
     --accent: #3987e5;
     --note-bg: #232321;
@@ -47,6 +51,8 @@
   --series-market: #3987e5;
   --series-fund: #e66767;
   --series-volume: #d95926;
+  --series-strat: #199e70;
+  --series-official: #9085e9;
   --band-fund: rgba(230, 103, 103, 0.20);
   --accent: #3987e5;
   --note-bg: #232321;
@@ -136,3 +142,5 @@ footer { color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--bor
 .kpis .v { font-size: 1.5rem; font-weight: 650; font-variant-numeric: tabular-nums; }
 .kpis .k { font-size: 0.8rem; color: var(--text-secondary); }
 .kpis .n { font-size: 0.75rem; color: var(--muted); }
+
+.schart svg.chart + svg.chart { margin-top: 6px; }

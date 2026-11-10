@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from src.config import ROOT
 
+from src.viz.sections import home_section, index_section, verdict_section
+
 SITE = ROOT / "site"
 MAPLIBRE = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl"
 
@@ -137,6 +139,9 @@ CITY = """
   not published. Valuation gaps are model-dependent hypotheses, not investment advice.</p>
 </div>
 
+{verdict_section}
+{index_section}
+
 <h2>Fundamental vs market value per m²</h2>
 <div class="card">
   <div class="legend"><span><span style="color:var(--series-market)">●</span> Market: median transaction price per m²</span>
@@ -179,6 +184,7 @@ CITY = """
 </div>
 <script src="{maplibre}.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/sections.js"></script>
 """
 
 CITIES = {
@@ -271,13 +277,14 @@ def methodology() -> str:
     docs = ROOT / "docs"
     body = "".join(
         markdown.markdown((docs / f).read_text(), extensions=["tables", "fenced_code"])
-        for f in ("methodology.md", "limitations.md"))
+        for f in ("findings.md", "methodology.md", "limitations.md"))
     return ('<div class="card doc">' + body + "</div>")
 
 
 def main() -> None:
     (SITE / "index.html").write_text(
-        head("Housing fundamentals", "Do rents justify housing prices in Paris and Singapore?", "home") + INDEX + FOOT)
+        head("Housing fundamentals", "Do rents justify housing prices in Paris and Singapore?", "home")
+        + INDEX.replace("<h2>Data sources</h2>", home_section() + "\n<h2>Data sources</h2>", 1) + FOOT)
     (SITE / "methodology.html").write_text(
         head("Method and limits", "How prices, rents and fundamental values are computed, and what limits them.", "meth")
         + methodology() + FOOT)
@@ -294,7 +301,9 @@ def main() -> None:
         extra = f'<link rel="stylesheet" href="{MAPLIBRE}.css">'
         html = head(f"{c['name']} housing", f"Prices, rents, yields and valuation gaps in {c['name']}.", c["page"],
                     extra, f' data-city="{key}"')
-        (SITE / f"{key}.html").write_text(html + CITY.format(maplibre=MAPLIBRE, **c) + FOOT)
+        (SITE / f"{key}.html").write_text(
+            html + CITY.format(maplibre=MAPLIBRE, index_section=index_section(key),
+                               verdict_section=verdict_section(key), **c) + FOOT)
 
 
 if __name__ == "__main__":

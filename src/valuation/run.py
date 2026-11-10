@@ -135,14 +135,11 @@ def run() -> pd.DataFrame:
             sig["price_rent"] = None
             notes.append(f"price_rent: {why or 'price index missing'}")
         else:
-            z = ratio_zscore(price, rent)
-            sig["price_rent"] = z_signal(z["z_last"])
+            sig["price_rent"] = z_signal(_ratio_anchor(f"{city}_price_to_rent", price, rent, ratios, summary))
             try:
                 long_horizon(price, rent).to_csv(PROCESSED / f"price_rent_{city}.csv", index=False)
             except ValueError as e:
                 notes.append(f"price_rent regression: {e}")
-            both = pd.concat([price.rename("p"), rent.rename("r")], axis=1).dropna()
-            _explosive(f"{city}_price_to_rent", both["p"] / both["r"], summary)
         # Paris: no city-level rent or income history is open, so the denominators are the
         # national rent index and national disposable income per head (OECD).
         if city == "paris" and price is not None:

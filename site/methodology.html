@@ -22,7 +22,110 @@
   </nav>
 </div></header>
 <main class="wrap">
-<div class="card doc"><h1>Methodology</h1>
+<div class="card doc"><h1>Findings (build of 2026-11-10)</h1>
+<p>All figures come from <code>data/processed/</code> (<code>verdict.csv</code>, <code>ratio_history.csv</code>,
+<code>explosive_summary.csv</code>, <code>index_validation_*.csv</code>). The verdict rule is the one fixed in
+<code>docs/methodology.md</code> §12 before any of these results existed; it has not been adjusted.</p>
+<h2>Verdict table</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Paris (existing apartments)</th>
+<th>Singapore HDB resale</th>
+<th>Singapore private non-landed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User cost: share of the sensitivity grid with a positive gap, 2025</td>
+<td>86% → <strong>deviation</strong></td>
+<td>19% → below</td>
+<td>87% → <strong>deviation</strong></td>
+</tr>
+<tr>
+<td>Explosive root (GSADF on the official index): episode running at the end of the sample</td>
+<td>no (2000 Q3 to 2022 Q4)</td>
+<td><strong>yes</strong> (since 2021 Q1)</td>
+<td><strong>yes</strong> (since 2021 Q1)</td>
+</tr>
+<tr>
+<td>Price-to-rent, latest against its history</td>
+<td>+27% above the 1992–2026 mean, 19% below the 2020 peak, z = 0.8 → within one s.d.</td>
+<td>not run (no rent index)</td>
+<td>z ≈ 0 → within one s.d.</td>
+</tr>
+<tr>
+<td>Price-to-income, latest against its history</td>
+<td>+8% above the mean, 30% below the 2020 peak, z = 0.4 → within one s.d.</td>
+<td>+4% above the 2000–2025 mean, z = 0.5 → within one s.d.</td>
+<td>3% below the mean, z = −0.3 → within one s.d.</td>
+</tr>
+<tr>
+<td>Anchors pointing to deviation</td>
+<td>1 of 4</td>
+<td>1 of 3</td>
+<td>2 of 4</td>
+</tr>
+<tr>
+<td><strong>Verdict</strong></td>
+<td><strong>inconclusive</strong></td>
+<td><strong>inconclusive</strong></td>
+<td><strong>inconclusive</strong></td>
+</tr>
+</tbody>
+</table>
+<p>No market reaches the three agreeing anchors that "evidence of deviation" requires, and none
+meets the conditions for "consistent with fundamentals".</p>
+<h2>What can be said firmly</h2>
+<ol>
+<li><strong>Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.</strong>
+   The explosive episode dated on the Notaires-INSEE index ends in 2022. Since the 2020 peak
+   the price index has lost 30% against national income per head and 19% against national
+   rents; own hedonic index −10.4% from 2021 Q3 to 2026 Q2 (official: −11.3%). The only
+   anchor still pointing to overvaluation is rent capitalisation, and its sign is set by
+   the interest rate: the same prices were 34% <em>below</em> the user-cost value in 2021 and 64%
+   above it in 2023.</li>
+<li><strong>HDB resale: explosive price dynamics since 2021 without a deterioration of the
+   ratios.</strong> The resale index is in a dated explosive episode, yet price-to-income is 4%
+   above its 2000–2025 mean and capitalised rents exceed prices over most of the grid.
+   Prices rose fast, incomes and rents rose with them.</li>
+<li><strong>Singapore private: the closest to a deviation, and still short of it.</strong> Two anchors
+   agree (user cost, explosive dynamics since 2021), but prices are 3% below their
+   2000–2025 average relative to household income and the price-to-rent ratio is at its
+   historical norm.</li>
+<li><strong>The methods can be trusted at the level they claim.</strong> The quality-adjusted indices
+   reproduce the official ones (Paris −10.4% against −11.3%; HDB +56% against +51%;
+   private +27.3% against +26.3%), and the rebuild from a fresh download reproduces the
+   published cell statistics.</li>
+<li><strong>The rent-capitalisation anchor alone would have given a confident and unstable
+   answer.</strong> It says "overvalued" for Paris and Singapore private in 2025 and said
+   "undervalued" for Paris in 2021, with the same model and the same rents. This is
+   Difficulty 2 measured on the data, and it is the main reason the verdicts are
+   inconclusive rather than "overvalued".</li>
+</ol>
+<h2>How this compares with outside assessments</h2>
+<p>These are not inputs to the verdicts; they are listed to show where the results stand.</p>
+<ul>
+<li><strong>UBS Global Real Estate Bubble Index 2026</strong> (published 22 September 2026) classifies
+  Paris as low bubble risk and Singapore as moderate. Same ordering as here: Paris further
+  from a deviation than Singapore private. UBS's method combines price-to-income and
+  price-to-rent with credit, construction and city-to-country price indicators, which this
+  project does not have.</li>
+<li><strong>Monetary Authority of Singapore, Financial Stability Review 2025</strong>, as reported in the
+  press: the pace of private residential price increases was more measured in 2025 and
+  household income growth kept pace with debt. Consistent with a price-to-income ratio
+  close to its average.</li>
+</ul>
+<p>Both assessments were read in press releases and press coverage, not in the full reports.</p>
+<h2>What would make a verdict conclusive</h2>
+<ul>
+<li>A Paris rent and income history at city level (the ratios above use national
+  denominators), and a longer transaction history (DVF+ 2014–2025).</li>
+<li>A rent index for the HDB market before 2021.</li>
+<li>Deflated (real) price indices for the explosive-root tests.</li>
+<li>A structural estimate of the expected growth of rents g, which the grid only spans.</li>
+</ul><h1>Methodology</h1>
 <h2>1. Research question and stance</h2>
 <p>ML and hedonic models fitted to transaction prices estimate <strong>market value</strong>: what a
 dwelling with given characteristics sells for, given current market conditions. They cannot
