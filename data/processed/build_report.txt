@@ -1,0 +1,108 @@
+build started 2026-11-10T08:32:08Z
+Python 3.13.18
+OK    ingest_fx (1s)
+OK    ingest_rates (3s)
+OK    ingest_paris (329s)
+FAIL  ingest_singapore (5s)
+            geo(rid, OUT / name, force)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^
+          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/ingest/singapore.py", line 73, in geo
+            fetch_json(BULK.format(rid=rid, action="initiate-download"))
+            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/ingest/http.py", line 43, in fetch_json
+            return json.loads(fetch_bytes(url, **kw))
+                              ~~~~~~~~~~~^^^^^^^^^^^
+          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/ingest/http.py", line 39, in fetch_bytes
+            raise RuntimeError(f"failed after retries: {url}: {last}")
+        RuntimeError: failed after retries: https://api-open.data.gov.sg/v1/public/api/datasets/d_b39d3a0871985372d7e1637193335da5/initiate-download: curl: (22) The requested URL returned error: 429
+        hdb_existing_building.geojson
+FAIL  ingest_onemap (1s)
+            ~~~~^^
+          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/ingest/onemap.py", line 84, in main
+            keys = pd.concat([pd.read_csv(f, usecols=["block", "street_name"], dtype=str)
+                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                              for f in srcs if f.exists()]).drop_duplicates()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/pandas/core/reshape/concat.py", line 407, in concat
+            objs, keys, ndims = _clean_keys_and_objs(objs, keys)
+                                ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+          File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/pandas/core/reshape/concat.py", line 808, in _clean_keys_and_objs
+            raise ValueError("No objects to concatenate")
+        ValueError: No objects to concatenate
+FAIL  ingest_official (2s)
+            table(rid, OUT / name, force)
+            ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/ingest/singapore.py", line 46, in table
+            r = fetch_json(DATASTORE.format(rid=rid, lim=lim, off=off), timeout=180)["result"]
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/ingest/http.py", line 43, in fetch_json
+            return json.loads(fetch_bytes(url, **kw))
+                              ~~~~~~~~~~~^^^^^^^^^^^
+          File "/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/src/ingest/http.py", line 39, in fetch_bytes
+            raise RuntimeError(f"failed after retries: {url}: {last}")
+        RuntimeError: failed after retries: https://data.gov.sg/api/action/datastore_search?resource_id=d_14f63e595975691e7c24a27ae4c07c79&limit=10000&offset=0: curl: (22) The requested URL returned error: 429
+        ura_private_residential_price_index.csv 621
+SKIP  ura (no URA_ACCESS_KEY secret): Singapore private market not rebuilt
+OK    clean_paris (6s)
+FAIL  clean_singapore (0s)
+                storage_options=self.options.get("storage_options", None),
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            )
+            ^
+          File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/pandas/io/common.py", line 930, in get_handle
+            handle = open(
+                handle,
+            ...<3 lines>...
+                newline="",
+            )
+        FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/data/raw/singapore/hdb_resale_2017on.csv'
+        {'blocks_queried': 10030, 'geocoded': 10020, 'hit_rate': 0.999}
+FAIL  features (1s)
+            ...<2 lines>...
+                mode="rb",
+                ^^^^^^^^^^
+            )
+            ^
+          File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/pandas/io/parquet.py", line 141, in _get_path_or_handle
+            handles = get_handle(
+                path_or_handle, mode, is_text=False, storage_options=storage_options
+            )
+          File "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/site-packages/pandas/io/common.py", line 939, in get_handle
+            handle = open(handle, ioargs.mode)
+        FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/housing-fundamentals-thesis/housing-fundamentals-thesis/data/interim/transactions_singapore.parquet'
+OK    levels (0s)
+OK    robust (1s)
+OK    indices (1s)
+OK    verdict (0s)
+OK    tests (3s)
+--- raw files
+0 .gitkeep
+0 .manifest.lock
+34279 MANIFEST.csv
+1083818 fx/ecb_eurofxref_sgd_usd.csv
+18260 official/ura_private_residential_price_index.csv
+202223 paris/arrondissements.geojson
+180277319 paris/bdtopo_batiment_paris.geojson
+695412 paris/contours_iris_paris.geojson
+1309171 paris/dvf_75_2021-s2.csv.gz
+2717522 paris/dvf_75_2022.csv.gz
+2226364 paris/dvf_75_2023.csv.gz
+2054668 paris/dvf_75_2024.csv.gz
+2365971 paris/dvf_75_2025.csv.gz
+1140243 paris/dvf_75_2026-s1.csv.gz
+11976461 paris/espaces_verts.geojson
+855657 paris/filosofi_iris_2021_DEC.zip
+913460 paris/filosofi_iris_2021_DISP.zip
+1211904 paris/gares_idf.geojson
+1262238 paris/loyers_reference.csv
+354392 paris/quartiers.geojson
+50969 rates/ecb_irs_fr_10y.csv
+97690 rates/singstat_M700071.json
+57500978 singapore/hdb_existing_building.geojson
+1121524 singapore/onemap_blocks.csv
+--- official index headers
+data/raw/official/ura_private_residential_price_index.csv
+quarter,property_type,index,_id
+1975-Q1,All Residential,8.9,1
+1975-Q1,Landed,7.4,2
+build finished 2026-11-10T08:38:01Z
