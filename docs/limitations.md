@@ -174,5 +174,11 @@ These are stated plainly because they bound what the results can say.
 - **Ratios only.** Credit growth, construction and lending standards, which the literature
   on housing busts gives at least as much weight, are not in the data.
 - **The thresholds depend on the definitions** (15% real fall, 12-quarter horizon, ten years
-  of history); these were set once and not tuned.
+  of history). The baseline was set first; two stricter definitions (crash, major) were added
+  afterwards and are reported side by side, not substituted for it. They rest on 13 to 17
+  events each.
+- **Annotated turning points are not causes.** The events listed next to each peak are what
+  the sources report for that date. Several rest on secondary sources (flagged in the list),
+  one peak has no verified explanation, and the 2020–2021 part of the Paris fall has none
+  either. Singapore's measures were not re-read in the official releases.
 - **City downturns are in nominal terms**, and the Paris series starts after the 1991 peak.

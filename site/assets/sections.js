@@ -16,7 +16,7 @@
         svgs.forEach((s) => { const xh = s.querySelector(".xh"); xh.setAttribute("x1", x); xh.setAttribute("x2", x); xh.setAttribute("visibility", "visible"); });
         tip.innerHTML = `<b>${D.periods[i].replace("Q", " Q")}</b>` +
           D.series.map((s) => `<div><span style="color:${s.color}">●</span> ${s.label}: ${s.values[i] == null ? "–" : s.values[i].toFixed(1)}</div>`).join("") +
-          `<div class="k">Retained sales: ${D.n[i].toLocaleString("en-GB")}</div>`;
+          (D.n ? `<div class="k">Retained sales: ${D.n[i].toLocaleString("en-GB")}</div>` : "");
         const b = wrap.getBoundingClientRect();
         tip.hidden = false;
         let left = e.clientX - b.left + 14; if (left + 300 > b.width) left = Math.max(0, left - 320);

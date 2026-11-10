@@ -144,3 +144,8 @@ footer { color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--bor
 .kpis .n { font-size: 0.75rem; color: var(--muted); }
 
 .schart svg.chart + svg.chart { margin-top: 6px; }
+
+ol.events { margin: 14px 0 6px; padding-left: 22px; font-size: 0.88rem; }
+ol.events li { margin-bottom: 8px; }
+ol.events li::marker { font-weight: 600; }
+ol.events .ev-k { color: var(--muted); font-size: 0.8rem; }

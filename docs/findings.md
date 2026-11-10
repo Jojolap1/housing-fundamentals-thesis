@@ -89,6 +89,27 @@ uses one standard deviation, chosen before this calibration; at that level about
 thresholds are stricter. The rule has not been changed; no signal would change if it were,
 since every current ratio is below one standard deviation.
 
+**Housing crises only.** A real fall of 15% can come from inflation alone, with sale prices
+flat. Two stricter definitions were run next to the baseline, without replacing it:
+
+| Definition of a bust | Busts in the panel | Median real fall | Median nominal fall | Median time to the trough |
+|---|---|---|---|---|
+| Baseline: real fall of at least 15% | 66 | −30% | −11% | 23 quarters |
+| Crash: real fall of at least 15% and nominal fall of at least 10% | 33 | −36% | −21% | 25 quarters |
+| Major: real fall of at least 25% | 46 | −35% | −17% | 25 quarters |
+
+Half of the baseline busts are not crashes in sale prices. On crashes only:
+
+| Ratio | Threshold (z-score) | Pre-crash quarters flagged | Other quarters flagged | Crashes flagged before their peak | Flagged quarters that were pre-crash |
+|---|---|---|---|---|---|
+| Price-to-income (13 crashes with enough history) | 1.5 | 66% | 21% | 77% | 15% |
+| Price-to-rent (16 crashes) | 2.0 | 51% | 11% | 63% | 24% |
+
+The picture does not change: the median z-score at the peak stays close to 2 (2.0 and 2.2),
+the price-to-income threshold stays at 1.5, the price-to-rent threshold rises to 2.0, and most
+flagged quarters are still not followed by a crash. With 13 to 16 events these figures are
+fragile. No market studied here is above any of these thresholds today.
+
 **Where Paris and Singapore stand** (same z-score, against each market's own past):
 
 | Market | Ratio | Latest z-score | Threshold | Highest on record | Last time above the threshold |
@@ -124,6 +145,31 @@ private market has fallen much harder and faster than Paris (−42% in ten quart
 1996, −26% in four quarters from 2008), while Paris adjusts through long, shallow declines.
 Ratio z-scores exist for only three of these peaks (the income and rent series are too
 short before 2010), so this record cannot test the thresholds on Singapore.
+
+**What happened at each turning point.** The city pages chart the official index and the
+ratios with these dates marked (`src/viz/events.py`). Each line states what the sources read
+say happened around the date; it is a coincidence in time, not a cause estimated here.
+
+| Market | Turning point | What the sources document | Sources |
+|---|---|---|---|
+| Paris | 1992 Q1 (series start) | End of the 1985–1991 boom in Île-de-France, described as a speculative bubble; real prices in Paris down nearly 46% between 1991 and 1997 | Revue Banque (2005); Grjebine, CEPII (2013) |
+| Paris | 2008 Q3 | Global financial crisis; short fall, prices rising again by end 2009 | Notaires de Paris-Île-de-France, 23 Feb 2012 |
+| Paris | 2011 Q3 | Euro-area sovereign debt crisis and tighter lending; capital-gains tax reform of 1 Feb 2012 | FNAIM, 3 Jan 2012; Notaires de Paris-Île-de-France, Feb 2012 |
+| Paris | 2020 Q3 | Fall attributed by the notaries to the rise in mortgage rates from early 2022; the 2020–2021 part has no verified cause | Notaires du Grand Paris, 7 Sept 2023 (as reported) |
+| Private | 1981 Q2 | Pension savings opened to private purchases in 1981; fall spans the 1985 recession | Stacked Homes (secondary); SG101 |
+| Private | 1996 Q2 | Anti-speculation package of 14 May 1996, then the Asian financial crisis; trough 45% below the peak | BIS Papers No 64; Singapore Government, 18 Nov 1997 |
+| Private | 2000 Q2 | Dot-com bust, 2001 recession, SARS | NUS IREUS study (as reported) |
+| Private | 2008 Q1 | Global financial crisis; index down about a quarter | BIS Papers No 64 |
+| Private | 2013 Q3 | Higher buyer's stamp duty (Jan 2013), cap on total debt service (June 2013) | Stacked Homes (secondary); PropNex (secondary) |
+| Private | 2021 Q1 | Price-to-rent peak; rents then outgrew prices; no cause verified | own series |
+| HDB | 1996 Q4 | Asian financial crisis, then the 2001 recession; no source specific to resale flats | BIS Papers No 64 |
+| HDB | 2013 Q2 | Repayments capped at 30% of income (Jan 2013), shorter loan terms (Aug 2013) | Stacked Homes (secondary); PropNex (secondary) |
+
+Read across markets: the large falls came with a financial or economic crisis (Paris 1991,
+Singapore 1985, 1997, 2008); the milder ones with a tax or lending rule (Paris 2012,
+Singapore 2013) or a rise in interest rates (Paris 2022). Several entries rest on secondary
+sources and are marked as such; the Singapore measures should be re-read in the official
+MAS, MND and HDB releases before the thesis is submitted.
 
 ## What can be said firmly
 

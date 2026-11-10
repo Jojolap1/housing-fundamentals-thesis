@@ -284,3 +284,112 @@ def cross_section(city: str) -> str:
   <th>Check 1</th><th class="num">Loan rate</th><th class="num">Price / capacity</th><th>Check 2</th></tr></thead>
   <tbody>{rows}</tbody></table></div></details>
 </div>"""
+
+
+HIST = [("price", "var(--series-market)"), ("price_to_income", "var(--series-strat)"),
+        ("price_to_rent", "var(--series-official)")]
+HIST_LABEL = {"price_to_income": "Price-to-income ratio", "price_to_rent": "Price-to-rent ratio"}
+
+
+def _quarters(first: str, last: str) -> list[str]:
+    out, (y, q) = [], (int(first[:4]), int(first[5]))
+    while f"{y}Q{q}" <= last:
+        out.append(f"{y}Q{q}")
+        y, q = (y, q + 1) if q < 4 else (y + 1, 1)
+    return out
+
+
+def history_section(city: str) -> str:
+    """Long-run official price index and valuation ratios (own average = 100), with the turning
+    points numbered and the documented events of each date listed underneath."""
+    from src.viz.events import EVENTS, KIND
+
+    f = PROCESSED / "ratio_series.csv"
+    if not f.exists() or city not in EVENTS:
+        return ""
+    d = pd.read_csv(f, dtype={"period": str})
+    d = d[d["city"] == city]
+    if d.empty:
+        return ""
+    raw = {k: g.set_index("period")["value"] for k, g in d.groupby("series")}
+    annual = {k: len(v.index[0]) == 4 for k, v in raw.items()}
+    qs = [p for k, v in raw.items() for p in (v.index if not annual[k] else [f"{y}Q1" for y in v.index] + [f"{y}Q4" for y in v.index])]
+    periods = _quarters(min(qs), max(qs))
+    pos = {p: i for i, p in enumerate(periods)}
+    N = len(periods)
+    W, m = 920, {"l": 52, "r": 16, "t": 34, "b": 26}
+    X = lambda i: m["l"] + (i + 0.5) * (W - m["l"] - m["r"]) / N  # noqa: E731
+
+    # values per quarter for the read-out; drawing points (annual figures sit mid-year)
+    vals, pts = {}, {}
+    for k, v in raw.items():
+        s = v if k == "price" else v / v.mean() * 100
+        if annual[k]:
+            vals[k] = [float(s[p[:4]]) if p[:4] in s.index else None for p in periods]
+            pts[k] = [(pos[f"{y}Q2"] + 0.5, float(x)) for y, x in s.items() if f"{y}Q2" in pos]
+        else:
+            vals[k] = [float(s[p]) if p in s.index else None for p in periods]
+            pts[k] = [(pos[p], float(x)) for p, x in s.items()]
+    events = [e for e in EVENTS[city] if e[0] in pos]
+    years = [i for i, p in enumerate(periods) if p.endswith("Q1") and int(p[:4]) % 5 == 0]
+
+    def panel(keys: list[str], H: int, title: str, ref: float | None, marks: bool) -> str:
+        allv = [y for k in keys for _, y in pts[k]]
+        ticks = _ticks(min(allv), max(allv))
+        step = ticks[1] - ticks[0] if len(ticks) > 1 else 10
+        lo, hi = min(ticks[0], math.floor(min(allv) / step) * step), max(ticks[-1], math.ceil(max(allv) / step) * step)
+        ticks = [lo + k * step for k in range(int(round((hi - lo) / step)) + 1)]
+        Y = lambda v: H - m["b"] - (v - lo) / (hi - lo) * (H - m["t"] - m["b"])  # noqa: E731
+        g = [f'<text x="{m["l"]}" y="12" style="font-weight:600;fill:var(--text-primary)">{title}</text>']
+        g += [f'<line x1="{m["l"]}" x2="{W - m["r"]}" y1="{Y(t):.1f}" y2="{Y(t):.1f}" stroke="var(--grid)"/>'
+              f'<text x="{m["l"] - 8}" y="{Y(t) + 4:.1f}" text-anchor="end">{t:g}</text>' for t in ticks]
+        g += [f'<text x="{X(i):.1f}" y="{H - 8}" text-anchor="middle">{periods[i][:4]}</text>' for i in years]
+        if ref is not None:
+            g.append(f'<line x1="{m["l"]}" x2="{W - m["r"]}" y1="{Y(ref):.1f}" y2="{Y(ref):.1f}" stroke="var(--muted)" stroke-dasharray="2 3"/>')
+        for n, e in enumerate(events, 1):
+            x = X(pos[e[0]])
+            g.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="{m["t"] + (7 if marks else -12)}" y2="{H - m["b"]}" stroke="var(--muted)" stroke-dasharray="3 3" opacity="0.7"/>')
+            if marks:
+                g.append(f'<circle cx="{x:.1f}" cy="{m["t"] - 2}" r="9" fill="var(--surface-1)" stroke="var(--text-primary)"/>'
+                         f'<text x="{x:.1f}" y="{m["t"] + 2}" text-anchor="middle" style="font-weight:600;fill:var(--text-primary);font-size:11px">{n}</text>')
+        for k, color in HIST:
+            if k in keys:
+                path = " ".join(f"{'M' if j == 0 else 'L'}{X(i):.1f},{Y(y):.1f}" for j, (i, y) in enumerate(pts[k]))
+                g.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="2" stroke-linejoin="round"/>')
+                if marks:
+                    g += [f'<circle cx="{X(pos[e[0]]):.1f}" cy="{Y(vals[k][pos[e[0]]]):.1f}" r="3.5" fill="{color}" stroke="var(--surface-1)" stroke-width="1.5"/>'
+                          for e in events if vals[k][pos[e[0]]] is not None]
+        g.append(f'<line class="xh" y1="{m["t"]}" y2="{H - m["b"]}" stroke="var(--muted)" visibility="hidden"/>'
+                 f'<rect class="hit" x="{m["l"]}" y="0" width="{W - m["l"] - m["r"]}" height="{H}" fill="transparent"/>')
+        return f'<svg class="chart" viewBox="0 0 {W} {H}" role="img" aria-label="{title}">{"".join(g)}</svg>'
+
+    ratios = [k for k, _ in HIST if k in raw and k != "price"]
+    svgs = panel(["price"], 250, OFFICIAL[city] + " (index, not adjusted for inflation)", None, True)
+    if ratios:
+        svgs += panel(ratios, 220, "Valuation ratios, each relative to its own average (average = 100)", 100, False)
+    labels = {"price": "Official price index", **HIST_LABEL}
+    data = {"W": W, "l": m["l"], "r": m["r"], "periods": periods,
+            "series": [{"label": labels[k], "color": c, "values": [None if x is None else round(x, 1) for x in vals[k]]}
+                       for k, c in HIST if k in raw]}
+    swatch = lambda c: f'<span class="sw" style="background:{c};height:3px;vertical-align:middle"></span>'  # noqa: E731
+    legend = "".join(f'<span class="cls">{swatch(c)} {labels[k]}</span>' for k, c in HIST if k in raw)
+    items = "".join(
+        f"<li><b>{e[0].replace('Q', ' Q')} · {e[2]}</b> <span class='ev-k'>({KIND[e[1]].lower()})</span><br>{e[3]}"
+        + ("<br><span class='ev-k'>Sources: " + "; ".join(f'<a href="{u}">{t}</a>' for t, u in e[4]) + ".</span>" if e[4] else "")
+        + "</li>" for e in events)
+    rows = "".join(f"<tr><td>{p.replace('Q', ' Q')}</td>" + "".join(f"<td class='num'>{_num(vals[k][i])}</td>" for k, _ in HIST if k in raw) + "</tr>"
+                   for i, p in enumerate(periods) if p.endswith("Q4") or i == N - 1)
+    head = "".join(f"<th class='num'>{labels[k]}</th>" for k, _ in HIST if k in raw)
+    return f"""
+<h2>Prices and ratios through past cycles</h2>
+<div class="card">
+  <div class="legend">{legend}</div>
+  <div class="schart">{svgs}<script type="application/json">{json.dumps(data)}</script></div>
+  <ol class="events">{items}</ol>
+  <p class="note">Numbers mark turning points of the series; the text gives what the sources say happened around each date.
+  These are coincidences in time documented by the sources listed, not causal estimates of this project, and several
+  explanations can hold at once. Ratios are divided by their own average over the period shown, so 100 means "usual for
+  this market", not "fair value".</p>
+  <details><summary>Table view, fourth quarter of each year</summary><div class="table-scroll"><table><thead><tr><th>Quarter</th>
+  {head}</tr></thead><tbody>{rows}</tbody></table></div></details>
+</div>"""

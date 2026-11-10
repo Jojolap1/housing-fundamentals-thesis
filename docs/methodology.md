@@ -353,6 +353,16 @@ this step measures what the ratios looked like before past busts.
 - **Application:** the same z-score for Paris and Singapore, and the list of every fall of
   at least 10% of the three official indices with the ratios at the peak.
 
+- **Variants:** two stricter definitions are computed side by side with the baseline: "crash"
+  (real fall of at least 15% and nominal fall of at least 10%, so that inflation alone does
+  not make a bust) and "major" (real fall of at least 25%). All three are reported; none is
+  selected after the fact.
+- **Turning points:** `src/viz/events.py` lists, for each turning point of the three official
+  indices, the event documented by the sources read, with its source. The chart on the city
+  pages (`history_section`) plots the official index and each ratio divided by its own
+  average, and numbers these dates. The entries document coincidences in time; no causal
+  effect is estimated.
+
 The calibrated thresholds are reported next to the verdict; the verdict rule is unchanged.
 
 The price-to-income and price-to-rent ratios follow common practice in institutional
