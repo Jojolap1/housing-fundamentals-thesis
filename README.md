@@ -2,7 +2,12 @@
 
 *A machine-learning and rent-capitalisation approach to residential valuation — Paris and Singapore.*
 
-> **Status: work in progress.** Paris, Singapore HDB and Singapore private (URA) are built. Under way: data-licence checks, robustness of the valuation gaps to the rate assumption, and the Kaggle dataset.
+> **Status: work in progress.** Paris, Singapore HDB and Singapore private (URA) are built.
+> Added on 2026-11-10, **code and unit tests only**: robust cell statistics (bootstrap CI,
+> shrinkage), quality-adjusted price indices, explosive-root tests and the verdict rule. Their
+> outputs are not in the repository yet, apart from `data/processed/verdict.csv`, which so far
+> rests on the user-cost anchor alone: run `make indices` and `make verdict` on a machine that
+> holds the raw data. Also open: data-licence checks (URA) and the Kaggle dataset.
 
 Hedonic and ML models trained on transaction prices estimate **market** value. They cannot
 tell whether market value is justified. This project anchors **fundamental** value on rents
@@ -48,7 +53,15 @@ make data      # download all sources into data/raw (about 1 GB transferred, ~1-
 ```
 
 ```bash
+make indices   # robust statistics (bootstrap CI, shrinkage) and price indices
+```
+
+```bash
 make models    # clean, harmonise, features, ratios, models, valuation
+```
+
+```bash
+make verdict   # explosive-root tests, price-to-rent dynamics, verdict table
 ```
 
 ```bash
@@ -71,11 +84,14 @@ data/processed/   published aggregates (n >= 5 per cell), cleaning logs, model t
 src/ingest/       download scripts (DVF, Paris open data, IGN, IDFM, data.gov.sg, OneMap, ECB, SingStat)
 src/clean/        harmonised schema, cleaning rules, removal log
 src/features/     distances, building period, matched rents
-src/ratios/       price/rent/yield/price-to-income by level; user cost, V*, valuation gap, sensitivity
+src/ratios/       price/rent/yield/price-to-income by level; user cost, V*, valuation gap, sensitivity;
+                  robust statistics (mean, trimmed mean, bootstrap CI, shrunk medians)
+src/indices/      hedonic time-dummy, stratified-median and repeat-sales price indices; volume index
+src/valuation/    SADF/GSADF explosive-root tests, price-to-rent dynamics, verdict rule
 src/models/       OLS (district FE, robust SEs, Moran's I), Random Forest, LightGBM, SHAP
 src/viz/          site data export and page generation
 site/             static site (MapLibre GL), deployed by .github/workflows/pages.yml
-docs/             data_audit.md, methodology.md, limitations.md
+docs/             data_audit.md, methodology.md (with references), limitations.md
 notebooks/        Kaggle notebook
 tests/            schema, sanity and privacy checks
 ```

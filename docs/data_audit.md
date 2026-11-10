@@ -92,7 +92,7 @@ more data than blocks while still respecting n ≥ 5.
 
 1. **Paris time window is only 2021 H2 to 2026 H1.** "5-year change" can only be computed between the
    2021 H2 and 2026 H1 half-years, which is less than 5 full years. A longer history would need DVF+
-   (Cerema), which is not open data, or archived pre-2021 DVF copies, which the 5-year rule makes legally
+   (Cerema; **corrected in §10: DVF+ open-data is listed as open, 2014 to 2025, to be tested**), or archived pre-2021 DVF copies, which the 5-year rule makes legally
    doubtful to republish. I propose: YoY changes plus a "2022 → 2025" change, labelled honestly.
 2. **DVF has no construction period, yet the reference rents depend on it.** Options:
    - (a) add building construction year from the BDNB (CSTB, open licence) or the IGN BD TOPO building
@@ -194,3 +194,23 @@ Côn Đảo special zone** of the new Ho Chi Minh City. Numbering is complete in
 excluded. Checks against published figures: the maximum residential value is VND 687.2
 million/m² (Đồng Khởi, Nguyễn Huệ, Lê Lợi) and the zone-3 maximum VND 149.48 million/m²
 (Thùy Vân), both as announced. These remain administrative land values, not market prices.
+
+## 10. Addendum: review of 2026-11-10
+
+Checked on official pages on 2026-11-10. Nothing below was downloaded on that date: the
+review environment could not reach the data hosts, so file contents remain to be confirmed.
+
+| Topic | Finding | Status |
+|---|---|---|
+| **DVF+ open-data** (Cerema / DGALN) | Listed on data.gouv.fr under Licence Ouverte 2.0, temporal coverage "2014 à 2025", updated twice a year (https://www.data.gouv.fr/datasets/dvf-open-data). §6.1 above called DVF+ "not open data"; that describes DV3F, the enriched restricted base, not DVF+ open-data | **To test:** do the files contain 2014 to 2020 for département 75, and how do the DGFiP reuse terms apply outside the 5-year window? If confirmed, Paris gains about seven years of history |
+| Notaires-INSEE, existing apartments, Paris | Quarterly hedonic index, series published from 1991 Q1 (INSEE Méthodes n°132, 2019) | Series identifier not verified: manual download, see `src/ingest/official_indices.py` |
+| URA private residential property price index | data.gov.sg `d_97f8a2e995022d311c6c68cfda6d034c`, quarterly from 1975 Q1, stratified hedonic regression | Download script written, not run |
+| HDB resale price index (1Q2009 = 100) | data.gov.sg `d_14f63e595975691e7c24a27ae4c07c79`, quarterly | Start date not checked; script written, not run |
+| URA private residential rental index | data.gov.sg `d_8e4c50283fb7052a391dfb746a05c853`, quarterly from 2004 Q1, private homes only | Script written, not run |
+| Long rent series for Paris | None identified | Open: without one, no Paris price-to-rent test |
+| HDB resale before 2017 | Collection 189 on data.gov.sg goes back to January 1990 (approval date before March 2012, registration date after) | Not ingested: dataset identifiers and schemas of the older files to confirm |
+| Census 2020 income table | `d_2d6793de474551149c438ba349a108fd` is adapted from SingStat table CT/17779; the copy `d_4e150bbd…` notes an update for Additional MediSave contributions, the likely source of the small band differences noted in §2 | To confirm on SingStat |
+| INSEE Filosofi | 2021 is the last vintage of the original scheme; "Filosofi 2" starts with the 2023 vintage (local indicators published May 2026, restricted release); no 2022 vintage | IRIS-level availability for 2023 not verified |
+| URA Data Service terms | Still not read on an official page | Blocks publication of URA-derived aggregates |
+| One source for all cities | None. BIS residential property price statistics are indices by country, not transactions | Conclusion of §1 stands |
+| Tier 2 | HM Land Registry Price Paid Data (from 1995, Open Government Licence v3.0, attribution required, third-party rights in address fields excluded); NYC Department of Finance rolling sales (last 12 months) and annualised sales (from 2003) | Sources exist; not started |

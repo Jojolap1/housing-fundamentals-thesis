@@ -82,3 +82,29 @@ These are stated plainly because they bound what the results can say.
 - URA serves developer sales for about the last three years only (from November 2023).
 - Paris incomes are held at their 2021 level (Filosofi), so the Paris rent-to-income trend
   is overstated by income growth since 2021.
+
+## Robust statistics, indices and tests (added 2026-11-10)
+- **Status.** These modules are tested on synthetic data only (`tests/test_indices_valuation.py`).
+  Their outputs on the real data have not been produced yet, so nothing here has been
+  compared with an official index so far.
+- **Verdicts are inconclusive for now.** `verdict.csv` currently rests on the user-cost
+  anchor alone (share of sensitivity-grid cells with a positive gap in 2025: Paris 86%,
+  Singapore private 87%, HDB 19%). One anchor cannot give a verdict under the rule.
+- **Bootstrap intervals** treat the sales of a cell as independent draws; sales in the same
+  building or project are not, so intervals are somewhat too narrow. For very small cells
+  the bootstrap distribution of a median is coarse.
+- **Shrinkage** assumes the cells of a parent are exchangeable. A street that truly differs
+  from its arrondissement and has few sales is pulled towards it: the shrunk map is smoother
+  than reality, which is why raw values stay published.
+- **Hedonic indices** hold observed characteristics constant, not condition, view or energy
+  class. The pooled version fixes the characteristic prices over the whole period.
+- **Repeat-sales.** Paris: at most five years of DVF, so few dwellings sell twice and those
+  that do (short holding periods) are not representative. Singapore: no unit identifier, so
+  only a pseudo repeat-sales index on a proxy unit, where two different flats can be paired.
+- **Explosive-root tests** use nominal official indices, a fixed lag order of 0 and simulated
+  critical values; they date explosive episodes at city level and say nothing about streets
+  or about the level of fundamental value. No long rent series has been found for Paris, so
+  the price-to-rent version runs for Singapore private housing only.
+- **Paris window.** DVF+ open-data is listed as covering 2014 to 2025 (see the data audit,
+  §10). Until that is tested, all Paris results rest on July 2021 to June 2026.
+- **HDB history before 2017** is not ingested, so the HDB index starts in 2017.

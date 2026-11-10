@@ -17,11 +17,14 @@ varied assumptions. It is never a premise.
 | Clean + harmonise | `src/clean/paris.py`, `src/clean/singapore.py` | `data/interim/transactions_<city>.parquet` (common schema), `data/processed/cleaning_log_<city>.csv` |
 | Features | `src/features/build.py` | distances, building period, matched rents |
 | Ratios | `src/ratios/levels.py` | `data/processed/stats_<city>_<level>.csv` |
+| Robust statistics | `src/ratios/robust.py` | `data/processed/robust_<city>_<level>.csv` (mean, trimmed mean, bootstrap CI, shrunk median) |
+| Price indices | `src/indices/run.py` | `data/processed/index_<city>.csv`, `index_validation_<city>.csv` |
 | Models | `src/models/hedonic.py` | `reports/tables/model_comparison_*.csv`, OLS coefficients, SHAP figures |
 | Valuation | `src/ratios/valuation.py` | `data/processed/valuation_*`, `sensitivity_*`, `fundamental_vs_market_*` |
+| Tests and verdict | `src/valuation/run.py` | `data/processed/explosive_*.csv`, `price_rent_*.csv`, `verdict.csv` |
 | Site | `src/viz/export.py`, `src/viz/pages.py` | `site/` |
 
-`make data && make models && make site` reproduces everything. The random seed is fixed
+`make data && make indices && make models && make verdict && make site` reproduces everything. The random seed is fixed
 (`src/config.py`), and package versions are written to `data/processed/package_versions.json`.
 
 ## 3. Harmonised schema
@@ -193,3 +196,127 @@ Reading the two pillars together:
 | Paris | above (baseline) | volumes −27% 2022→2024 against prices −10% | a stuck market adjusting through quantities |
 | Singapore private | above (baseline) | volumes +23%, prices +25% 2022→2025; ~5 months of supply | demand-driven boom |
 | Singapore HDB | below (baseline) | stable turnover | regulated market; arbitrage restricted |
+
+## 9. What each tool can and cannot say
+
+| Tool | Answers | Does not answer |
+|---|---|---|
+| Hedonic / ML model on sale prices (§6) | What does a dwelling like this sell for today? Which streets are dear or cheap **relative to comparable dwellings**? | Whether the market as a whole is too dear: a model fitted to prices reproduces any general overvaluation |
+| Rent capitalisation at the user cost (§7) | Is the price consistent with current rents under stated r_f, γ and g? | Whether rents themselves are sustainable (rent is a necessity, and it is regulated in both cities); the answer changes sign inside the plausible range of r_f − g |
+| Affordability ratios (§5, §8) | How many years of income, what share of income? | A "fair" level, without a history or a benchmark |
+| Price-to-rent dynamics (§11) | Is the ratio far from its own history, and do prices tend to correct? | The level of fundamental value |
+| Explosive-root tests (§11) | Did the series behave explosively, and when? | Why; and nothing below city level |
+
+No single tool is treated as decisive. §12 combines them under a rule fixed in advance.
+
+## 10. Composition and small samples
+
+A raw average by neighbourhood moves with **which** dwellings happen to sell and, in small
+cells, with a single sale: 100 sales at €1,000/m² and one at €2,000/m² give a mean of
+€1,010 but a median of €1,000. Three devices deal with this.
+
+**Cell statistics** (`src/ratios/robust.py`). For every cell and year: n, median, mean, 10%
+trimmed mean, IQR, and a 95% percentile-bootstrap confidence interval of the median (1,000
+resamples, fixed seed). Maps use the median.
+
+**Thresholds.** Street and hexagon cells need n ≥ 5 and are otherwise not published at all
+(DVF reuse terms). District and neighbourhood cells need n ≥ 20 for a full set of
+statistics; with 5 ≤ n < 20 they are published "greyed", with the count only.
+
+**Shrinkage.** The log median θ_i of a small cell is pulled towards the log median μ_p of
+its parent (street → arrondissement or planning area; quartier or subzone → arrondissement
+or planning area; these → city):
+
+    shrunk_i = μ_p + w_i (θ_i − μ_p),   w_i = τ²_p / (τ²_p + v_i)
+
+where v_i is the bootstrap variance of θ_i and τ²_p the dispersion of true cell medians
+inside the parent, estimated by a precision-weighted method of moments. A cell with few
+sales has a large v_i and moves towards its parent; a cell with many sales keeps its
+value. Raw and shrunk values are both published, with the weight w_i. This is a standard
+empirical-Bayes (random-effects) estimator; no specific paper is cited for it here because
+the reference has not yet been checked.
+
+**Quality-adjusted indices** (`src/indices/`), quarterly, first quarter = 100:
+
+| Index | Method | Controls for | Weakness |
+|---|---|---|---|
+| Hedonic time-dummy (Hill 2013; Eurostat 2013) | log price/m² on quarter dummies and characteristics; pooled, and rolling 5-quarter windows chained on the last change | observed characteristics (size, rooms or flat type, location, building period, storey, remaining lease) | unobserved quality (condition, view, energy class) |
+| Stratified median (Prasad & Richards 2008) | fixed-weight geometric mean of strata medians; strata = arrondissement × rooms (Paris), HDB town × flat type, planning area (private) | the mix of strata sold | mix changes inside a stratum |
+| Repeat-sales (Bailey, Muth & Nourse 1963; Case & Shiller 1989) | price changes of dwellings sold twice; Case-Shiller weights | everything constant within a dwelling | uses only resold dwellings; needs a dwelling identifier |
+| Volume | number of retained sales per quarter | – | a liquidity measure, not a price |
+
+Dwelling identifier: in Paris, cadastral parcel + lot number. HDB and URA publish no unit
+number, so the Singapore series is a **pseudo repeat-sales** index on a proxy unit (block ×
+flat type × storey band × floor area; project × floor area × storey band) and is labelled
+as such. Each index is compared with the official index of the market (Notaires-INSEE for
+Paris apartments, HDB resale price index, URA private residential price index) on the
+common quarters: correlation of quarterly changes and gap in cumulative change
+(`index_validation_<city>.csv`). Differences are reported, not adjusted away.
+
+## 11. Dynamics: price-to-rent and explosive roots
+
+**Price-to-rent** (`src/valuation/price_rent.py`). Following Gallin (2008), and the
+present-value logic of Campbell & Shiller (1988), k-quarter changes in log prices and log
+rents are regressed on the lagged log rent-price ratio (k = 16). A positive coefficient in
+the price equation means prices correct towards rents. Newey-West standard errors with k−1
+lags are reported; Gallin shows that such regressions are biased in small samples and
+uses a bootstrap, so the t-values are indicative. The z-score of the latest log
+price-to-rent ratio in its own history is also reported.
+
+**Explosive roots** (`src/valuation/explosive.py`). SADF and GSADF statistics and the
+backward sup ADF (BSADF) date-stamping of Phillips, Shi & Yu (2015), applied to housing as
+in Pavlidis et al. (2016). Settings: series in logs; Dickey-Fuller regression with a
+constant and no lagged differences; minimum window 0.01 + 1.8/√T of the sample; critical
+values from 999 simulated random walks with drift 1/T and a fixed seed; an episode needs
+BSADF above its 95% critical value for at least log(T) quarters.
+
+- *Advantage:* no level of fundamental value is needed, so the test does not inherit the
+  weaknesses of the rent anchor.
+- *Limits:* it needs a long, regular series, so it runs on city-level official indices
+  (Notaires-INSEE from 1991, URA from 1975, HDB resale price index), never on streets; an
+  explosive price can reflect explosive fundamentals, so the test is also run on the
+  price-to-rent ratio where a rent index exists (Singapore private, from 2004); indices are
+  nominal; results depend at the margin on the minimum window and the lag order.
+
+## 12. Verdict rule
+
+Fixed before the results (`src/valuation/verdict.py`). Each anchor gives +1 (prices above
+fundamentals), 0, −1 or "not run":
+
+| Anchor | Rent-based | +1 when |
+|---|---|---|
+| User cost | yes | the gap is positive in at least 80% of the defined sensitivity-grid cells of the latest full year (−1 when in at most 20%) |
+| Price-to-rent | yes | the latest log ratio is more than one standard deviation above its historical mean |
+| Explosive root | no | GSADF rejects at 5% and a dated episode includes the latest quarter |
+| Affordability | no | price-to-income more than one standard deviation above its history (not run without a history) |
+
+- **Evidence of deviation:** at least three anchors at +1, one of them not rent-based.
+- **Consistent with fundamentals:** at least two anchors run, none at +1, user cost at −1.
+- **Inconclusive:** everything else.
+
+The thresholds (80%, one standard deviation) are conventions. `verdict.csv` lists, for
+each market, the signals, the anchors that agree and those that could not be run, with the
+reason. Liquidity (§8) is reported next to the verdict; it is not an anchor.
+
+## References
+
+Checked on 2026-11-10 (authors, year, journal, volume and pages; DOI where given).
+
+- Bailey, M. J., Muth, R. F., Nourse, H. O. (1963). A regression method for real estate price index construction. *Journal of the American Statistical Association* 58(304), 933–942. doi:10.1080/01621459.1963.10480679
+- Campbell, J. Y., Shiller, R. J. (1988). The dividend-price ratio and expectations of future dividends and discount factors. *Review of Financial Studies* 1(3), 195–228. doi:10.1093/rfs/1.3.195
+- Case, K. E., Shiller, R. J. (1989). The efficiency of the market for single-family homes. *American Economic Review* 79(1), 125–137. (No DOI found; NBER Working Paper 2506.)
+- Eurostat, ILO, IMF, OECD, UNECE, World Bank (2013). *Handbook on Residential Property Prices Indices (RPPIs)*. Luxembourg: Publications Office of the European Union. ISBN 978-92-79-25984-5. doi:10.2785/34007
+- Gallin, J. (2008). The long-run relationship between house prices and rents. *Real Estate Economics* 36(4), 635–658. doi:10.1111/j.1540-6229.2008.00225.x
+- Genesove, D., Mayer, C. (2001). Loss aversion and seller behavior: evidence from the housing market. *Quarterly Journal of Economics* 116(4), 1233–1260. (DOI not confirmed.)
+- Glaeser, E. L., Gottlieb, J. D., Gyourko, J. (2013). Can cheap credit explain the housing boom? In E. L. Glaeser and T. Sinai (eds.), *Housing and the Financial Crisis*, University of Chicago Press, 301–359. (Book chapter; NBER Working Paper 16230.)
+- Hill, R. J. (2013). Hedonic price indexes for residential housing: a survey, evaluation and taxonomy. *Journal of Economic Surveys* 27(5), 879–914. (DOI not confirmed.)
+- Himmelberg, C., Mayer, C., Sinai, T. (2005). Assessing high house prices: bubbles, fundamentals and misperceptions. *Journal of Economic Perspectives* 19(4), 67–92. doi:10.1257/089533005775196769
+- Pavlidis, E., Yusupova, A., Paya, I., Peel, D., Martínez-García, E., Mack, A., Grossman, V. (2016). Episodes of exuberance in housing markets: in search of the smoking gun. *Journal of Real Estate Finance and Economics* 53(4), 419–449. doi:10.1007/s11146-015-9531-2
+- Phillips, P. C. B., Shi, S., Yu, J. (2015). Testing for multiple bubbles: historical episodes of exuberance and collapse in the S&P 500. *International Economic Review* 56(4), 1043–1078. doi:10.1111/iere.12132
+- Poterba, J. M. (1984). Tax subsidies to owner-occupied housing: an asset-market approach. *Quarterly Journal of Economics* 99(4), 729–752. doi:10.2307/1883123
+- Prasad, N., Richards, A. (2008). Improving median housing price indexes through stratification. *Journal of Real Estate Research* 30(1), 45–72. doi:10.1080/10835547.2008.12091213
+- Stein, J. C. (1995). Prices and trading volume in the housing market: a model with down-payment effects. *Quarterly Journal of Economics* 110(2), 379–406. (DOI not confirmed.)
+
+Methods used without a checked reference, to be completed before submission: empirical-Bayes
+shrinkage, spatial block cross-validation, SHAP values, Moran's I, Duan smearing, Newey-West
+standard errors.
