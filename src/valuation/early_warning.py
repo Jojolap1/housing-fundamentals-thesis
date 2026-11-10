@@ -250,6 +250,11 @@ def run() -> None:
             for k, z in zs.items():
                 row[f"z_{k}_at_peak"] = _z_at(z, b["peak"])
             record_rows.append(row)
+    # the series themselves (indices and ratios of indices: aggregates, no transaction data), for the charts
+    series = [pd.DataFrame({"city": city, "series": k, "period": [str(p) for p in v.index], "value": v.to_numpy()})
+              for city, s in cities.items() for k, v in s.items()]
+    if series:
+        pd.concat(series, ignore_index=True).round(4).to_csv(PROCESSED / "ratio_series.csv", index=False)
     pd.DataFrame(today).to_csv(PROCESSED / "early_warning_today.csv", index=False)
     pd.DataFrame(record_rows).to_csv(PROCESSED / "city_drawdowns.csv", index=False)
     pd.set_option("display.width", 250)
