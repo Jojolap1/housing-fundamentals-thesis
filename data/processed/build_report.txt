@@ -1,4 +1,4 @@
-build started 2026-11-10T13:24:57Z
+build started 2026-11-10T16:01:41Z
 Python 3.13.18
 OK    ingest_fx (0s)
 OK    ingest_rates (0s)
@@ -7,20 +7,21 @@ OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
 OK    ingest_official (0s)
 URA access key provided to the build: yes
-OK    ingest_ura (86s)
-OK    ingest_ura_geocode (106s)
-OK    ingest_ura_dev (112s)
-OK    clean_paris (4s)
-OK    clean_singapore (4s)
-OK    clean_private (4s)
-OK    features_paris (12s)
-OK    features_singapore (1s)
+OK    ingest_ura (94s)
+OK    ingest_ura_geocode (120s)
+OK    ingest_ura_dev (119s)
+OK    clean_paris (7s)
+OK    clean_singapore (7s)
+OK    clean_private (7s)
+OK    features_paris (19s)
+OK    features_singapore (3s)
 OK    features_private (1s)
-OK    levels (11s)
-OK    robust (36s)
-OK    indices (5s)
-OK    verdict (5s)
-OK    tests (3s)
+OK    levels (22s)
+OK    robust (67s)
+OK    indices (8s)
+OK    verdict (10s)
+OK    cross_checks (69s)
+OK    tests (4s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Documentation DVF+ | html | None | https://datafoncier.cerema.fr/donnees/autres-donnees-foncieres/dvfplus-open-data
@@ -34,7 +35,7 @@ oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-35505 MANIFEST.csv
+35807 MANIFEST.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
 1866 official/notaires_insee_paris_apartments.csv
@@ -57,6 +58,7 @@ oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/
 1262238 paris/loyers_reference.csv
 354392 paris/quartiers.geojson
 50969 rates/ecb_irs_fr_10y.csv
+87642 rates/ecb_mir_fr_house_purchase.csv
 97690 rates/singstat_M700071.json
 3750 singapore/census2020_hh_income_work_by_pa.csv
 3750 singapore/census2020_hh_income_work_by_pa_v2022.csv
@@ -111,7 +113,6 @@ oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/
 44855 singapore/ura/developer_sales/dev_sales_202412.json
 45272 singapore/ura/developer_sales/dev_sales_202501.json
 45037 singapore/ura/developer_sales/dev_sales_202502.json
-44244 singapore/ura/developer_sales/dev_sales_202503.json
 --- official index headers
 data/raw/official/hdb_resale_price_index.csv
 quarter,index,_id
@@ -165,4 +166,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T13:31:30Z
+build finished 2026-11-10T16:11:01Z
