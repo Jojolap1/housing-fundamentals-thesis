@@ -129,17 +129,25 @@ def validate(idx: pd.DataFrame, official: pd.Series) -> pd.DataFrame:
 def run() -> None:
     from src.ingest.official_indices import load_quarterly
     for city, cfg in CONFIG.items():
+        if not (INTERIM / f"ratios_input_{city}.parquet").exists():
+            print(city, "skipped: ratios_input file not built")
+            continue
         t = pd.read_parquet(INTERIM / f"ratios_input_{city}.parquet")
         idx, meta = build(t, cfg)
         off = RAW / "official" / cfg["official"]
+        o = None
         if off.exists():
-            o = load_quarterly(off)
+            try:
+                o = load_quarterly(off, cfg.get("official_where"))
+            except ValueError as e:
+                meta["official"] = f"not compared: {e}"
+        if o is not None:
             idx["official"] = idx["period"].map(o)
             base = idx["official"].dropna()
             if len(base):
                 idx["official"] = 100 * idx["official"] / base.iloc[0]
             validate(idx, o).to_csv(PROCESSED / f"index_validation_{city}.csv", index=False)
-        else:
+        elif "official" not in meta:
             meta["official"] = f"not compared: {off.name} not downloaded"
         idx.to_csv(PROCESSED / f"index_{city}.csv", index=False)
         (PROCESSED / f"index_meta_{city}.json").write_text(json.dumps(meta, indent=1, default=str))

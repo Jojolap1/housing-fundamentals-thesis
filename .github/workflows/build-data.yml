@@ -1,0 +1,40 @@
+name: Rebuild data (public sources)
+
+# Downloads the public sources on the runner, rebuilds the aggregates and commits them to
+# the branch the workflow ran on. Raw files and transaction-level files never leave the runner.
+on:
+  workflow_dispatch:
+  push:
+    branches: [indices-tests-verdict]
+    paths: [".github/workflows/build-data.yml", "scripts/ci_build.sh"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-data-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Download and rebuild
+        env:
+          URA_ACCESS_KEY: ${{ secrets.URA_ACCESS_KEY }}
+        run: bash scripts/ci_build.sh
+      - name: Commit aggregates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/processed data/raw/MANIFEST.csv data/raw/singapore/onemap_blocks.csv
+          git diff --cached --quiet || git commit -m "Rebuild aggregates from public sources"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

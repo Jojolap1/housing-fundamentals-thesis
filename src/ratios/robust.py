@@ -121,6 +121,9 @@ def apply_publication_rule(a: pd.DataFrame, level: str) -> pd.DataFrame:
 
 def run() -> None:
     for city in ("paris", "singapore", "singapore_private"):
+        if not (INTERIM / f"ratios_input_{city}.parquet").exists():
+            print(city, "skipped: ratios_input file not built")
+            continue
         t = pd.read_parquet(INTERIM / f"ratios_input_{city}.parquet")
         tabs = {lvl: table(t, keys + ["year"]) for lvl, keys in LEVELS.items()}
         for lvl, (plvl, pkeys) in PARENT.items():

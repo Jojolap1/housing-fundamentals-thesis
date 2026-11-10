@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Rebuild the public-data part of the pipeline on a machine with open internet access
+# (GitHub Actions runner). Raw and transaction-level files stay on the runner; only
+# aggregates in data/processed and the download manifest are committed by the workflow.
+# Every step is attempted; its exit status and, on failure, the end of its output are
+# written to data/processed/build_report.txt.
+set -u
+REPORT=data/processed/build_report.txt
+mkdir -p logs
+{ echo "build started $(date -u +%Y-%m-%dT%H:%M:%SZ)"; python --version; } > "$REPORT"
+
+step() {  # step <name> <command...>
+  local name="$1"; shift
+  local log="logs/${name}.log" t0=$SECONDS
+  if "$@" > "$log" 2>&1; then
+    echo "OK    ${name} ($((SECONDS - t0))s)" >> "$REPORT"
+  else
+    echo "FAIL  ${name} ($((SECONDS - t0))s)" >> "$REPORT"
+    tail -n 12 "$log" | cut -c1-400 | sed 's/^/        /' >> "$REPORT"
+  fi
+}
+
+step ingest_fx        python -m src.ingest.fx
+step ingest_rates     python -m src.ingest.rates
+step ingest_paris     python -m src.ingest.paris
+step ingest_singapore python -m src.ingest.singapore
+step ingest_onemap    python -m src.ingest.onemap
+step ingest_official  python -m src.ingest.official_indices
+if [ -n "${URA_ACCESS_KEY:-}" ]; then
+  step ingest_ura         python -m src.ingest.ura
+  step ingest_ura_geocode python -m src.ingest.ura_geocode
+  step ingest_ura_dev     python -c "from src.ingest.ura import developer_sales; developer_sales()"
+else
+  echo "SKIP  ura (no URA_ACCESS_KEY secret): Singapore private market not rebuilt" >> "$REPORT"
+fi
+
+step clean_paris      python -m src.clean.paris
+step clean_singapore  python -m src.clean.singapore
+if [ -n "${URA_ACCESS_KEY:-}" ]; then
+  step clean_private    python -m src.clean.singapore_private
+fi
+step features         python -m src.features.build
+if [ -n "${URA_ACCESS_KEY:-}" ]; then
+  step features_private python -c "from src.features.build import singapore_private_features as f; f()"
+fi
+step levels           python -m src.ratios.levels
+step robust           python -m src.ratios.robust
+step indices          python -m src.indices.run
+step verdict          python -m src.valuation.run
+step tests            python -m pytest -q tests
+
+{ echo "--- raw files"; find data/raw -type f -not -name '*.pdf' -printf '%s %P\n' | sort -k2 | head -80;
+  echo "--- official index headers"; for f in data/raw/official/*.csv; do [ -f "$f" ] && { echo "$f"; head -n 3 "$f" | cut -c1-300; }; done;
+  echo "build finished $(date -u +%Y-%m-%dT%H:%M:%SZ)"; } >> "$REPORT"
+exit 0

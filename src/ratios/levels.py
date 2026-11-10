@@ -217,6 +217,9 @@ def run() -> dict[str, pd.DataFrame]:
     res = {}
     for city, fn in [("paris", paris_transactions), ("singapore", singapore_transactions),
                      ("singapore_private", singapore_private_transactions)]:
+        if not (INTERIM / f"features_{city}.parquet").exists():
+            print(city, "skipped: features file not built (raw source not downloaded)")
+            continue
         t = fn()
         t.to_parquet(INTERIM / f"ratios_input_{city}.parquet", index=False)
         for level in LEVELS:
