@@ -8,6 +8,7 @@ Outputs (data/processed):
   explosive_<series>.csv     BSADF sequence against its 95% critical values
   explosive_summary.csv      SADF, GSADF, critical values, dated episodes, settings
   price_rent_<city>.csv      long-horizon regressions (where a rent index exists)
+  ratio_history.csv          price-to-income and price-to-rent: latest value against its history
   verdict.csv                one row per city / segment
 
 An anchor that cannot be run (missing file, series too short) is recorded as "not run" with
@@ -60,8 +61,58 @@ def _explosive(label: str, s: pd.Series, summary: list) -> int | None:
     return int(r["reject_gsadf_95"] and r["explosive_at_end"])
 
 
+def _annual(q: pd.Series) -> pd.Series:
+    """Annual mean of a quarterly series indexed 'YYYYQn'; years with four quarters only."""
+    g = q.groupby(q.index.str[:4].astype(int))
+    return g.mean()[g.count() == 4]
+
+
+def singapore_income() -> pd.Series:
+    """Median monthly household income from work incl. employer CPF, resident employed
+    households, annual (SingStat via data.gov.sg; the series already used for price-to-income)."""
+    n = pd.read_csv(RAW / "singapore" / "hh_income_work_national_2000_2025.csv")
+    return n.set_index(n["Dollar"].astype(int))["ResidentEmployedHouseholds_Median1"].astype(float)
+
+
+def france_denominators() -> tuple[pd.Series, pd.Series]:
+    """(income index, rent index) for France, quarterly, from the OECD indicators.
+    Income = nominal disposable income per head, recovered as HPI / price-to-income."""
+    from src.ingest.official_indices import load_oecd_france
+    o = load_oecd_france()
+    return (o["HPI"] / o["HPI_YDH"]).dropna(), o["RPI"].dropna()
+
+
+def _ratio_anchor(label: str, num: pd.Series, den: pd.Series, ratios: list, summary: list,
+                  explosive: bool = True) -> float | None:
+    """z-score of the latest log ratio in its own history; records the series; optionally
+    runs the explosive-root test on the ratio (reported, not an anchor by itself)."""
+    d = pd.concat([num.rename("p"), den.rename("r")], axis=1).dropna()
+    if len(d) < 20:
+        return None
+    z = ratio_zscore(d["p"], d["r"])
+    ratio = d["p"] / d["r"]
+    ratios.append({"series": label, "first": d.index[0], "last": d.index[-1], "n": z["n"], "z_last": z["z_last"],
+                   "last_vs_mean_pct": 100 * (ratio.iloc[-1] / ratio.mean() - 1),
+                   "last_vs_max_pct": 100 * (ratio.iloc[-1] / ratio.max() - 1),
+                   "period_of_max": ratio.idxmax()})
+    if explosive:
+        _explosive(label, ratio, summary)
+    return z["z_last"]
+
+
 def run() -> pd.DataFrame:
-    summary, rows = [], []
+    summary, rows, ratios = [], [], []
+    try:
+        fr_income, fr_rent = france_denominators()
+        fr_why = ""
+    except Exception as e:  # noqa: BLE001
+        fr_income = fr_rent = None
+        fr_why = f"OECD indicators for France not available ({str(e)[:120]})"
+    try:
+        sg_income = singapore_income()
+    except Exception as e:  # noqa: BLE001
+        sg_income = None
+        print("Singapore income series not available:", e)
     for city, (pfile, rfile) in SEGMENTS.items():
         notes, sig = [], {}
         sens = pd.read_csv(PROCESSED / f"sensitivity_{city}.csv")
@@ -89,13 +140,39 @@ def run() -> pd.DataFrame:
                 notes.append(f"price_rent regression: {e}")
             both = pd.concat([price.rename("p"), rent.rename("r")], axis=1).dropna()
             _explosive(f"{city}_price_to_rent", both["p"] / both["r"], summary)
-        sig["affordability"] = None
-        notes.append("affordability: no price-to-income history to compare the current level with")
+        # Paris: no city-level rent or income history is open, so the denominators are the
+        # national rent index and national disposable income per head (OECD).
+        if city == "paris" and price is not None:
+            if fr_rent is None:
+                notes.append(f"price_rent: {fr_why}")
+            else:
+                z = _ratio_anchor("paris_price_to_national_rent", price, fr_rent, ratios, summary)
+                sig["price_rent"] = z_signal(z)
+                notes = [n for n in notes if not n.startswith("price_rent:")]
+                notes.append("price_rent: Paris price index over the national rent index (OECD)")
+        # Affordability: price index over an income series, latest value against its history.
+        z, how = None, ""
+        if price is None:
+            how = "price index missing"
+        elif city == "paris":
+            if fr_income is None:
+                how = fr_why
+            else:
+                z = _ratio_anchor("paris_price_to_national_income", price, fr_income, ratios, summary)
+                how = "Paris price index over national disposable income per head (OECD)"
+        elif sg_income is None:
+            how = "national household income series missing"
+        else:
+            z = _ratio_anchor(f"{city}_price_to_income", _annual(price), sg_income, ratios, summary, explosive=False)
+            how = "annual price index over national median household income from work"
+        sig["affordability"] = z_signal(z)
+        notes.append(f"affordability: {how}" if z is not None else f"affordability not run: {how or 'series too short'}")
         rows.append({"city": city, "valuation_year": year, "user_cost_share_gap_positive": share,
                      **{f"signal_{k}": v for k, v in sig.items()}, **verdict(sig), "notes": " | ".join(notes)})
     out = pd.DataFrame(rows)
     out.to_csv(PROCESSED / "verdict.csv", index=False)
     pd.DataFrame(summary).to_csv(PROCESSED / "explosive_summary.csv", index=False)
+    pd.DataFrame(ratios).to_csv(PROCESSED / "ratio_history.csv", index=False)
     print(out[["city", "valuation_year", "user_cost_share_gap_positive", "verdict", "anchors_not_run"]].to_string(index=False))
     return out
 

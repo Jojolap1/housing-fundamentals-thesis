@@ -14,6 +14,10 @@ from INSEE's SDMX service; it is kept only if the title returned with the data n
 and apartments. If either step fails, nothing is written: save the series by hand under
 that name with two columns, `period` (e.g. 1991-Q1) and `index`.
 
+France, OECD analytical house price indicators (quarterly): house prices, rents, and the
+price-to-income and price-to-rent ratios, used to build the Paris affordability and
+price-to-rent histories (oecd_house_prices_fra.csv).
+
 `load_quarterly` reads any of these files into a Series indexed by 'YYYYQn'. It refuses a
 file it cannot read unambiguously rather than guessing.
 """
@@ -115,12 +119,68 @@ def paris_notaires(force: bool = False) -> None:
     print(dest.name, idbank, len(d), d["period"].iloc[0], d["period"].iloc[-1])
 
 
+OECD_FLOW = "DSD_AN_HOUSE_PRICES@DF_HOUSE_PRICES"
+OECD_MEASURES = ["HPI", "RPI", "HPI_YDH", "HPI_RPI", "RHP"]
+OECD_URLS = [  # the OECD's own service first; DBnomics (a mirror of the same dataflow) as a fallback
+    "https://sdmx.oecd.org/public/rest/data/OECD.ECO.MPD,{flow},/FRA.Q.{m}.?format=csvfile",
+    "https://sdmx.oecd.org/public/rest/data/OECD.SDD.TPS,{flow},/FRA.Q.{m}.?format=csvfile",
+]
+DBNOMICS = "https://api.db.nomics.world/v22/series/OECD/{flow}/FRA.Q.{m}.IX?observations=1"
+
+
+def oecd_france(force: bool = False) -> None:
+    """OECD analytical house price indicators for France, quarterly: nominal house price
+    index (HPI), rent price index (RPI), price-to-income (HPI_YDH), price-to-rent (HPI_RPI)
+    and real house price index (RHP). Written wide to oecd_house_prices_fra.csv."""
+    import io
+    import json
+
+    from src.ingest.http import fetch_bytes, record
+    dest = OUT / "oecd_house_prices_fra.csv"
+    if dest.exists() and not force:
+        return
+    wide, used = None, None
+    for tpl in OECD_URLS:
+        url = tpl.format(flow=OECD_FLOW, m="+".join(OECD_MEASURES))
+        try:
+            d = pd.read_csv(io.BytesIO(fetch_bytes(url, retries=3)))
+            d = d[d["TIME_PERIOD"].astype(str).str.match(r"^\d{4}-Q[1-4]$")]
+            wide = d.pivot_table(index="TIME_PERIOD", columns="MEASURE", values="OBS_VALUE", aggfunc="first")
+            used = url
+            break
+        except Exception as e:  # noqa: BLE001 - try the next address
+            print("OECD address failed:", str(e)[:200])
+    if wide is None or wide.shape[0] < 40:
+        cols = {}
+        for m in OECD_MEASURES:
+            url = DBNOMICS.format(flow=OECD_FLOW, m=m)
+            doc = json.loads(fetch_bytes(url, retries=3))["series"]["docs"][0]
+            cols[m] = pd.Series(pd.to_numeric(pd.Series(doc["value"]), errors="coerce").to_numpy(), index=doc["period"])
+        wide, used = pd.DataFrame(cols), DBNOMICS.format(flow=OECD_FLOW, m="<measure>")
+    wide = wide.reindex(columns=OECD_MEASURES).dropna(how="all")
+    wide.index.name = "period"
+    wide.to_csv(dest)
+    record(dest, used, f"OECD analytical house price indicators, France, quarterly; {len(wide)} quarters; "
+                       f"{wide.index[0]} to {wide.index[-1]}")
+    print(dest.name, len(wide), wide.index[0], wide.index[-1], used[:60])
+
+
+def load_oecd_france() -> pd.DataFrame:
+    d = pd.read_csv(OUT / "oecd_house_prices_fra.csv")
+    d["period"] = d["period"].map(to_quarter)
+    return d.set_index("period").astype(float)
+
+
 def main(force: bool = False) -> None:
     from src.ingest.singapore import table
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rid in TABLES.items():
         table(rid, OUT / name, force)
-    paris_notaires(force)
+    for fn in (paris_notaires, oecd_france):  # each one independent of the other
+        try:
+            fn(force)
+        except Exception as e:  # noqa: BLE001 - reported; the anchor is then "not run"
+            print(f"{fn.__name__} failed: {str(e)[:300]}")
 
 
 if __name__ == "__main__":

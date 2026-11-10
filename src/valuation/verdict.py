@@ -10,8 +10,10 @@ Anchors and their conventions (thresholds are conventions, stated so they can be
                 history. > +1 -> +1; < -1 -> -1; else 0.
 - explosive   (not rent-based): GSADF rejects at 5% and a dated episode includes the last
                 observation -> +1; else 0.
-- affordability (not rent-based): z-score of the latest price-to-income ratio in its own
-                history, same thresholds. Not run without a history.
+- affordability (not rent-based): z-score of the latest log price-to-income ratio in its
+                own history, same thresholds. The ratio is the official price index over an
+                income series (Singapore: national median household income from work,
+                annual; Paris: national disposable income per head, quarterly).
 
 Rule:
 - "evidence of deviation": at least three anchors at +1, one of them not rent-based;
