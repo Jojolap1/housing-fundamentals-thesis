@@ -539,6 +539,151 @@ Singapore 1985, 1997, 2008); the milder ones with a tax or lending rule (Paris 2
 Singapore 2013) or a rise in interest rates (Paris 2022). Several entries rest on secondary
 sources and are marked as such; the Singapore measures should be re-read in the official
 MAS, MND and HDB releases before the thesis is submitted.</p>
+<h2>Do sales volumes warn before prices fall?</h2>
+<p>Method: <code>docs/methodology.md</code> §15; figures: <code>volume_*.csv</code>. A ratio says a market is dear,
+not when it turns. This step adds the number of sales (Singapore) and, for France, the INSEE
+household survey on the intention to buy a dwelling within a year, which measures demand
+before any sale. Definitions were fixed before the results: volume = sales over four
+quarters; drop = at least 20% below a year earlier; a drop counts as followed by a price fall
+when a price peak leading to a fall of at least 10% lies within eight quarters either side.</p>
+<p><strong>Around the price falls that the volume series cover:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Price peak → fall</th>
+<th>Volume peak</th>
+<th>Volume at the price peak, against its own peak</th>
+<th>First drop flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HDB</td>
+<td>1996 Q4 → −30%</td>
+<td>1996 Q3 (1 quarter before)</td>
+<td>−1%</td>
+<td>none</td>
+</tr>
+<tr>
+<td>HDB</td>
+<td>2013 Q2 → −12%</td>
+<td>2010 Q3 (11 quarters before)</td>
+<td>−47%</td>
+<td>2011 Q3 (7 quarters before)</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>2008 Q2 → −26%</td>
+<td>2007 Q3 (3 quarters before)</td>
+<td>−47%</td>
+<td>2008 Q2 (same quarter)</td>
+</tr>
+<tr>
+<td>Private</td>
+<td>2013 Q3 → −10%</td>
+<td>2010 Q4 (11 quarters before)</td>
+<td>−30%</td>
+<td>2013 Q3 (same quarter)</td>
+</tr>
+</tbody>
+</table>
+<p>In three falls out of four, sales had peaked three to eleven quarters before prices and were
+30% to 47% lower by the time prices turned. The 1996 HDB peak is the exception: sales were
+still rising (+28% over a year). The private series starts in 1999 Q4 and misses the 1981
+and 1996 falls.</p>
+<p><strong>False alarms.</strong> Drop flags not followed by a price fall of at least 10%:</p>
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Drop flags</th>
+<th>Followed by a price fall</th>
+<th>Not followed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HDB (sales)</td>
+<td>4</td>
+<td>2 (2011 Q3, 2013 Q3)</td>
+<td>2000 Q2, 2003 Q3</td>
+</tr>
+<tr>
+<td>Private (all sales)</td>
+<td>6</td>
+<td>2 (2008 Q2, 2013 Q3)</td>
+<td>2001 Q3, 2003 Q1, 2019 Q2, 2022 Q4</td>
+</tr>
+<tr>
+<td>Private (resales only)</td>
+<td>6</td>
+<td>3</td>
+<td>2001 Q3, 2019 Q1, 2022 Q4</td>
+</tr>
+<tr>
+<td>France (purchase intentions)</td>
+<td>4</td>
+<td>0</td>
+<td>2004 Q3, 2008 Q3, 2013 Q1, 2022 Q4</td>
+</tr>
+</tbody>
+</table>
+<p>The count is harsher than the facts in two ways. The 2000–2003 flags in Singapore fall inside
+long declines that the rule does not count as new falls, because the 1996 peak had not been
+regained (the private index lost 21% between 2000 Q2 and 2004 Q1). And three of the four
+French flags came with a price decline in Paris that stayed under 10% (−9% from 2008 Q3,
+−6% from 2012 Q3) or arrived nine quarters after the peak (2022 Q4, during the fall). The
+clear false alarms are the private market in 2019 and 2022: sales dropped by about 30% and
+prices kept rising.</p>
+<p><strong>Purchase intentions are a weak signal for Paris.</strong> The balance of opinion moves within a
+few points (between −90 and −78 since 1986), it is national, and it turned with or after
+prices, not before: no flag within eight quarters of either Paris peak.</p>
+<p><strong>Ratio and volume together.</strong> Quarters where a ratio was above its calibrated threshold and
+a drop flag switched on, where both can be measured:</p>
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Date</th>
+<th>Ratio z-score</th>
+<th>What followed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HDB</td>
+<td>2011 Q3</td>
+<td>price-to-income 1.7</td>
+<td>price peak in 2013 Q2, then −12%</td>
+</tr>
+<tr>
+<td>Paris</td>
+<td>2004 Q3</td>
+<td>price-to-income 1.7</td>
+<td>prices kept rising</td>
+</tr>
+<tr>
+<td>Paris</td>
+<td>2008 Q3</td>
+<td>price-to-income 1.9</td>
+<td>−9% in three quarters</td>
+</tr>
+<tr>
+<td>Paris</td>
+<td>2013 Q1</td>
+<td>price-to-income 1.8</td>
+<td>−6% from 2012 Q3 to 2015 Q2</td>
+</tr>
+</tbody>
+</table>
+<p>Four cases: one fall of at least 10%, two smaller declines, one false alarm. In the private
+market the two signals never coincided (in 2019 Q2 the price-to-rent z-score was 1.71, just
+under 1.75). This is an illustration, not a test: four cases cannot establish that the pair
+works better than the ratio alone.</p>
+<p><strong>Today.</strong> No drop flag is on: HDB sales −6% over a year, private sales −14% (resales −3%),
+purchase intentions +0.5 point. With every ratio below its threshold, neither signal is on in
+any of the three markets.</p>
 <h2>What can be said firmly</h2>
 <ol>
 <li><strong>Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.</strong>
@@ -1191,6 +1336,28 @@ monitoring: the OECD publishes both ratios by country and reads them against the
 average, and the UBS Global Real Estate Bubble Index combines price-to-income and
 price-to-rent with credit, construction and city-to-country price indicators. Only the two
 valuation ratios are reproduced here; credit and construction indicators are not.</p>
+<h2>15. Sales volumes and purchase intentions</h2>
+<p><code>src/ingest/volumes.py</code>, <code>src/valuation/volumes.py</code>. Sales tend to fall before prices because
+sellers first refuse to cut. This step checks it on the markets studied.</p>
+<ul>
+<li><strong>Series:</strong> HDB resales, count per quarter from the five public files of registered resales,
+  1990 to date (approval date before March 2012, registration date since); private homes in
+  Singapore, URA quarterly count of new sales, sub-sales and resales from 1999 Q4 (caveats
+  before 2015 Q1, stamp duty records since); France, INSEE monthly household survey, balance
+  of opinion on the intention to buy a dwelling within a year (series 000857201, from 1986),
+  averaged by quarter. No long public count of sales for Paris was found in the sources read.</li>
+<li><strong>Signal:</strong> sales over four quarters and their change over a year; a drop is a change of
+  −20% or less. For the survey: four-quarter mean, change in points, and a drop when the fall
+  over a year is at least one standard deviation of its past one-year changes (own past only,
+  at least ten years).</li>
+<li><strong>Reading:</strong> for every fall of at least 10% of the official price index, the quarter where
+  the signal peaked, its change by the price peak, and the first drop flag within eight
+  quarters either side of the peak; then, for every drop flag, whether such a peak lies within
+  eight quarters. These thresholds were written before the results and not adjusted.</li>
+<li><strong>Outputs:</strong> <code>volume_series.csv</code> (counts only), <code>volume_around_falls.csv</code>,
+  <code>volume_drop_episodes.csv</code>, <code>volume_today.csv</code>. The transaction files stay on the build
+  machine. The step is reported next to the verdict and is not part of its rule.</li>
+</ul>
 <h2>References</h2>
 <p>Checked on 2026-11-10 (authors, year, journal, volume and pages; DOI where given).</p>
 <ul>
@@ -1403,6 +1570,23 @@ standard errors.</p><h1>Limitations</h1>
   one peak has no verified explanation, and the 2020–2021 part of the Paris fall has none
   either. Singapore's measures were not re-read in the official releases.</li>
 <li><strong>City downturns are in nominal terms</strong>, and the Paris series starts after the 1991 peak.</li>
+</ul>
+<h2>Sales volumes and purchase intentions (added 2026-11-11)</h2>
+<ul>
+<li><strong>Very few events:</strong> four price falls covered by a volume series, four joint cases of ratio
+  and volume. Nothing here is a statistical test.</li>
+<li><strong>The rule misses second legs.</strong> A fall is counted from a peak that had been regained; the
+  2000–2004 slide in Singapore is inside the 1996 episode, so the volume drops of 2000–2003
+  are counted as not followed although prices fell.</li>
+<li><strong>Breaks in the counts:</strong> HDB dates change basis in March 2012; URA sub-sales and resales
+  change source in 2015 Q1. New sales depend on the calendar of developers' launches.</li>
+<li><strong>No volume series for Paris.</strong> The French signal is a national survey of intentions, not
+  sales and not Paris; its balance moves within a few points. The project's own Paris counts
+  start in 2020 and are too short. Listings, time on market, visits and agency enquiries are
+  not public in the sources read.</li>
+<li><strong>Volumes react to policy as well as to demand</strong> (stamp duties, lending caps), so a drop can
+  reflect a rule change with no price fall behind it, as in Singapore in 2019 and 2022; the
+  cause of those two drops was not verified.</li>
 </ul></div></main>
 <footer><div class="wrap">
 Code and processed aggregates: see the project repository. Data: DGFiP / Etalab (DVF), Ville de Paris (ODbL),

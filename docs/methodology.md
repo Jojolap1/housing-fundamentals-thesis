@@ -371,6 +371,29 @@ average, and the UBS Global Real Estate Bubble Index combines price-to-income an
 price-to-rent with credit, construction and city-to-country price indicators. Only the two
 valuation ratios are reproduced here; credit and construction indicators are not.
 
+## 15. Sales volumes and purchase intentions
+
+`src/ingest/volumes.py`, `src/valuation/volumes.py`. Sales tend to fall before prices because
+sellers first refuse to cut. This step checks it on the markets studied.
+
+- **Series:** HDB resales, count per quarter from the five public files of registered resales,
+  1990 to date (approval date before March 2012, registration date since); private homes in
+  Singapore, URA quarterly count of new sales, sub-sales and resales from 1999 Q4 (caveats
+  before 2015 Q1, stamp duty records since); France, INSEE monthly household survey, balance
+  of opinion on the intention to buy a dwelling within a year (series 000857201, from 1986),
+  averaged by quarter. No long public count of sales for Paris was found in the sources read.
+- **Signal:** sales over four quarters and their change over a year; a drop is a change of
+  −20% or less. For the survey: four-quarter mean, change in points, and a drop when the fall
+  over a year is at least one standard deviation of its past one-year changes (own past only,
+  at least ten years).
+- **Reading:** for every fall of at least 10% of the official price index, the quarter where
+  the signal peaked, its change by the price peak, and the first drop flag within eight
+  quarters either side of the peak; then, for every drop flag, whether such a peak lies within
+  eight quarters. These thresholds were written before the results and not adjusted.
+- **Outputs:** `volume_series.csv` (counts only), `volume_around_falls.csv`,
+  `volume_drop_episodes.csv`, `volume_today.csv`. The transaction files stay on the build
+  machine. The step is reported next to the verdict and is not part of its rule.
+
 ## References
 
 Checked on 2026-11-10 (authors, year, journal, volume and pages; DOI where given).
