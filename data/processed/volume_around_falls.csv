@@ -1,0 +1,13 @@
+market,signal,unit,price_peak,price_trough,price_fall_pct,signal_peak,signal_peak_lead_quarters,signal_change_to_price_peak,signal_change_1y_at_price_peak,signal_low_after,first_drop_quarter,drop_lead_quarters
+singapore,sales,%,1996Q4,2002Q1,-30.2,1996Q3,1.0,-0.52,27.96,-9.52,,
+singapore,sales,%,2013Q2,2019Q2,-12.45,2010Q3,11.0,-46.88,-12.68,-58.34,2011Q3,7.0
+singapore_private,sales,%,1981Q2,1986Q2,-46.95,,,,,,,
+singapore_private,sales,%,1996Q2,1998Q4,-41.73,,,,,,,
+singapore_private,sales,%,2008Q2,2009Q2,-26.12,2007Q3,3.0,-47.15,-41.19,-69.21,2008Q2,0.0
+singapore_private,sales,%,2013Q3,2017Q2,-10.21,2010Q4,11.0,-29.99,-25.07,-67.66,2013Q3,0.0
+singapore_private,resales,%,1981Q2,1986Q2,-46.95,,,,,,,
+singapore_private,resales,%,1996Q2,1998Q4,-41.73,,,,,,,
+singapore_private,resales,%,2008Q2,2009Q2,-26.12,2007Q3,3.0,-40.09,-33.42,-70.2,2008Q2,0.0
+singapore_private,resales,%,2013Q3,2017Q2,-10.21,2010Q4,11.0,-53.45,-28.36,-74.36,2011Q4,7.0
+paris,purchase_intentions,points,1992Q1,1998Q1,-28.97,1990Q3,6.0,-2.58,-2.25,-3.0,,
+paris,purchase_intentions,points,2020Q3,2024Q2,-12.31,2020Q2,1.0,-0.42,1.25,-4.42,,

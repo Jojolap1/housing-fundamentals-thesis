@@ -1,29 +1,30 @@
-build started 2026-11-11T05:41:30Z
+build started 2026-11-11T06:13:58Z
 Python 3.13.18
 OK    ingest_fx (0s)
-OK    ingest_rates (1s)
+OK    ingest_rates (0s)
 OK    ingest_paris (1s)
 OK    ingest_singapore (0s)
-OK    ingest_onemap (0s)
+OK    ingest_onemap (1s)
 OK    ingest_official (1s)
-OK    ingest_volumes (1312s)
+OK    ingest_volumes (1245s)
 URA access key provided to the build: yes
 OK    ingest_ura (90s)
-OK    ingest_ura_geocode (128s)
-OK    ingest_ura_dev (124s)
-OK    clean_paris (5s)
-OK    clean_singapore (6s)
-OK    clean_private (5s)
-OK    features_paris (16s)
+OK    ingest_ura_geocode (120s)
+OK    ingest_ura_dev (122s)
+OK    clean_paris (8s)
+OK    clean_singapore (7s)
+OK    clean_private (7s)
+OK    features_paris (19s)
 OK    features_singapore (2s)
 OK    features_private (1s)
-OK    levels (17s)
-OK    robust (52s)
-OK    indices (7s)
-OK    verdict (7s)
+OK    levels (22s)
+OK    robust (66s)
+OK    indices (10s)
+OK    verdict (9s)
 OK    cross_checks (2s)
-OK    early_warning (3s)
-OK    tests (4s)
+OK    early_warning (2s)
+OK    volumes (0s)
+OK    tests (5s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Documentation DVF+ | html | None | https://datafoncier.cerema.fr/donnees/autres-donnees-foncieres/dvfplus-open-data
@@ -39,28 +40,22 @@ hdb_resale_d_2d5ff9ea31397b66239f245f57751537.csv 52203
 d_2d5ff9ea31397b66239f245f57751537 52203 2012-03 2014-12
 hdb_resale_d_43f493c6c50d54243cc1eab0df142d6a.csv 369651
 d_43f493c6c50d54243cc1eab0df142d6a 369651 2000-01 2012-02
-hdb_resale_d_8b84c4ee58e3cfc0ece0d773c8ca6abc.csv 244426
-d_8b84c4ee58e3cfc0ece0d773c8ca6abc 244426 2017-01 2026-11
+d_8b84c4ee58e3cfc0ece0d773c8ca6abc 244312 2017-01 2026-11
 hdb_resale_d_ea9ed51da2787afaf8e51f827c304208.csv 37153
 d_ea9ed51da2787afaf8e51f827c304208 37153 2015-01 2016-12
 hdb_resale_d_ebc5ab87086db484f88045b47411ebc5.csv 287196
 d_ebc5ab87086db484f88045b47411ebc5 287196 1990-01 1999-12
 ura_private_transactions_quarterly.csv 432
-ura_private_transactions_quarterly.csv ['quarter', 'type_of_sale', 'sale_status', 'units', '_id'] 432
-   quarter type_of_sale  sale_status  units  _id
-0  1999-Q4     New Sale    Completed    234    1
-1  1999-Q4     New Sale  Uncompleted    756    2
-2  1999-Q4       Resale           na   1942    3
-3  1999-Q4     Sub Sale           na    367    4
-4  2000-Q1     New Sale    Completed    119    5
-5  2000-Q1     New Sale  Uncompleted   1133    6
-6  2000-Q1       Resale           na   1825    7
-7  2000-Q1     Sub Sale           na    295    8
-INSEE 000857201 title: Enquête mensuelle de conjoncture auprès des ménages - Intentions d'achats de logements (dans un délai de 1 an) : Solde des réponses (intentions d'achats moins pas d'achat envisagé) - Données brutes | obs: 485 [('1986-06', '-79'), ('1986-07', '-83')] [('2026-09', '-83'), ('2026-10', '-84')]
+ura_private_transactions_quarterly.csv 108 1999Q4 2026Q3 ['New Sale', 'Resale', 'Sub Sale']
+insee_purchase_intentions.csv 485 1986-06 2026-10 | Enquête mensuelle de conjoncture auprès des ménages - Intentions d'achats de logements (dans un délai de 1 an) : Solde des réponses (intentions d'achats moins pas d'achat envisagé) - Données brutes
+singapore sales {'market': 'singapore', 'signal': 'sales', 'unit': '%', 'first_period': '1990Q1', 'last_period': '2026Q3', 'change_1y_last': np.float64(-6.077579637250419), 'drop_on_last': False, 'price_falls': 2, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 1, 'drop_episodes_scored': 4, 'drop_episodes_followed_by_fall': 2}
+singapore_private sales {'market': 'singapore_private', 'signal': 'sales', 'unit': '%', 'first_period': '1999Q4', 'last_period': '2026Q3', 'change_1y_last': np.float64(-14.030705942848742), 'drop_on_last': False, 'price_falls': 4, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 2, 'drop_episodes_scored': 6, 'drop_episodes_followed_by_fall': 2}
+singapore_private resales {'market': 'singapore_private', 'signal': 'resales', 'unit': '%', 'first_period': '1999Q4', 'last_period': '2026Q3', 'change_1y_last': np.float64(-2.886110172355527), 'drop_on_last': False, 'price_falls': 4, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 2, 'drop_episodes_scored': 6, 'drop_episodes_followed_by_fall': 3}
+paris purchase_intentions {'market': 'paris', 'signal': 'purchase_intentions', 'unit': 'points', 'first_period': '1986Q3', 'last_period': '2026Q3', 'change_1y_last': np.float64(0.5), 'drop_on_last': False, 'price_falls': 2, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 0, 'drop_episodes_scored': 4, 'drop_episodes_followed_by_fall': 0}
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-37804 MANIFEST.csv
+37935 MANIFEST.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
 1866 official/notaires_insee_paris_apartments.csv
@@ -200,4 +195,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-11T06:11:14Z
+build finished 2026-11-11T06:42:58Z

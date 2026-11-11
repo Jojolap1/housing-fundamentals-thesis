@@ -1,0 +1,5 @@
+market,signal,unit,first_period,last_period,change_1y_last,drop_on_last,price_falls,price_falls_with_signal,price_falls_with_drop_nearby,drop_episodes_scored,drop_episodes_followed_by_fall
+singapore,sales,%,1990Q1,2026Q3,-6.08,False,2,2,1,4,2
+singapore_private,sales,%,1999Q4,2026Q3,-14.03,False,4,2,2,6,2
+singapore_private,resales,%,1999Q4,2026Q3,-2.89,False,4,2,2,6,3
+paris,purchase_intentions,points,1986Q3,2026Q3,0.5,False,2,2,0,4,0
