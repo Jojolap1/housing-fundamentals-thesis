@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from src.config import ROOT
 
-from src.viz.sections import cross_section, home_section, index_section, verdict_section
+from src.viz.sections import cross_section, history_section, home_section, index_section, verdict_section
 
 SITE = ROOT / "site"
 MAPLIBRE = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl"
@@ -141,6 +141,7 @@ CITY = """
 
 {verdict_section}
 {cross_section}
+{history_section}
 {index_section}
 
 <h2>Fundamental vs market value per m²</h2>
@@ -305,7 +306,8 @@ def main() -> None:
         (SITE / f"{key}.html").write_text(
             html + CITY.format(maplibre=MAPLIBRE, index_section=index_section(key),
                                verdict_section=verdict_section(key),
-                               cross_section=cross_section(key), **c) + FOOT)
+                               cross_section=cross_section(key),
+                               history_section=history_section(key), **c) + FOOT)
 
 
 if __name__ == "__main__":

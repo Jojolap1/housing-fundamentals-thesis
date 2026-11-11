@@ -1,27 +1,28 @@
-build started 2026-11-10T16:13:13Z
+build started 2026-11-10T18:01:59Z
 Python 3.13.18
 OK    ingest_fx (0s)
-OK    ingest_rates (1s)
+OK    ingest_rates (0s)
 OK    ingest_paris (1s)
 OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
 OK    ingest_official (1s)
 URA access key provided to the build: yes
-OK    ingest_ura (88s)
-OK    ingest_ura_geocode (127s)
-OK    ingest_ura_dev (125s)
-OK    clean_paris (7s)
-OK    clean_singapore (7s)
-OK    clean_private (7s)
-OK    features_paris (19s)
+OK    ingest_ura (84s)
+OK    ingest_ura_geocode (104s)
+OK    ingest_ura_dev (109s)
+OK    clean_paris (6s)
+OK    clean_singapore (5s)
+OK    clean_private (6s)
+OK    features_paris (15s)
 OK    features_singapore (2s)
-OK    features_private (2s)
-OK    levels (25s)
-OK    robust (67s)
-OK    indices (8s)
-OK    verdict (10s)
-OK    cross_checks (3s)
-OK    tests (4s)
+OK    features_private (1s)
+OK    levels (17s)
+OK    robust (52s)
+OK    indices (6s)
+OK    verdict (8s)
+OK    cross_checks (2s)
+OK    early_warning (1s)
+OK    tests (3s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Documentation DVF+ | html | None | https://datafoncier.cerema.fr/donnees/autres-donnees-foncieres/dvfplus-open-data
@@ -35,11 +36,12 @@ oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-35807 MANIFEST.csv
+36145 MANIFEST.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
 1866 official/notaires_insee_paris_apartments.csv
 19089 official/oecd_house_prices_fra.csv
+982971 official/oecd_house_prices_panel.csv
 18260 official/ura_private_residential_price_index.csv
 24736 official/ura_private_residential_rental_index.csv
 202223 paris/arrondissements.geojson
@@ -112,7 +114,6 @@ oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/
 43459 singapore/ura/developer_sales/dev_sales_202411.json
 44855 singapore/ura/developer_sales/dev_sales_202412.json
 45272 singapore/ura/developer_sales/dev_sales_202501.json
-45037 singapore/ura/developer_sales/dev_sales_202502.json
 --- official index headers
 data/raw/official/hdb_resale_price_index.csv
 quarter,index,_id
@@ -150,6 +151,15 @@ period,HPI,RPI,HPI_YDH,HPI_RPI,RHP
       1 100.1
       3 100.2
       1 100.4
+data/raw/official/oecd_house_prices_panel.csv
+REF_AREA,MEASURE,TIME_PERIOD,OBS_VALUE
+FIN,HPI,1970-Q1,6.69442620600123
+FIN,HPI,1970-Q2,6.70203835720166
+   7587 HPI
+   6800 HPI_RPI
+   6371 HPI_YDH
+      1 MEASURE
+   7587 RHP
 data/raw/official/ura_private_residential_price_index.csv
 quarter,property_type,index,_id
 1975-Q1,All Residential,8.9,1
@@ -166,4 +176,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-10T16:21:38Z
+build finished 2026-11-10T18:09:04Z
