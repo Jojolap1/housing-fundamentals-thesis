@@ -39,6 +39,7 @@ verdict:
 	$(PY) -m src.valuation.run
 	$(PY) -m src.valuation.cross_checks
 	$(PY) -m src.valuation.early_warning
+	$(PY) -m src.valuation.volumes
 
 ## Static website data and pages (site/)
 site:

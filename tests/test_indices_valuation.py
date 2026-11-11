@@ -350,3 +350,21 @@ def test_bust_definitions_separate_crashes_from_inflation_erosion():
     _, crash = evaluate({"X": d}, "HPI_YDH", "crash")
     _, every = evaluate({"X": d}, "HPI_YDH", "all")
     assert len(crash) == 1 and len(every) == 2 and crash["nominal_drop_pct"].iloc[0] < -20
+
+
+def test_volume_drop_precedes_price_fall():
+    from src.valuation import volumes as V
+    idx = pd.period_range("2000Q1", periods=60, freq="Q")
+    price = pd.Series(np.r_[np.linspace(100, 200, 30), np.linspace(198, 150, 12), np.linspace(152, 190, 18)], index=idx)
+    q = pd.Series(np.r_[np.full(26, 1000.0), np.full(14, 600.0), np.full(20, 1000.0)], index=idx)
+    level, change, on = V.signal(q, "count")
+    assert pd.isna(level.iloc[2]) and level.iloc[3] == 4000
+    eps = V.drop_episodes(on)
+    assert len(eps) == 1 and eps[0] < idx[29]
+    a = V.around_falls(price, level, change, on)
+    assert len(a) == 1 and a.loc[0, "signal_peak_lead_quarters"] > 0 and a.loc[0, "drop_lead_quarters"] > 0
+    assert V.alarms(price, change, on)["followed_by_price_fall"].tolist() == [True]
+    # a balance of opinion: flagged only once ten years of one-year changes exist
+    bal = pd.Series(np.r_[np.sin(np.arange(52) / 3) * 2 - 70, np.full(8, -90.0)], index=idx)
+    _, ch, flag = V.signal(bal, "balance")
+    assert not flag.iloc[:44].any() and flag.iloc[-6:].any()
