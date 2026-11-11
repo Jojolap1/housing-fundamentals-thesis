@@ -182,3 +182,19 @@ These are stated plainly because they bound what the results can say.
   one peak has no verified explanation, and the 2020–2021 part of the Paris fall has none
   either. Singapore's measures were not re-read in the official releases.
 - **City downturns are in nominal terms**, and the Paris series starts after the 1991 peak.
+
+## Sales volumes and purchase intentions (added 2026-11-11)
+- **Very few events:** four price falls covered by a volume series, four joint cases of ratio
+  and volume. Nothing here is a statistical test.
+- **The rule misses second legs.** A fall is counted from a peak that had been regained; the
+  2000–2004 slide in Singapore is inside the 1996 episode, so the volume drops of 2000–2003
+  are counted as not followed although prices fell.
+- **Breaks in the counts:** HDB dates change basis in March 2012; URA sub-sales and resales
+  change source in 2015 Q1. New sales depend on the calendar of developers' launches.
+- **No volume series for Paris.** The French signal is a national survey of intentions, not
+  sales and not Paris; its balance moves within a few points. The project's own Paris counts
+  start in 2020 and are too short. Listings, time on market, visits and agency enquiries are
+  not public in the sources read.
+- **Volumes react to policy as well as to demand** (stamp duties, lending caps), so a drop can
+  reflect a rule change with no price fall behind it, as in Singapore in 2019 and 2022; the
+  cause of those two drops was not verified.

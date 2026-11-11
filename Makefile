@@ -13,6 +13,7 @@ data:
 	$(PY) -m src.ingest.ura_geocode
 	$(PY) -c "from src.ingest.ura import developer_sales; developer_sales()"
 	$(PY) -m src.ingest.official_indices   # Singapore official indices; Paris index: see the module docstring
+	$(PY) -m src.ingest.volumes            # long transaction counts and purchase intentions
 
 ## Clean + harmonise transactions, then build features
 features:

@@ -171,6 +171,69 @@ Singapore 2013) or a rise in interest rates (Paris 2022). Several entries rest o
 sources and are marked as such; the Singapore measures should be re-read in the official
 MAS, MND and HDB releases before the thesis is submitted.
 
+## Do sales volumes warn before prices fall?
+
+Method: `docs/methodology.md` §15; figures: `volume_*.csv`. A ratio says a market is dear,
+not when it turns. This step adds the number of sales (Singapore) and, for France, the INSEE
+household survey on the intention to buy a dwelling within a year, which measures demand
+before any sale. Definitions were fixed before the results: volume = sales over four
+quarters; drop = at least 20% below a year earlier; a drop counts as followed by a price fall
+when a price peak leading to a fall of at least 10% lies within eight quarters either side.
+
+**Around the price falls that the volume series cover:**
+
+| Market | Price peak → fall | Volume peak | Volume at the price peak, against its own peak | First drop flag |
+|---|---|---|---|---|
+| HDB | 1996 Q4 → −30% | 1996 Q3 (1 quarter before) | −1% | none |
+| HDB | 2013 Q2 → −12% | 2010 Q3 (11 quarters before) | −47% | 2011 Q3 (7 quarters before) |
+| Private | 2008 Q2 → −26% | 2007 Q3 (3 quarters before) | −47% | 2008 Q2 (same quarter) |
+| Private | 2013 Q3 → −10% | 2010 Q4 (11 quarters before) | −30% | 2013 Q3 (same quarter) |
+
+In three falls out of four, sales had peaked three to eleven quarters before prices and were
+30% to 47% lower by the time prices turned. The 1996 HDB peak is the exception: sales were
+still rising (+28% over a year). The private series starts in 1999 Q4 and misses the 1981
+and 1996 falls.
+
+**False alarms.** Drop flags not followed by a price fall of at least 10%:
+
+| Market | Drop flags | Followed by a price fall | Not followed |
+|---|---|---|---|
+| HDB (sales) | 4 | 2 (2011 Q3, 2013 Q3) | 2000 Q2, 2003 Q3 |
+| Private (all sales) | 6 | 2 (2008 Q2, 2013 Q3) | 2001 Q3, 2003 Q1, 2019 Q2, 2022 Q4 |
+| Private (resales only) | 6 | 3 | 2001 Q3, 2019 Q1, 2022 Q4 |
+| France (purchase intentions) | 4 | 0 | 2004 Q3, 2008 Q3, 2013 Q1, 2022 Q4 |
+
+The count is harsher than the facts in two ways. The 2000–2003 flags in Singapore fall inside
+long declines that the rule does not count as new falls, because the 1996 peak had not been
+regained (the private index lost 21% between 2000 Q2 and 2004 Q1). And three of the four
+French flags came with a price decline in Paris that stayed under 10% (−9% from 2008 Q3,
+−6% from 2012 Q3) or arrived nine quarters after the peak (2022 Q4, during the fall). The
+clear false alarms are the private market in 2019 and 2022: sales dropped by about 30% and
+prices kept rising.
+
+**Purchase intentions are a weak signal for Paris.** The balance of opinion moves within a
+few points (between −90 and −78 since 1986), it is national, and it turned with or after
+prices, not before: no flag within eight quarters of either Paris peak.
+
+**Ratio and volume together.** Quarters where a ratio was above its calibrated threshold and
+a drop flag switched on, where both can be measured:
+
+| Market | Date | Ratio z-score | What followed |
+|---|---|---|---|
+| HDB | 2011 Q3 | price-to-income 1.7 | price peak in 2013 Q2, then −12% |
+| Paris | 2004 Q3 | price-to-income 1.7 | prices kept rising |
+| Paris | 2008 Q3 | price-to-income 1.9 | −9% in three quarters |
+| Paris | 2013 Q1 | price-to-income 1.8 | −6% from 2012 Q3 to 2015 Q2 |
+
+Four cases: one fall of at least 10%, two smaller declines, one false alarm. In the private
+market the two signals never coincided (in 2019 Q2 the price-to-rent z-score was 1.71, just
+under 1.75). This is an illustration, not a test: four cases cannot establish that the pair
+works better than the ratio alone.
+
+**Today.** No drop flag is on: HDB sales −6% over a year, private sales −14% (resales −3%),
+purchase intentions +0.5 point. With every ratio below its threshold, neither signal is on in
+any of the three markets.
+
 ## What can be said firmly
 
 1. **Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.**
