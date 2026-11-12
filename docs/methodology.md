@@ -407,10 +407,12 @@ Checked on 2026-11-10 (authors, year, journal, volume and pages; DOI where given
 - Glaeser, E. L., Gottlieb, J. D., Gyourko, J. (2013). Can cheap credit explain the housing boom? In E. L. Glaeser and T. Sinai (eds.), *Housing and the Financial Crisis*, University of Chicago Press, 301–359. (Book chapter; NBER Working Paper 16230.)
 - Hill, R. J. (2013). Hedonic price indexes for residential housing: a survey, evaluation and taxonomy. *Journal of Economic Surveys* 27(5), 879–914. (DOI not confirmed.)
 - Himmelberg, C., Mayer, C., Sinai, T. (2005). Assessing high house prices: bubbles, fundamentals and misperceptions. *Journal of Economic Perspectives* 19(4), 67–92. doi:10.1257/089533005775196769
+- Miller, E. M. (1977). Risk, uncertainty, and divergence of opinion. *Journal of Finance* 32(4), 1151–1168. doi:10.1111/j.1540-6261.1977.tb03317.x (checked 2026-11-12)
 - Pavlidis, E., Yusupova, A., Paya, I., Peel, D., Martínez-García, E., Mack, A., Grossman, V. (2016). Episodes of exuberance in housing markets: in search of the smoking gun. *Journal of Real Estate Finance and Economics* 53(4), 419–449. doi:10.1007/s11146-015-9531-2
 - Phillips, P. C. B., Shi, S., Yu, J. (2015). Testing for multiple bubbles: historical episodes of exuberance and collapse in the S&P 500. *International Economic Review* 56(4), 1043–1078. doi:10.1111/iere.12132
 - Poterba, J. M. (1984). Tax subsidies to owner-occupied housing: an asset-market approach. *Quarterly Journal of Economics* 99(4), 729–752. doi:10.2307/1883123
 - Prasad, N., Richards, A. (2008). Improving median housing price indexes through stratification. *Journal of Real Estate Research* 30(1), 45–72. doi:10.1080/10835547.2008.12091213
+- Shiller, R. J. (1981). Do stock prices move too much to be justified by subsequent changes in dividends? *American Economic Review* 71(3), 421–436. (No DOI; NBER Working Paper 456. Checked 2026-11-12.)
 - Stein, J. C. (1995). Prices and trading volume in the housing market: a model with down-payment effects. *Quarterly Journal of Economics* 110(2), 379–406. (DOI not confirmed.)
 
 Methods used without a checked reference, to be completed before submission: empirical-Bayes
