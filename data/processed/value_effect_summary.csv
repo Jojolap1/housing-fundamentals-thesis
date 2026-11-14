@@ -1,0 +1,4 @@
+city,formation_start,formation_end,end_start,end_end,districts,mean_change_pct,sd_change_pct,sd_signal,slope,slope_se,slope_p,change_for_10pct_dearer,r2,slope_with_price_level,slope_with_price_level_se,slope_with_price_level_p,spearman,spearman_p,dear_minus_cheap_third_pct,gap_ci_low,gap_ci_high,raw_slope
+paris,2021-07,2022-06,2025-06,2026-05,79,-7.9065,4.936,0.0984,31.4313,4.1421,0.0,2.9957,0.3928,-8.111,5.2521,0.1267,0.5798,0.0,6.6739,3.7751,8.3757,23.2578
+singapore,2021-01,2021-12,2025-11,2026-10,129,31.4263,3.9573,0.1598,7.2297,2.2702,0.0018,0.6891,0.0852,7.761,2.3009,0.001,0.2424,0.0057,2.1207,0.1569,3.7164,-6.2089
+singapore_private,2022-01,2022-12,2025-11,2026-10,123,19.4179,9.4581,0.2547,-8.328,3.5429,0.0204,-0.7937,0.0503,3.5343,2.9434,0.2322,-0.215,0.0169,-3.4943,-8.7678,0.2071,-23.7507
