@@ -198,3 +198,14 @@ These are stated plainly because they bound what the results can say.
 - **Volumes react to policy as well as to demand** (stamp duties, lending caps), so a drop can
   reflect a rule change with no price fall behind it, as in Singapore in 2019 and 2022; the
   cause of those two drops was not verified.
+
+## Cross-section of districts (added 2026-11-14)
+- **One period per market.** The test compares two windows; it says nothing about other
+  periods, and Paris is observed only after the 2020 peak (sales start in July 2021).
+- **No pre-trend.** Without sales before 2021 it cannot be checked whether cheaper Paris
+  quartiers were already underperforming before rates rose.
+- **Paris rents are regulated reference rents**, not market rents; they vary little across
+  quartiers, so the Paris signal is close to a ranking by price.
+- **Districts are not independent.** Neighbouring districts move together; the standard
+  errors do not account for spatial correlation and are too small.
+- **The channel is not identified.** "Credit-dependent buyers" is one reading among others.

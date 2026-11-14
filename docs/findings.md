@@ -234,6 +234,38 @@ works better than the ratio alone.
 purchase intentions +0.5 point. With every ratio below its threshold, neither signal is on in
 any of the three markets.
 
+## Inside a city: do dear districts do worse afterwards?
+
+Method: `src/valuation/value_effect.py` (design written in the module before the results);
+figures: `value_effect_summary.csv`, `value_effect_districts.csv`. Districts are sorted on
+their price-to-rent ratio in the first twelve months, and the quality-adjusted price change
+to the last twelve months is compared. A value effect would be a negative slope.
+
+| Market | Districts | Window | Average price change | Slope on log price-to-rent | Dearest third minus cheapest third | Slope once the price level is controlled |
+|---|---|---|---|---|---|---|
+| Paris | 79 quartiers | 2021–22 → 2025–26 | −7.9% | +31 (p < 0.001) | +6.7 points [3.8; 8.4] | −8 (p = 0.13) |
+| HDB | 129 subzones | 2021 → 2025–26 | +31.4% | +7 (p = 0.002) | +2.1 points [0.2; 3.7] | +8 (p = 0.001) |
+| Private | 123 subzones | 2022 → 2025–26 | +19.4% | −8 (p = 0.02) | −3.5 points [−8.8; 0.2] | +4 (p = 0.23) |
+
+- **No value effect.** Only the private market has the expected sign, and it disappears once
+  the price level is controlled; its interval includes zero.
+- **Paris shows the opposite, and strongly.** Quartiers that were dear relative to rents fell
+  less: a quartier 10% dearer lost 3 points less, and the ratio explains 39% of the
+  differences between quartiers. The falls of 13% to 17% are in the north-east (18th, 19th,
+  20th arrondissements) and parts of the 10th, 13th, 15th and 17th; central quartiers of the
+  1st and 4th to 8th arrondissements are flat or up.
+- **In Paris this is a price-level result, not a rent result.** Reference rents vary little
+  between quartiers (the ratio spans 34 to 43 between the first and last decile), so the
+  ratio mostly ranks quartiers by price. With the price level in the regression the ratio
+  no longer matters. What the data show is that the 2022–2025 correction was concentrated in
+  the cheaper quartiers.
+- **HDB:** dearer subzones rose slightly more (0.7 point for 10% dearer, out of 31%). Small.
+
+A reading consistent with the borrowing-capacity check: when mortgage rates rose, prices
+gave way where buyers depend most on credit. It is a hypothesis at this stage. The test
+does not identify the channel, and other differences between cheap and dear quartiers
+(energy-rating rules, building age, investor demand) were not examined.
+
 ## What can be said firmly
 
 1. **Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.**

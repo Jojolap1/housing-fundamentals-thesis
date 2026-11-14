@@ -394,6 +394,18 @@ sellers first refuse to cut. This step checks it on the markets studied.
   `volume_drop_episodes.csv`, `volume_today.csv`. The transaction files stay on the build
   machine. The step is reported next to the verdict and is not part of its rule.
 
+## 16. Cross-section of districts
+
+`src/valuation/value_effect.py`. Unit: `district_l2`. Signal: log median price-to-rent in
+the first twelve months with matched rents. Outcome: change in the quality-adjusted log
+price per m² to the last twelve complete months (characteristics' coefficients estimated
+within district × quarter cells). The formation sales are split at random in two halves, one
+for the signal and one for the starting price, so that noise in starting prices cannot
+create a negative relation. Thresholds: 30 sales in the first window, 20 in the last.
+Statistics: OLS slope with robust standard error, Spearman correlation, gap between the
+dearest and cheapest thirds with a bootstrap interval over districts, and the slope with the
+starting price level as a control. The design was fixed before the results.
+
 ## References
 
 Checked on 2026-11-10 (authors, year, journal, volume and pages; DOI where given).
