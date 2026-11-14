@@ -1,0 +1,37 @@
+=== Cerema Box: DVF+ open-data
+/octobre_2026 | d_427362045181 | 10246370136
+/octobre_2026/sql | d_427362349533 | 10246369671
+/octobre_2026/csv | d_427359627966 | None
+/octobre_2026/csv/R94_Corse | d_427362846667 | None
+/octobre_2026/csv/R93_Provence_Alpes_Cote_d_Azur | d_427362597181 | None
+/octobre_2026/csv/R84_Auvergne_Rhone_Alpes | d_427359649566 | None
+/octobre_2026/csv/R76_Occitanie | d_427362676245 | None
+/octobre_2026/csv/R75_Nouvelle_Aquitaine | d_427362455443 | None
+/octobre_2026/csv/R75_Nouvelle_Aquitaine no items parsed; html 34770 chars; markers: ['postStreamData', 'shared-folder', 'typedID']
+/octobre_2026/csv/R53_Bretagne | d_427359856366 | None
+/octobre_2026/csv/R52_Pays_de_la_Loire | d_427363182883 | None
+/octobre_2026/csv/R44_Grand_Est | d_427363211415 | None
+/octobre_2026/csv/R32_Hauts_de_France | d_427363234812 | None
+/octobre_2026/csv/R32_Hauts_de_France no items parsed; html 34764 chars; markers: ['postStreamData', 'shared-folder', 'typedID']
+/octobre_2026/csv/R28_Normandie | d_427359399738 | None
+/octobre_2026/csv/R27_Bourgogne_Franche_Comte | d_427362794181 | None
+/octobre_2026/csv/R24_Centre_Val_de_Loire | d_427362685538 | None
+/octobre_2026/csv/R11_Ile_de_France | d_427362608619 | None
+/octobre_2026/csv/R11_Ile_de_France no items parsed; html 34760 chars; markers: ['postStreamData', 'shared-folder', 'typedID']
+/octobre_2026/csv/R04_La_Reunion | d_427361591444 | None
+/octobre_2026/csv/R03_Guyane | d_427360093348 | None
+/octobre_2026/csv/R02_Martinique | d_427360103549 | None
+/octobre_2026/csv/R01_Guadeloupe | d_427361872638 | None
+/octobre_2026/csv/National | d_427360806425 | None
+/octobre_2026/gpkg | d_427361565575 | None
+/octobre_2026/parquet | d_427708571715 | None
+/octobre_2026/correctif_dvf_plus_octobre_2026.txt | f_2572450285271 | 223
+/versions_anterieures | d_316768624154 | 218589608649
+/versions_anterieures/avril_2026 | d_375539396618 | 33285685997
+/versions_anterieures/octobre_2025 | d_347156416432 | 40506540003
+/versions_anterieures/avril_2025 | d_316769996407 | 42645714851
+/versions_anterieures/octobre_2024 | d_289046303297 | 52711971744
+/versions_anterieures/avril_2024 | d_258274455672 | 49439696054
+=== files.data.gouv.fr geo-dvf
+https://files.data.gouv.fr/geo-dvf/latest/csv/ -> ../, /geo-dvf/latest/csv/2021/, /geo-dvf/latest/csv/2022/, /geo-dvf/latest/csv/2023/, /geo-dvf/latest/csv/2024/, /geo-dvf/latest/csv/2025/
+https://files.data.gouv.fr/geo-dvf/ -> /geo-dvf/2025-12/, /geo-dvf/latest/
