@@ -406,6 +406,18 @@ Statistics: OLS slope with robust standard error, Spearman correlation, gap betw
 dearest and cheapest thirds with a bootstrap interval over districts, and the slope with the
 starting price level as a control. The design was fixed before the results.
 
+## 17. Long-run district prices
+
+`src/ingest/dvfplus.py`, `src/valuation/district_cycles.py`. Paris: DVF+ open-data (Cerema,
+Licence Ouverte 2.0), release 2026.1, département 75, 2014–2025; sales of one existing
+apartment, price and area plausible, located in a quartier, price per m² within a factor 3
+of the arrondissement-year median (steps and counts in `district_cycle_cleaning.csv`).
+Singapore: the five public files of HDB resales, by town. District × year cells need 20
+sales. For year t, the change in the quality-adjusted log price between t−1 and t is
+regressed on the average level in t−3 and t−2 (no shared observation), with robust standard
+errors. Groups: thirds of districts by level in 2014–2016 (Paris) and 2009–2011 (HDB),
+index 100 the following year. Choices fixed before the results.
+
 ## References
 
 Checked on 2026-11-10 (authors, year, journal, volume and pages; DOI where given).

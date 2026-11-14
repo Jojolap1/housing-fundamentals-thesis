@@ -266,6 +266,52 @@ gave way where buyers depend most on credit. It is a hypothesis at this stage. T
 does not identify the channel, and other differences between cheap and dear quartiers
 (energy-rating rules, building age, investor demand) were not examined.
 
+## Cheaper districts amplify the cycle
+
+Method: `docs/methodology.md` §17; figures: `district_cycle_slopes.csv`,
+`district_cycle_groups.csv`. To check whether the Paris result above was an old trend, prices
+by district were rebuilt over a long period: Paris quartiers 2014–2025 from DVF+ open-data
+(343,152 sales of single apartments), HDB towns 1990–2026 (990,464 resales). For each year,
+the price change of a district is regressed on its price level two to three years earlier.
+
+**Paris: the relation switches sign in 2022.**
+
+| Year | Average change | Effect of being 10% dearer | t |
+|---|---|---|---|
+| 2017 | +7.1% | −0.2 point | −0.6 |
+| 2018 | +6.6% | −0.3 | −1.5 |
+| 2019 | +6.2% | −0.6 | −2.4 |
+| 2020 | +6.6% | −0.3 | −1.5 |
+| 2021 | −1.5% | −0.3 | −2.0 |
+| 2022 | −1.5% | +0.7 | 5.0 |
+| 2023 | −3.8% | +1.4 | 6.2 |
+| 2024 | −5.4% | +0.6 | 2.9 |
+| 2025 | +1.3% | −0.2 | −1.1 |
+
+It was not an old trend; it was the reverse. Until 2021 the cheaper quartiers gained more.
+From 2022 to 2024 they lost more, and in 2025 the relation is gone. By group (quartiers
+sorted on their 2014–2016 level): the cheapest third rose 24.5% between 2017 and 2020 and
+fell 15.1% between 2020 and 2024; the dearest third rose 18.7% and fell 6.5%.
+
+**HDB towns: the same pattern over 34 years.** After the lending caps of 2013, the cheapest
+third of towns lost 14% between 2013 and 2018, the dearest third 8%. Between 2019 and 2025
+the cheapest third gained 63%, the dearest 45%. Over all years, the yearly effect of being
+dearer is negatively correlated with the market's direction (−0.58 for HDB over 34 years,
+−0.75 for Paris over 9): in 14 of the 18 years when prices rose by more than 5%, cheaper
+towns gained more; in 5 of the 8 years when they fell by more than 1%, cheaper towns lost
+more. The exception is the 2006–2008 boom, led by the dearer towns.
+
+**Reading.** Cheaper districts are the high-beta segment of a housing market: they rise
+more in a boom and fall more in a correction. The two dated reversals coincide with a
+tightening of credit (higher mortgage rates in France from 2022; loan caps in Singapore in
+2013), which fits buyers there depending more on borrowing. The data do not prove that
+channel: the timing is consistent with it, and so is any other reason why cheap districts
+would be more cyclical.
+
+**What it changes for the question asked.** A city-wide ratio hides where the adjustment
+happens. In Paris the correction of 2022–2024 was not spread evenly over an "overvalued"
+city; it fell on the quartiers where buyers borrow most, while the centre barely moved.
+
 ## What can be said firmly
 
 1. **Paris: the 2000–2020 boom has largely deflated; there is no explosive dynamic today.**
