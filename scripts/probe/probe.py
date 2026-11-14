@@ -70,23 +70,43 @@ def listing(fid: str) -> list[tuple[str, str, object]]:
     return res
 
 
-out.append("=== April 2026, csv, Ile-de-France")
-for name, tid, size in listing("375540493824"):
-    out.append(f"{name} | {tid} | {size}")
-html = get(BOX)
-m = re.search(r"Box\.postStreamData\s*=\s*(\{.*?\});\s*</script>", html, re.S)
-shared = json.loads(m.group(1)).get("/app-api/enduserapp/shared-item", {})
-out.append("shared item: " + json.dumps(shared))
-fid = "2225207658866"
-for url in (f"https://cerema.app.box.com/index.php?rm=box_download_shared_file&shared_name={shared.get('sharedName')}&file_id=f_{fid}",
-            f"https://cerema.app.box.com/index.php?rm=box_download_shared_file&vanity_name=dvfplus-opendata&file_id=f_{fid}",
-            f"https://cerema.app.box.com/shared/static/{shared.get('sharedName')}?file_id=f_{fid}"):
-    try:
-        req = urllib.request.Request(url, headers=UA)
-        with urllib.request.urlopen(req, timeout=60) as r:
-            body = r.read(400)
-            out.append(f"OK {url.split('?')[0]}... -> {r.status} {r.headers.get('Content-Type')} {body[:200]!r}")
-    except Exception as e:
-        out.append(f"FAIL {url} -> {e!r}")
+import csv
+import io
+import zipfile
+
+url = "https://cerema.app.box.com/index.php?rm=box_download_shared_file&vanity_name=dvfplus-opendata&file_id=f_2192472020739"
+with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=600) as r:
+    blob = r.read()
+out.append(f"=== zip {len(blob)} bytes")
+z = zipfile.ZipFile(io.BytesIO(blob))
+for info in z.infolist():
+    out.append(f"{info.filename} | {info.file_size}")
+for info in z.infolist():
+    if not info.filename.lower().endswith(".csv") or not re.search(r"75|mutation", info.filename, re.I):
+        continue
+    with z.open(info) as f:
+        head = f.readline().decode("utf-8", "ignore").strip()
+        sep = max(";|,\t", key=head.count)
+        cols = head.split(sep)
+        out.append(f"--- {info.filename}: sep {sep!r}, {len(cols)} columns: {cols}")
+        rd = csv.reader(io.TextIOWrapper(f, "utf-8", errors="ignore"), delimiter=sep)
+        want = [c for c in cols if c in ("datemut", "anneemut", "coddep", "libnatmut", "vefa", "valeurfonc", "nblocmut", "nblocapt", "nblocdep",
+                                         "nbapt1pp", "nbapt2pp", "nbapt3pp", "nbapt4pp", "nbapt5pp", "sbati", "sbatapt", "codtypbien", "libtypbien", "l_codinsee", "l_section")]
+        idx = [cols.index(c) for c in want]
+        n, years, types, shown = 0, {}, {}, 0
+        for row in rd:
+            if len(row) != len(cols):
+                continue
+            rec = dict(zip(want, (row[i] for i in idx)))
+            if rec.get("coddep") != "75":
+                continue
+            n += 1
+            years[rec.get("anneemut")] = years.get(rec.get("anneemut"), 0) + 1
+            types[rec.get("libtypbien")] = types.get(rec.get("libtypbien"), 0) + 1
+            if shown < 3 and rec.get("libtypbien", "").upper().startswith("UN APPARTEMENT"):
+                out.append("  sample: " + json.dumps(rec, ensure_ascii=False))
+                shown += 1
+        out.append(f"  Paris rows {n}; by year {dict(sorted(years.items()))}")
+        out.append("  types: " + json.dumps(dict(sorted(types.items(), key=lambda kv: -kv[1])[:12]), ensure_ascii=False))
 open(sys.argv[1], "w").write("\n".join(out) + "\n")
-print("\n".join(out)[:3000])
+print("\n".join(out)[:4000])
