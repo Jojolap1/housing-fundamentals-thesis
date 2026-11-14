@@ -393,3 +393,75 @@ def history_section(city: str) -> str:
   <details><summary>Table view, fourth quarter of each year</summary><div class="table-scroll"><table><thead><tr><th>Quarter</th>
   {head}</tr></thead><tbody>{rows}</tbody></table></div></details>
 </div>"""
+
+
+GROUPS = [("cheapest third", "Cheapest third of districts", "var(--series-market)"),
+          ("middle third", "Middle third", "var(--series-strat)"),
+          ("dearest third", "Dearest third", "var(--series-official)")]
+CYCLE_NOTE = {
+    "paris": "Quartiers are sorted once, on their 2014–2016 price level. Source: DVF+ open-data, sales of single apartments, 2014–2025.",
+    "singapore": "HDB towns are sorted once, on their 2009–2011 price level. Source: registered resales, 1990–2026 (2026 incomplete).",
+}
+
+
+def cycle_section(city: str) -> str:
+    """Quality-adjusted price index of the cheapest, middle and dearest thirds of districts,
+    and the yearly effect of being dearer."""
+    fg, fs = PROCESSED / "district_cycle_groups.csv", PROCESSED / "district_cycle_slopes.csv"
+    if not fg.exists() or not fs.exists():
+        return ""
+    g, s = pd.read_csv(fg), pd.read_csv(fs)
+    g, s = g[g["city"] == city], s[s["city"] == city]
+    if g.empty:
+        return ""
+    p = g.pivot(index="year", columns="group", values="index").sort_index()
+    if city == "singapore":
+        p = p.loc[2000:]
+    years, N = [int(y) for y in p.index], len(p)
+    W, H, m = 920, 300, {"l": 52, "r": 16, "t": 16, "b": 26}
+    X = lambda i: m["l"] + (i + 0.5) * (W - m["l"] - m["r"]) / N  # noqa: E731
+    ticks = _ticks(float(p.min().min()), float(p.max().max()))
+    step = ticks[1] - ticks[0]
+    lo, hi = math.floor(p.min().min() / step) * step, math.ceil(p.max().max() / step) * step
+    ticks = [lo + k * step for k in range(int(round((hi - lo) / step)) + 1)]
+    Y = lambda v: H - m["b"] - (v - lo) / (hi - lo) * (H - m["t"] - m["b"])  # noqa: E731
+    e = [f'<line x1="{m["l"]}" x2="{W - m["r"]}" y1="{Y(t):.1f}" y2="{Y(t):.1f}" stroke="var(--grid)"/>'
+         f'<text x="{m["l"] - 8}" y="{Y(t) + 4:.1f}" text-anchor="end">{t:g}</text>' for t in ticks]
+    every = 1 if N <= 14 else 5
+    e += [f'<text x="{X(i):.1f}" y="{H - 8}" text-anchor="middle">{y}</text>' for i, y in enumerate(years) if y % every == 0]
+    e.append(f'<line x1="{m["l"]}" x2="{W - m["r"]}" y1="{Y(100):.1f}" y2="{Y(100):.1f}" stroke="var(--muted)" stroke-dasharray="2 3"/>')
+    for key, _, color in GROUPS:
+        path = " ".join(f"{'M' if i == 0 else 'L'}{X(i):.1f},{Y(v):.1f}" for i, v in enumerate(p[key]))
+        e.append(f'<path d="{path}" fill="none" stroke="{color}" stroke-width="2" stroke-linejoin="round"/>')
+    e.append(f'<line class="xh" y1="{m["t"]}" y2="{H - m["b"]}" stroke="var(--muted)" visibility="hidden"/>'
+             f'<rect class="hit" x="{m["l"]}" y="0" width="{W - m["l"] - m["r"]}" height="{H}" fill="transparent"/>')
+    data = {"W": W, "l": m["l"], "r": m["r"], "periods": [str(y) for y in years],
+            "series": [{"label": lab, "color": c, "values": [round(float(v), 1) for v in p[k]]} for k, lab, c in GROUPS]}
+    swatch = lambda c: f'<span class="sw" style="background:{c};height:3px;vertical-align:middle"></span>'  # noqa: E731
+    legend = "".join(f'<span class="cls">{swatch(c)} {lab}</span>' for _, lab, c in GROUPS)
+    ref = int(g["reference_year"].iloc[0])
+    s = s[s["year"] >= years[0]]
+    rows = "".join(
+        f"<tr><td>{int(r.year)}</td><td class='num'>{r.mean_change_pct:+.1f}%</td>"
+        f"<td class='num'>{r.change_for_10pct_dearer:+.1f}</td><td class='num'>{r.t:.1f}</td>"
+        f"<td>{'dearer districts did better' if r.t >= 2 else 'cheaper districts did better' if r.t <= -2 else 'no clear difference'}</td></tr>"
+        for r in s.itertuples())
+    table = "".join(f"<tr><td>{y}</td>" + "".join(f"<td class='num'>{p.loc[y, k]:.1f}</td>" for k, _, _ in GROUPS) + "</tr>" for y in years)
+    return f"""
+<h2>Cheaper districts amplify the cycle</h2>
+<div class="card">
+  <p>Prices by district over a long period, at constant quality (index, {ref} = 100). Cheaper districts rise more in a
+  boom and fall more in a correction. {CYCLE_NOTE.get(city, "")}</p>
+  <div class="legend">{legend}</div>
+  <div class="schart"><svg class="chart" viewBox="0 0 {W} {H}" role="img" aria-label="Price index by third of districts">{"".join(e)}</svg>
+  <script type="application/json">{json.dumps(data)}</script></div>
+  <details><summary>Year by year: did dearer districts do better?</summary><div class="table-scroll"><table><thead><tr><th>Year</th>
+  <th class="num">Average price change</th><th class="num">Effect of being 10% dearer (points)</th><th class="num">t</th><th>Reading (|t| ≥ 2)</th></tr></thead>
+  <tbody>{rows}</tbody></table></div></details>
+  <details><summary>Table view of the chart</summary><div class="table-scroll"><table><thead><tr><th>Year</th>
+  {"".join(f"<th class='num'>{lab}</th>" for _, lab, _ in GROUPS)}</tr></thead><tbody>{table}</tbody></table></div></details>
+  <p class="note">For each year, the price change of a district is regressed on its price level two to three years earlier.
+  The dated reversals coincide with tighter credit (higher mortgage rates in France from 2022, loan caps in Singapore in
+  2013). The timing fits a credit channel but does not prove it; neighbouring districts move together, so the
+  t-statistics overstate the precision. Details and limits on the methodology page.</p>
+</div>"""
