@@ -368,3 +368,55 @@ def test_volume_drop_precedes_price_fall():
     bal = pd.Series(np.r_[np.sin(np.arange(52) / 3) * 2 - 70, np.full(8, -90.0)], index=idx)
     _, ch, flag = V.signal(bal, "balance")
     assert not flag.iloc[:44].any() and flag.iloc[-6:].any()
+
+
+def _value_panel(effect: float, seed: int = 3) -> pd.DataFrame:
+    rng = np.random.default_rng(seed)
+    rows = []
+    for u in range(60):
+        level, ratio = rng.normal(9, 0.3), rng.normal(0, 0.15)  # log price level and log price-to-rent deviation
+        growth = 0.05 + effect * ratio
+        for when, base in (("2021-09-15", 0.0), ("2025-09-15", growth)):
+            n = 80
+            area = rng.uniform(20, 120, n)
+            lp = level + ratio + base - 0.1 * np.log(area) + rng.normal(0, 0.2, n)
+            rows.append(pd.DataFrame({"district_l2": f"u{u}", "date": when, "floor_area_m2": area,
+                                      "price_per_m2_local": np.exp(lp), "rooms_or_flat_type": "2",
+                                      "price_to_rent": np.exp(lp - level + 3)}))
+    t = pd.concat(rows, ignore_index=True)
+    t["date"] = pd.to_datetime(t["date"]) + pd.to_timedelta(np.random.default_rng(seed).integers(0, 60, len(t)), unit="D")
+    return t
+
+
+def test_value_effect_detects_and_does_not_invent():
+    from src.indices.run import prepare
+    from src.valuation import value_effect as VE
+    for effect, expect_negative in ((-0.5, True), (0.0, False)):
+        t = prepare(_value_panel(effect))
+        d, w = VE.district_table(t, ["log_area"], ["rooms_or_flat_type"], np.random.default_rng(1))
+        r = VE.test(d, np.random.default_rng(1))
+        assert r["districts"] == 60 and w["formation_start"] == "2021-09"
+        if expect_negative:
+            assert r["slope"] < -25 and r["slope_p"] < 0.01 and r["dear_minus_cheap_third_pct"] < 0
+        else:  # split sample: noise in starting prices must not create a relation
+            assert abs(r["slope"] / r["slope_se"]) < 2.5
+
+
+def test_district_cycles_slope_appears_only_when_built_in():
+    from src.valuation import district_cycles as DC
+    rng = np.random.default_rng(5)
+    rows = []
+    level = {u: rng.normal(9, 0.3) for u in range(40)}
+    cum = {u: 0.0 for u in range(40)}
+    for year in range(2010, 2021):
+        for u in range(40):
+            cum[u] += 0.03 + (0.10 * (level[u] - 9) if year == 2019 else 0.0)
+            area = rng.uniform(20, 100, 40)
+            rows.append(pd.DataFrame({"unit": str(u), "year": year, "log_area": np.log(area), "rooms": "2",
+                                      "log_ppm2": level[u] + cum[u] - 0.1 * np.log(area) + rng.normal(0, 0.1, 40)}))
+    p = DC.district_year(pd.concat(rows, ignore_index=True), ["log_area"], ["rooms"])
+    s = DC.yearly_slopes(p).set_index("year")
+    assert p.shape == (40, 11) and s.index.min() == 2013
+    assert s.loc[2019, "t"] > 4 and (s.drop(2019)["t"].abs() < 3).all()
+    g = DC.group_index(p, (2010, 2012))
+    assert set(g["group"]) == {"cheapest third", "middle third", "dearest third"} and (g[g["year"] == 2013]["index"].round(6) == 100).all()

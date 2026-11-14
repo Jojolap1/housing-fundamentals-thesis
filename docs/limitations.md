@@ -198,3 +198,28 @@ These are stated plainly because they bound what the results can say.
 - **Volumes react to policy as well as to demand** (stamp duties, lending caps), so a drop can
   reflect a rule change with no price fall behind it, as in Singapore in 2019 and 2022; the
   cause of those two drops was not verified.
+
+## Cross-section of districts (added 2026-11-14)
+- **One period per market.** The test compares two windows; it says nothing about other
+  periods, and Paris is observed only after the 2020 peak (sales start in July 2021).
+- **Pre-trend (addressed 2026-11-14).** Sales since 2014 were added from DVF+ open-data: the
+  cheaper quartiers were gaining more until 2021, not less (see findings).
+- **Paris rents are regulated reference rents**, not market rents; they vary little across
+  quartiers, so the Paris signal is close to a ranking by price.
+- **Districts are not independent.** Neighbouring districts move together; the standard
+  errors do not account for spatial correlation and are too small.
+- **The channel is not identified.** "Credit-dependent buyers" is one reading among others.
+
+## Long-run district prices (added 2026-11-14)
+- **A second source for Paris.** The 2014–2025 series uses DVF+ open-data (release 2026.1),
+  not the DGFiP files used elsewhere; it has no building period and no address, so the
+  quality adjustment uses area, rooms and outbuildings only. The October 2026 release had
+  no csv files when downloaded.
+- **Sales older than five years.** The DGFiP publishes DVF for five years; DVF+ open-data
+  republishes 2014 onward under Licence Ouverte 2.0. Only aggregates by quartier and year
+  are published here. How the DGFiP reuse terms apply beyond five years was not checked.
+- **HDB by town only** (26 units, 21 to 23 before 2004), with town boundaries and flat
+  models that change over 36 years.
+- **Few years, correlated districts.** Nine yearly slopes for Paris; the t-statistics ignore
+  spatial correlation. The link with credit conditions rests on two dated episodes.
+- **Private homes in Singapore:** no public transaction file before 2021 was found.

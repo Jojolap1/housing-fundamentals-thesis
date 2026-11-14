@@ -1,29 +1,32 @@
-build started 2026-11-11T06:13:58Z
+build started 2026-11-14T11:51:39Z
 Python 3.13.18
 OK    ingest_fx (0s)
-OK    ingest_rates (0s)
+OK    ingest_rates (1s)
 OK    ingest_paris (1s)
 OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
 OK    ingest_official (1s)
-OK    ingest_volumes (1245s)
+OK    ingest_volumes (9s)
+OK    ingest_dvfplus (16s)
 URA access key provided to the build: yes
-OK    ingest_ura (90s)
-OK    ingest_ura_geocode (120s)
-OK    ingest_ura_dev (122s)
-OK    clean_paris (8s)
+OK    ingest_ura (82s)
+OK    ingest_ura_geocode (115s)
+OK    ingest_ura_dev (117s)
+OK    clean_paris (7s)
 OK    clean_singapore (7s)
-OK    clean_private (7s)
+OK    clean_private (8s)
 OK    features_paris (19s)
 OK    features_singapore (2s)
-OK    features_private (1s)
-OK    levels (22s)
-OK    robust (66s)
-OK    indices (10s)
-OK    verdict (9s)
-OK    cross_checks (2s)
-OK    early_warning (2s)
-OK    volumes (0s)
+OK    features_private (2s)
+OK    levels (26s)
+OK    robust (69s)
+OK    indices (8s)
+OK    verdict (10s)
+OK    cross_checks (12s)
+OK    early_warning (3s)
+OK    volumes (1s)
+OK    value_effect (3s)
+OK    district_cycles (13s)
 OK    tests (5s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
@@ -31,36 +34,85 @@ licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Données DVF+ open-data (csv + shp) | csv | None | https://cerema.app.box.com/v/dvfplus-opendata
   Données DVF+ open-data (dump PostgreSQL/PostGIS) | sql | None | https://cerema.app.box.com/v/dvfplus-opendata
 --- index metadata
-{ "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}{ "periods": [  "2021Q4",  "2026Q4" ], "n_sales": 100890, "hedonic_numeric": [  "log_area",  "storey_mid",  "freehold",  "lease_term" ], "hedonic_categorical": [  "district_l1",  "rooms_or_flat_type",  "sale_type",  "market_segment" ], "strata": [  "market_segment",  "sale_type" ], "strata_used": 8, "strata_coverage": 0.9976, "repeat_pairs": 36016, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
+{ "periods": [  "2021Q3",  "2026Q2" ], "n_sales": 139829, "hedonic_numeric": [  "log_area",  "n_dependances" ], "hedonic_categorical": [  "district_l2",  "rooms_or_flat_type",  "epoque" ], "strata": [  "district_l1",  "rooms_cap" ], "strata_used": 79, "strata_coverage": 0.9973, "repeat_pairs": 4249, "repeat_sales_kind": "repeat-sales"}{ "periods": [  "2017Q1",  "2026Q4" ], "n_sales": 238198, "hedonic_numeric": [  "log_area",  "storey_mid",  "lease_remaining_years" ], "hedonic_categorical": [  "hdb_town",  "rooms_or_flat_type",  "flat_model" ], "strata": [  "hdb_town",  "rooms_or_flat_type" ], "strata_used": 79, "strata_coverage": 0.951, "repeat_pairs": 128596, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}{ "periods": [  "2021Q4",  "2026Q4" ], "n_sales": 101037, "hedonic_numeric": [  "log_area",  "storey_mid",  "freehold",  "lease_term" ], "hedonic_categorical": [  "district_l1",  "rooms_or_flat_type",  "sale_type",  "market_segment" ], "strata": [  "market_segment",  "sale_type" ], "strata_used": 8, "strata_coverage": 0.9976, "repeat_pairs": 36081, "repeat_sales_kind": "pseudo repeat-sales (proxy unit)"}
 
 --- official index series
 oecd_house_prices_fra.csv 227 1970-Q1 2026-Q3 https://sdmx.oecd.org/public/rest/data/OECD.ECO.MPD,DSD_AN_H
 --- volumes
-hdb_resale_d_2d5ff9ea31397b66239f245f57751537.csv 52203
 d_2d5ff9ea31397b66239f245f57751537 52203 2012-03 2014-12
-hdb_resale_d_43f493c6c50d54243cc1eab0df142d6a.csv 369651
 d_43f493c6c50d54243cc1eab0df142d6a 369651 2000-01 2012-02
 d_8b84c4ee58e3cfc0ece0d773c8ca6abc 244312 2017-01 2026-11
-hdb_resale_d_ea9ed51da2787afaf8e51f827c304208.csv 37153
 d_ea9ed51da2787afaf8e51f827c304208 37153 2015-01 2016-12
-hdb_resale_d_ebc5ab87086db484f88045b47411ebc5.csv 287196
 d_ebc5ab87086db484f88045b47411ebc5 287196 1990-01 1999-12
-ura_private_transactions_quarterly.csv 432
 ura_private_transactions_quarterly.csv 108 1999Q4 2026Q3 ['New Sale', 'Resale', 'Sub Sale']
 insee_purchase_intentions.csv 485 1986-06 2026-10 | Enquête mensuelle de conjoncture auprès des ménages - Intentions d'achats de logements (dans un délai de 1 an) : Solde des réponses (intentions d'achats moins pas d'achat envisagé) - Données brutes
 singapore sales {'market': 'singapore', 'signal': 'sales', 'unit': '%', 'first_period': '1990Q1', 'last_period': '2026Q3', 'change_1y_last': np.float64(-6.077579637250419), 'drop_on_last': False, 'price_falls': 2, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 1, 'drop_episodes_scored': 4, 'drop_episodes_followed_by_fall': 2}
 singapore_private sales {'market': 'singapore_private', 'signal': 'sales', 'unit': '%', 'first_period': '1999Q4', 'last_period': '2026Q3', 'change_1y_last': np.float64(-14.030705942848742), 'drop_on_last': False, 'price_falls': 4, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 2, 'drop_episodes_scored': 6, 'drop_episodes_followed_by_fall': 2}
 singapore_private resales {'market': 'singapore_private', 'signal': 'resales', 'unit': '%', 'first_period': '1999Q4', 'last_period': '2026Q3', 'change_1y_last': np.float64(-2.886110172355527), 'drop_on_last': False, 'price_falls': 4, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 2, 'drop_episodes_scored': 6, 'drop_episodes_followed_by_fall': 3}
 paris purchase_intentions {'market': 'paris', 'signal': 'purchase_intentions', 'unit': 'points', 'first_period': '1986Q3', 'last_period': '2026Q3', 'change_1y_last': np.float64(0.5), 'drop_on_last': False, 'price_falls': 2, 'price_falls_with_signal': 2, 'price_falls_with_drop_nearby': 0, 'drop_episodes_scored': 4, 'drop_episodes_followed_by_fall': 0}
+--- district cycles
+paris districts 80 years 2014 2025 sales 343152
+ year  districts  mean_change_pct  slope     t
+ 2017         80             7.05  -1.65 -0.62
+ 2018         80             6.62  -3.02 -1.50
+ 2019         80             6.23  -5.91 -2.43
+ 2020         79             6.62  -2.69 -1.49
+ 2021         79            -1.49  -3.08 -1.97
+ 2022         79            -1.47   6.84  4.96
+ 2023         79            -3.78  15.06  6.17
+ 2024         78            -5.37   6.44  2.93
+ 2025         78             1.29  -1.83 -1.11
+singapore districts 26 years 1990 2026 sales 990464
+ year  districts  mean_change_pct  slope     t
+ 1993         21            40.20 -19.09 -2.41
+ 1994         22            30.19 -13.59 -2.18
+ 1995         23            22.59  -2.61 -0.85
+ 1996         23            30.57 -13.32 -2.96
+ 1997         23             8.39  -7.04 -1.47
+ 1998         23           -18.70   2.58  0.82
+ 1999         23            -5.03  -1.16 -0.37
+ 2000         23             6.62   8.38  3.62
+ 2001         23            -7.40   9.46  3.41
+ 2002         23            -1.58   6.93  1.81
+ 2003         23             5.20  -2.62 -0.64
+ 2004         25             4.51  -5.26 -1.46
+ 2005         25            -1.92  -0.29 -0.13
+ 2006         25             0.28   8.63  6.59
+ 2007         25             9.09  19.08 13.82
+ 2008         26            20.41   7.00  3.07
+ 2009         26             7.83  -3.90 -2.23
+ 2010         26            13.21  -0.61 -0.57
+ 2011         26            12.82  -1.70 -1.21
+ 2012         26             8.32  -3.01 -3.09
+ 2013         26             4.48   0.54  0.53
+ 2014         26            -5.06   7.88  3.53
+ 2015         26            -4.23   5.53  2.66
+ 2016         26             0.26   1.23  0.59
+ 2017         26            -0.81   1.03  0.96
+ 2018         26            -1.36  -0.26 -0.19
+ 2019         26            -0.05  -5.58 -3.01
+ 2020         26             1.97  -6.10 -5.11
+ 2021         26            10.21 -11.14 -7.09
+ 2022         26            10.75  -6.58 -3.42
+ 2023         26             6.87  -0.85 -0.77
+ 2024         26             7.11  -1.54 -0.97
+ 2025         26             6.68   1.04  1.05
+ 2026         26             0.04   1.71  1.29
+dvf_plus_d75.csv 186563738 bytes
+--- value effect
+{'city': 'paris', 'formation_start': '2021-07', 'formation_end': '2022-06', 'end_start': '2025-06', 'end_end': '2026-05', 'districts': 79, 'mean_change_pct': np.float64(-7.907), 'sd_change_pct': np.float64(4.936), 'sd_signal': np.float64(0.098), 'slope': np.float64(31.431), 'slope_se': np.float64(4.142), 'slope_p': np.float64(0.0), 'change_for_10pct_dearer': np.float64(2.996), 'r2': np.float64(0.393), 'slope_with_price_level': np.float64(-8.111), 'slope_with_price_level_se': np.float64(5.252), 'slope_with_price_level_p': np.float64(0.127), 'spearman': np.float64(0.58), 'spearman_p': np.float64(0.0), 'dear_minus_cheap_third_pct': 6.674, 'gap_ci_low': np.float64(3.775), 'gap_ci_high': np.float64(8.376), 'raw_slope': np.float64(23.258)}
+{'city': 'singapore', 'formation_start': '2021-01', 'formation_end': '2021-12', 'end_start': '2025-11', 'end_end': '2026-10', 'districts': 129, 'mean_change_pct': np.float64(31.426), 'sd_change_pct': np.float64(3.957), 'sd_signal': np.float64(0.16), 'slope': np.float64(7.23), 'slope_se': np.float64(2.27), 'slope_p': np.float64(0.002), 'change_for_10pct_dearer': np.float64(0.689), 'r2': np.float64(0.085), 'slope_with_price_level': np.float64(7.761), 'slope_with_price_level_se': np.float64(2.301), 'slope_with_price_level_p': np.float64(0.001), 'spearman': np.float64(0.242), 'spearman_p': np.float64(0.006), 'dear_minus_cheap_third_pct': 2.121, 'gap_ci_low': np.float64(0.157), 'gap_ci_high': np.float64(3.716), 'raw_slope': np.float64(-6.209)}
+{'city': 'singapore_private', 'formation_start': '2022-01', 'formation_end': '2022-12', 'end_start': '2025-11', 'end_end': '2026-10', 'districts': 123, 'mean_change_pct': np.float64(19.418), 'sd_change_pct': np.float64(9.458), 'sd_signal': np.float64(0.255), 'slope': np.float64(-8.328), 'slope_se': np.float64(3.543), 'slope_p': np.float64(0.02), 'change_for_10pct_dearer': np.float64(-0.794), 'r2': np.float64(0.05), 'slope_with_price_level': np.float64(3.534), 'slope_with_price_level_se': np.float64(2.943), 'slope_with_price_level_p': np.float64(0.232), 'spearman': np.float64(-0.215), 'spearman_p': np.float64(0.017), 'dear_minus_cheap_third_pct': -3.494, 'gap_ci_low': np.float64(-8.768), 'gap_ci_high': np.float64(0.207), 'raw_slope': np.float64(-23.751)}
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-37935 MANIFEST.csv
+36884 MANIFEST.csv
+186563738 dvfplus/dvf_plus_d75.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
 1866 official/notaires_insee_paris_apartments.csv
 19089 official/oecd_house_prices_fra.csv
-982971 official/oecd_house_prices_panel.csv
+982980 official/oecd_house_prices_panel.csv
 18260 official/ura_private_residential_price_index.csv
 24736 official/ura_private_residential_rental_index.csv
 202223 paris/arrondissements.geojson
@@ -132,7 +184,6 @@ paris purchase_intentions {'market': 'paris', 'signal': 'purchase_intentions', '
 42536 singapore/ura/developer_sales/dev_sales_202410.json
 43459 singapore/ura/developer_sales/dev_sales_202411.json
 44855 singapore/ura/developer_sales/dev_sales_202412.json
-45272 singapore/ura/developer_sales/dev_sales_202501.json
 --- official index headers
 data/raw/official/hdb_resale_price_index.csv
 quarter,index,_id
@@ -195,4 +246,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-11T06:42:58Z
+build finished 2026-11-14T12:00:38Z
