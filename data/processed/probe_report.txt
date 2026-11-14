@@ -1,61 +1,6 @@
-=== Cerema Box: April 2026 release
-avril_2026/sql | d_375542749427 | 19675965008
-avril_2026/csv | d_375539151689 | 2585794201
-avril_2026/gpkg | d_375539161289 | 11023926788
-avril_2026/sql/National | d_375543222065 | 10118308524
-avril_2026/sql/R94_Corse | d_375544598113 | 59834089
-avril_2026/sql/R93_Provence_Alpes_Cote_d_Azur | d_375542715834 | 723609004
-avril_2026/sql/R84_Auvergne_Rhone_Alpes | d_375544551636 | 1353747244
-avril_2026/sql/R76_Occitanie | d_375541242506 | 1146988559
-avril_2026/sql/R75_Nouvelle_Aquitaine | d_375542968245 | 1316074795
-avril_2026/sql/R53_Bretagne | d_375543189066 | 703703501
-avril_2026/sql/R52_Pays_de_la_Loire | d_375544382131 | 717914024
-avril_2026/sql/R44_Grand_Est | d_375540690476 | 418130996
-avril_2026/sql/R32_Hauts_de_France | d_375539901227 | 670142025
-avril_2026/sql/R28_Normandie | d_375541268859 | 540161027
-avril_2026/sql/R27_Bourgogne_Franche_Comte | d_375543503831 | 547301649
-avril_2026/sql/R24_Centre_Val_de_Loire | d_375541244908 | 427792583
-avril_2026/sql/R11_Ile_de_France | d_375540064734 | 848669310
-avril_2026/sql/R04_La_Reunion | d_375542413595 | 45021657
-avril_2026/sql/R03_Guyane | d_375541559602 | 7501419
-avril_2026/sql/R02_Martinique | d_375540711873 | 14720879
-avril_2026/sql/R01_Guadeloupe | d_375541794112 | 16332297
-avril_2026/sql/script_correctif.sql | f_2225207658866 | 1832
-avril_2026/csv/National | d_375539763751 | 1087603212
-avril_2026/csv/R93_Provence_Alpes_Cote_d_Azur | d_375544619767 | 130041718
-avril_2026/csv/R94_Corse | d_375544691694 | 7853246
-avril_2026/csv/R84_Auvergne_Rhone_Alpes | d_375544379058 | 201580213
-avril_2026/csv/R76_Occitanie | d_375539641298 | 167927248
-avril_2026/csv/R75_Nouvelle_Aquitaine | d_375542195949 | 177322669
-avril_2026/csv/R53_Bretagne | d_375542703887 | 94517975
-avril_2026/csv/R52_Pays_de_la_Loire | d_375539797261 | 103797102
-avril_2026/csv/R44_Grand_Est | d_375539243488 | 62635227
-avril_2026/csv/R32_Hauts_de_France | d_375542191127 | 115725460
-avril_2026/csv/R28_Normandie | d_375544276265 | 79160670
-avril_2026/csv/R27_Bourgogne_Franche_Comte | d_375539761795 | 72937314
-avril_2026/csv/R24_Centre_Val_de_Loire | d_375543289488 | 64181929
-avril_2026/csv/R11_Ile_de_France | d_375540493824 | 204265080
-avril_2026/csv/R04_La_Reunion | d_375542300699 | 8133185
-avril_2026/csv/R03_Guyane | d_375542872509 | 1671752
-avril_2026/csv/R02_Martinique | d_375543287088 | 2958732
-avril_2026/csv/R01_Guadeloupe | d_375542984628 | 3481469
-avril_2026/gpkg/National | d_375544209416 | 4974050911
-avril_2026/gpkg/R94_Corse | d_375544698535 | 49714093
-avril_2026/gpkg/R93_Provence_Alpes_Cote_d_Azur | d_375541983884 | 682803146
-avril_2026/gpkg/R84_Auvergne_Rhone_Alpes | d_375540685473 | 603702660
-avril_2026/gpkg/R76_Occitanie | d_375540903616 | 785305217
-avril_2026/gpkg/R75_Nouvelle_Aquitaine | d_375544358131 | 798184114
-avril_2026/gpkg/R53_Bretagne | d_375544561613 | 436412297
-avril_2026/gpkg/R52_Pays_de_la_Loire | d_375542363086 | 458451897
-avril_2026/gpkg/R44_Grand_Est | d_375541343477 | 255725246
-avril_2026/gpkg/R32_Hauts_de_France | d_375541321744 | 430316810
-avril_2026/gpkg/R28_Normandie | d_375544690982 | 354456742
-avril_2026/gpkg/R27_Bourgogne_Franche_Comte | d_375544782121 | 325211408
-avril_2026/gpkg/R24_Centre_Val_de_Loire | d_375541784962 | 261730954
-avril_2026/gpkg/R11_Ile_de_France | d_375543793709 | 533363723
-avril_2026/gpkg/R04_La_Reunion | d_375539864683 | 39852307
-avril_2026/gpkg/R03_Guyane | d_375541691920 | 5834959
-avril_2026/gpkg/R02_Martinique | d_375544434902 | 13713065
-avril_2026/gpkg/R01_Guadeloupe | d_375540858484 | 15097239
-=== correction note, October 2026
-ERROR <HTTPError 403: 'Forbidden'>
+=== April 2026, csv, Ile-de-France
+DVF_PLUS_2026_1_CSV_R011_ED251.zip | f_2192472020739 | 204265080
+shared item: {"sharedName": "pgoyov5dddimtnk5j6akbfl79mr4jrep", "vanityName": "dvfplus-opendata", "itemID": 77228357248, "itemType": "folder", "applicationType": null, "isSharedEditEnabled": false}
+OK https://cerema.app.box.com/index.php... -> 200 text/sql b"-- CORRECTION DES PARCELLES AYANT UNE SECTION 'NA'\r\n\r\n-- MISE A JOUR DISPOSITION PARCELLE\r\nupdate dvf_plus_2026_1.dvf_plus_disposition_parcelle  \r\nset idpar = overlay(idpar placing 'NA' from 9 for 2)\r"
+OK https://cerema.app.box.com/index.php... -> 200 text/sql b"-- CORRECTION DES PARCELLES AYANT UNE SECTION 'NA'\r\n\r\n-- MISE A JOUR DISPOSITION PARCELLE\r\nupdate dvf_plus_2026_1.dvf_plus_disposition_parcelle  \r\nset idpar = overlay(idpar placing 'NA' from 9 for 2)\r"
+FAIL https://cerema.app.box.com/shared/static/pgoyov5dddimtnk5j6akbfl79mr4jrep?file_id=f_2225207658866 -> <HTTPError 404: 'Not Found'>
