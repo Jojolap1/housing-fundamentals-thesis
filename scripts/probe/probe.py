@@ -58,13 +58,21 @@ def box(url: str, depth: int, budget: list[int], path: str = "") -> None:
             return
 
 
-out.append("=== Cerema Box: DVF+ open-data")
-box(BOX, 0, [40])
-out.append("=== files.data.gouv.fr geo-dvf")
-for u in ("https://files.data.gouv.fr/geo-dvf/latest/csv/", "https://files.data.gouv.fr/geo-dvf/"):
-    try:
-        out.append(u + " -> " + ", ".join(sorted(set(re.findall(r'href="([^"?][^"]*)"', get(u))))[:40]))
-    except Exception as e:
-        out.append(f"{u} ERROR {e!r}")
+out.append("=== Cerema Box: Ile-de-France folders")
+for label, fid in (("csv/R11", "427362608619"), ("parquet", "427708571715")):
+    html = get(f"{BOX}/folder/{fid}")
+    m = re.search(r"Box\.postStreamData\s*=\s*(\{.*?\});\s*</script>", html, re.S)
+    data = json.loads(m.group(1)) if m else {}
+    out.append(f"{label}: top keys {list(data)[:12]}")
+    for k, v in data.items():
+        txt = json.dumps(v)
+        out.append(f"  {k}: {len(txt)} chars; keys {list(v)[:15] if isinstance(v, dict) else type(v).__name__}")
+        for n, t, sz in re.findall(r'"name":\s*"([^"]+)".{0,400}?"typedID":\s*"([df]_\d+)".{0,300}?"(?:itemSize|size)":\s*(\d+|null)', txt)[:60]:
+            out.append(f"    {n} | {t} | {sz}")
+        for t, n in re.findall(r'"typedID":\s*"([df]_\d+)".{0,400}?"name":\s*"([^"]+)"', txt)[:60]:
+            out.append(f"    {n} | {t}")
+        if "typedID" in txt and "items" in txt:
+            j = txt.find('"items"')
+            out.append("    snippet: " + txt[j:j + 600])
 open(sys.argv[1], "w").write("\n".join(out) + "\n")
 print("\n".join(out)[:3000])
