@@ -215,9 +215,15 @@ These are stated plainly because they bound what the results can say.
   not the DGFiP files used elsewhere; it has no building period and no address, so the
   quality adjustment uses area, rooms and outbuildings only. The October 2026 release had
   no csv files when downloaded.
-- **Sales older than five years.** The DGFiP publishes DVF for five years; DVF+ open-data
-  republishes 2014 onward under Licence Ouverte 2.0. Only aggregates by quartier and year
-  are published here. How the DGFiP reuse terms apply beyond five years was not checked.
+- **Sales older than five years.** The DGFiP publishes DVF over a rolling five years; the
+  Cerema, a public body, republishes 2014 onward as DVF+ open-data under Licence Ouverte 2.0
+  (data.gouv.fr, dataset `dvf-open-data`, coverage "2014 à 2025"). The conditions stated on
+  the DGFiP dataset page are about use, not age: no re-identification of persons, even
+  indirectly (article R112 A-3 of the Livre des procédures fiscales), and no indexing by
+  external search engines. Only aggregates by quartier and year are published here, which
+  meets both. Checked on 2026-11-14 from the dataset pages; the full text of the conditions
+  (PDF) and of articles R112 A-1 to A-3 was not read, and no source read states in so many
+  words that sales older than five years may be reused.
 - **HDB by town only** (26 units, 21 to 23 before 2004), with town boundaries and flat
   models that change over 36 years.
 - **Few years, correlated districts.** Nine yearly slopes for Paris; the t-statistics ignore
