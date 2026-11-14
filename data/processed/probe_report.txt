@@ -1,6 +1,18 @@
-=== April 2026, csv, Ile-de-France
-DVF_PLUS_2026_1_CSV_R011_ED251.zip | f_2192472020739 | 204265080
-shared item: {"sharedName": "pgoyov5dddimtnk5j6akbfl79mr4jrep", "vanityName": "dvfplus-opendata", "itemID": 77228357248, "itemType": "folder", "applicationType": null, "isSharedEditEnabled": false}
-OK https://cerema.app.box.com/index.php... -> 200 text/sql b"-- CORRECTION DES PARCELLES AYANT UNE SECTION 'NA'\r\n\r\n-- MISE A JOUR DISPOSITION PARCELLE\r\nupdate dvf_plus_2026_1.dvf_plus_disposition_parcelle  \r\nset idpar = overlay(idpar placing 'NA' from 9 for 2)\r"
-OK https://cerema.app.box.com/index.php... -> 200 text/sql b"-- CORRECTION DES PARCELLES AYANT UNE SECTION 'NA'\r\n\r\n-- MISE A JOUR DISPOSITION PARCELLE\r\nupdate dvf_plus_2026_1.dvf_plus_disposition_parcelle  \r\nset idpar = overlay(idpar placing 'NA' from 9 for 2)\r"
-FAIL https://cerema.app.box.com/shared/static/pgoyov5dddimtnk5j6akbfl79mr4jrep?file_id=f_2225207658866 -> <HTTPError 404: 'Not Found'>
+=== zip 204265080 bytes
+1_DONNEES_LIVRAISON/ | 0
+1_DONNEES_LIVRAISON/dvf_plus_d75.csv | 186563738
+1_DONNEES_LIVRAISON/dvf_plus_d77.csv | 171472869
+1_DONNEES_LIVRAISON/dvf_plus_d78.csv | 139859367
+1_DONNEES_LIVRAISON/dvf_plus_d91.csv | 123819473
+1_DONNEES_LIVRAISON/dvf_plus_d92.csv | 141342767
+1_DONNEES_LIVRAISON/dvf_plus_d93.csv | 113257041
+1_DONNEES_LIVRAISON/dvf_plus_d94.csv | 111101782
+1_DONNEES_LIVRAISON/dvf_plus_d95.csv | 113720583
+4_METADONNEES_LIVRAISON/ | 0
+5_SUPPLEMENTS_LIVRAISON/ | 0
+--- 1_DONNEES_LIVRAISON/dvf_plus_d75.csv: sep '|', 63 columns: ['idmutation', 'idmutinvar', 'idopendata', 'idnatmut', 'codservch', 'refdoc', 'datemut', 'anneemut', 'moismut', 'coddep', 'libnatmut', 'nbartcgi', 'l_artcgi', 'vefa', 'valeurfonc', 'nbdispo', 'nblot', 'nbcomm', 'l_codinsee', 'nbsection', 'l_section', 'nbpar', 'l_idpar', 'nbparmut', 'l_idparmut', 'nbsuf', 'sterr', 'l_dcnt', 'nbvolmut', 'nblocmut', 'l_idlocmut', 'nblocmai', 'nblocapt', 'nblocdep', 'nblocact', 'nbapt1pp', 'nbapt2pp', 'nbapt3pp', 'nbapt4pp', 'nbapt5pp', 'nbmai1pp', 'nbmai2pp', 'nbmai3pp', 'nbmai4pp', 'nbmai5pp', 'sbati', 'sbatmai', 'sbatapt', 'sbatact', 'sapt1pp', 'sapt2pp', 'sapt3pp', 'sapt4pp', 'sapt5pp', 'smai1pp', 'smai2pp', 'smai3pp', 'smai4pp', 'smai5pp', 'codtypbien', 'libtypbien', 'geompar_x', 'geompar_y']
+  sample: {"datemut": "2014-02-27", "anneemut": "2014", "coddep": "75", "libnatmut": "Vente", "vefa": "False", "valeurfonc": "229200.0", "l_codinsee": "75111", "l_section": "AT", "nblocmut": "1", "nblocapt": "1", "nblocdep": "0", "nbapt1pp": "1", "nbapt2pp": "0", "nbapt3pp": "0", "nbapt4pp": "0", "nbapt5pp": "0", "sbati": "16.0", "sbatapt": "16.0", "codtypbien": "121", "libtypbien": "UN APPARTEMENT"}
+  sample: {"datemut": "2014-10-17", "anneemut": "2014", "coddep": "75", "libnatmut": "Vente", "vefa": "False", "valeurfonc": "780000.0", "l_codinsee": "75120", "l_section": "BO", "nblocmut": "3", "nblocapt": "1", "nblocdep": "2", "nbapt1pp": "0", "nbapt2pp": "0", "nbapt3pp": "1", "nbapt4pp": "0", "nbapt5pp": "0", "sbati": "85.0", "sbatapt": "85.0", "codtypbien": "121", "libtypbien": "UN APPARTEMENT"}
+  sample: {"datemut": "2014-09-10", "anneemut": "2014", "coddep": "75", "libnatmut": "Vente", "vefa": "False", "valeurfonc": "610000.0", "l_codinsee": "75115", "l_section": "AG", "nblocmut": "1", "nblocapt": "1", "nblocdep": "0", "nbapt1pp": "0", "nbapt2pp": "0", "nbapt3pp": "1", "nbapt4pp": "0", "nbapt5pp": "0", "sbati": "71.0", "sbatapt": "71.0", "codtypbien": "121", "libtypbien": "UN APPARTEMENT"}
+  Paris rows 498059; by year {'2014': 35612, '2015': 41183, '2016': 39977, '2017': 45843, '2018': 44682, '2019': 46064, '2020': 38155, '2021': 43565, '2022': 47064, '2023': 39295, '2024': 35987, '2025': 40632}
+  types: {"UN APPARTEMENT": 360028, "UNE DEPENDANCE": 56941, "ACTIVITE": 32152, "DEUX APPARTEMENTS": 17639, "BATI MIXTE - LOGEMENT/ACTIVITE": 8396, "DES DEPENDANCES": 8061, "APPARTEMENT INDETERMINE": 6894, "BATI - INDETERMINE : Vefa sans descriptif": 4257, "UNE MAISON": 1763, "BATI - INDETERMINE : Vente avec volume(s)": 1361, "TERRAIN ARTIFICIALISE MIXTE": 274, "TERRAIN DE TYPE TAB": 108}
