@@ -1,0 +1,9 @@
+city,step,rows
+paris,0_raw,498059
+paris,1_sale_of_existing_dwelling,487163
+paris,2_single_apartment,356306
+paris,3_price_area_plausible,356005
+paris,4_located_in_a_quartier (coordinates read as EPSG:2154),355958
+paris,5_price_per_m2_within_factor_3_of_arrondissement_year_median,343152
+singapore,0_raw,990515
+singapore,1_valid_price_area_age,990464
