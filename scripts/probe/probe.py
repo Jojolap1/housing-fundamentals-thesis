@@ -70,27 +70,23 @@ def listing(fid: str) -> list[tuple[str, str, object]]:
     return res
 
 
-out.append("=== Cerema Box: April 2026 release")
-todo = [("avril_2026", "375539396618", 0)]
-while todo:
-    path, fid, depth = todo.pop(0)
+out.append("=== April 2026, csv, Ile-de-France")
+for name, tid, size in listing("375540493824"):
+    out.append(f"{name} | {tid} | {size}")
+html = get(BOX)
+m = re.search(r"Box\.postStreamData\s*=\s*(\{.*?\});\s*</script>", html, re.S)
+shared = json.loads(m.group(1)).get("/app-api/enduserapp/shared-item", {})
+out.append("shared item: " + json.dumps(shared))
+fid = "2225207658866"
+for url in (f"https://cerema.app.box.com/index.php?rm=box_download_shared_file&shared_name={shared.get('sharedName')}&file_id=f_{fid}",
+            f"https://cerema.app.box.com/index.php?rm=box_download_shared_file&vanity_name=dvfplus-opendata&file_id=f_{fid}",
+            f"https://cerema.app.box.com/shared/static/{shared.get('sharedName')}?file_id=f_{fid}"):
     try:
-        its = listing(fid)
+        req = urllib.request.Request(url, headers=UA)
+        with urllib.request.urlopen(req, timeout=60) as r:
+            body = r.read(400)
+            out.append(f"OK {url.split('?')[0]}... -> {r.status} {r.headers.get('Content-Type')} {body[:200]!r}")
     except Exception as e:
-        out.append(f"{path} ERROR {e!r}")
-        continue
-    if not its:
-        out.append(f"{path} (empty)")
-    for name, tid, size in its:
-        show = depth < 2 or re.search(r"75|R11|national|lisez|readme|doc", str(name), re.I)
-        if show:
-            out.append(f"{path}/{name} | {tid} | {size}")
-        if tid.startswith("d_") and depth < 3 and (depth < 1 or re.search(r"csv|parquet|R11", str(name), re.I)):
-            todo.append((f"{path}/{name}", tid[2:], depth + 1))
-out.append("=== correction note, October 2026")
-try:
-    out.append(get("https://cerema.app.box.com/index.php?rm=box_download_shared_file&shared_name=dvfplus-opendata&file_id=f_2572450285271")[:600])
-except Exception as e:
-    out.append(f"ERROR {e!r}")
+        out.append(f"FAIL {url} -> {e!r}")
 open(sys.argv[1], "w").write("\n".join(out) + "\n")
 print("\n".join(out)[:3000])
