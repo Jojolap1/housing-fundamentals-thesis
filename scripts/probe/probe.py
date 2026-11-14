@@ -58,21 +58,39 @@ def box(url: str, depth: int, budget: list[int], path: str = "") -> None:
             return
 
 
-out.append("=== Cerema Box: Ile-de-France folders")
-for label, fid in (("csv/R11", "427362608619"), ("parquet", "427708571715")):
-    html = get(f"{BOX}/folder/{fid}")
-    m = re.search(r"Box\.postStreamData\s*=\s*(\{.*?\});\s*</script>", html, re.S)
-    data = json.loads(m.group(1)) if m else {}
-    out.append(f"{label}: top keys {list(data)[:12]}")
-    for k, v in data.items():
-        txt = json.dumps(v)
-        out.append(f"  {k}: {len(txt)} chars; keys {list(v)[:15] if isinstance(v, dict) else type(v).__name__}")
-        for n, t, sz in re.findall(r'"name":\s*"([^"]+)".{0,400}?"typedID":\s*"([df]_\d+)".{0,300}?"(?:itemSize|size)":\s*(\d+|null)', txt)[:60]:
-            out.append(f"    {n} | {t} | {sz}")
-        for t, n in re.findall(r'"typedID":\s*"([df]_\d+)".{0,400}?"name":\s*"([^"]+)"', txt)[:60]:
-            out.append(f"    {n} | {t}")
-        if "typedID" in txt and "items" in txt:
-            j = txt.find('"items"')
-            out.append("    snippet: " + txt[j:j + 600])
+def listing(fid: str) -> list[tuple[str, str, object]]:
+    res = []
+    for page in range(1, 8):
+        html = get(f"{BOX}/folder/{fid}" + (f"?page={page}" if page > 1 else ""))
+        m = re.search(r"Box\.postStreamData\s*=\s*(\{.*?\});\s*</script>", html, re.S)
+        sf = json.loads(m.group(1)).get("/app-api/enduserapp/shared-folder", {}) if m else {}
+        res += [(i.get("name"), i.get("typedID"), i.get("itemSize")) for i in sf.get("items", [])]
+        if page >= sf.get("pageCount", 1):
+            break
+    return res
+
+
+out.append("=== Cerema Box: April 2026 release")
+todo = [("avril_2026", "375539396618", 0)]
+while todo:
+    path, fid, depth = todo.pop(0)
+    try:
+        its = listing(fid)
+    except Exception as e:
+        out.append(f"{path} ERROR {e!r}")
+        continue
+    if not its:
+        out.append(f"{path} (empty)")
+    for name, tid, size in its:
+        show = depth < 2 or re.search(r"75|R11|national|lisez|readme|doc", str(name), re.I)
+        if show:
+            out.append(f"{path}/{name} | {tid} | {size}")
+        if tid.startswith("d_") and depth < 3 and (depth < 1 or re.search(r"csv|parquet|R11", str(name), re.I)):
+            todo.append((f"{path}/{name}", tid[2:], depth + 1))
+out.append("=== correction note, October 2026")
+try:
+    out.append(get("https://cerema.app.box.com/index.php?rm=box_download_shared_file&shared_name=dvfplus-opendata&file_id=f_2572450285271")[:600])
+except Exception as e:
+    out.append(f"ERROR {e!r}")
 open(sys.argv[1], "w").write("\n".join(out) + "\n")
 print("\n".join(out)[:3000])
