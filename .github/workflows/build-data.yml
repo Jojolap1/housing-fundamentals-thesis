@@ -37,6 +37,10 @@ jobs:
         with:
           path: data/raw/volumes
           key: raw-volumes-2026-11-11
+      - uses: actions/cache@v4
+        with:
+          path: data/raw/dvfplus
+          key: raw-dvfplus-2026-1
       - name: Download and rebuild
         env:
           URA_ACCESS_KEY: ${{ secrets.URA_ACCESS_KEY }}

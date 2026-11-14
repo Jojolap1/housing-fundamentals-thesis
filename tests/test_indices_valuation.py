@@ -400,3 +400,23 @@ def test_value_effect_detects_and_does_not_invent():
             assert r["slope"] < -25 and r["slope_p"] < 0.01 and r["dear_minus_cheap_third_pct"] < 0
         else:  # split sample: noise in starting prices must not create a relation
             assert abs(r["slope"] / r["slope_se"]) < 2.5
+
+
+def test_district_cycles_slope_appears_only_when_built_in():
+    from src.valuation import district_cycles as DC
+    rng = np.random.default_rng(5)
+    rows = []
+    level = {u: rng.normal(9, 0.3) for u in range(40)}
+    cum = {u: 0.0 for u in range(40)}
+    for year in range(2010, 2021):
+        for u in range(40):
+            cum[u] += 0.03 + (0.10 * (level[u] - 9) if year == 2019 else 0.0)
+            area = rng.uniform(20, 100, 40)
+            rows.append(pd.DataFrame({"unit": str(u), "year": year, "log_area": np.log(area), "rooms": "2",
+                                      "log_ppm2": level[u] + cum[u] - 0.1 * np.log(area) + rng.normal(0, 0.1, 40)}))
+    p = DC.district_year(pd.concat(rows, ignore_index=True), ["log_area"], ["rooms"])
+    s = DC.yearly_slopes(p).set_index("year")
+    assert p.shape == (40, 11) and s.index.min() == 2013
+    assert s.loc[2019, "t"] > 4 and (s.drop(2019)["t"].abs() < 3).all()
+    g = DC.group_index(p, (2010, 2012))
+    assert set(g["group"]) == {"cheapest third", "middle third", "dearest third"} and (g[g["year"] == 2013]["index"].round(6) == 100).all()

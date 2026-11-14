@@ -14,6 +14,7 @@ data:
 	$(PY) -c "from src.ingest.ura import developer_sales; developer_sales()"
 	$(PY) -m src.ingest.official_indices   # Singapore official indices; Paris index: see the module docstring
 	$(PY) -m src.ingest.volumes            # long transaction counts and purchase intentions
+	$(PY) -m src.ingest.dvfplus            # Paris sales 2014-2025 (Cerema DVF+ open-data)
 
 ## Clean + harmonise transactions, then build features
 features:
@@ -42,6 +43,7 @@ verdict:
 	$(PY) -m src.valuation.early_warning
 	$(PY) -m src.valuation.volumes
 	$(PY) -m src.valuation.value_effect
+	$(PY) -m src.valuation.district_cycles
 
 ## Static website data and pages (site/)
 site:
