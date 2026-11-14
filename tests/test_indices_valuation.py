@@ -368,3 +368,35 @@ def test_volume_drop_precedes_price_fall():
     bal = pd.Series(np.r_[np.sin(np.arange(52) / 3) * 2 - 70, np.full(8, -90.0)], index=idx)
     _, ch, flag = V.signal(bal, "balance")
     assert not flag.iloc[:44].any() and flag.iloc[-6:].any()
+
+
+def _value_panel(effect: float, seed: int = 3) -> pd.DataFrame:
+    rng = np.random.default_rng(seed)
+    rows = []
+    for u in range(60):
+        level, ratio = rng.normal(9, 0.3), rng.normal(0, 0.15)  # log price level and log price-to-rent deviation
+        growth = 0.05 + effect * ratio
+        for when, base in (("2021-09-15", 0.0), ("2025-09-15", growth)):
+            n = 80
+            area = rng.uniform(20, 120, n)
+            lp = level + ratio + base - 0.1 * np.log(area) + rng.normal(0, 0.2, n)
+            rows.append(pd.DataFrame({"district_l2": f"u{u}", "date": when, "floor_area_m2": area,
+                                      "price_per_m2_local": np.exp(lp), "rooms_or_flat_type": "2",
+                                      "price_to_rent": np.exp(lp - level + 3)}))
+    t = pd.concat(rows, ignore_index=True)
+    t["date"] = pd.to_datetime(t["date"]) + pd.to_timedelta(np.random.default_rng(seed).integers(0, 60, len(t)), unit="D")
+    return t
+
+
+def test_value_effect_detects_and_does_not_invent():
+    from src.indices.run import prepare
+    from src.valuation import value_effect as VE
+    for effect, expect_negative in ((-0.5, True), (0.0, False)):
+        t = prepare(_value_panel(effect))
+        d, w = VE.district_table(t, ["log_area"], ["rooms_or_flat_type"], np.random.default_rng(1))
+        r = VE.test(d, np.random.default_rng(1))
+        assert r["districts"] == 60 and w["formation_start"] == "2021-09"
+        if expect_negative:
+            assert r["slope"] < -25 and r["slope_p"] < 0.01 and r["dear_minus_cheap_third_pct"] < 0
+        else:  # split sample: noise in starting prices must not create a relation
+            assert abs(r["slope"] / r["slope_se"]) < 2.5
