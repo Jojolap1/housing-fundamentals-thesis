@@ -1,33 +1,33 @@
-build started 2026-11-14T11:51:39Z
+build started 2026-11-14T14:17:59Z
 Python 3.13.18
 OK    ingest_fx (0s)
 OK    ingest_rates (1s)
 OK    ingest_paris (1s)
 OK    ingest_singapore (0s)
 OK    ingest_onemap (1s)
-OK    ingest_official (1s)
-OK    ingest_volumes (9s)
-OK    ingest_dvfplus (16s)
+OK    ingest_official (0s)
+OK    ingest_volumes (7s)
+OK    ingest_dvfplus (0s)
 URA access key provided to the build: yes
-OK    ingest_ura (82s)
-OK    ingest_ura_geocode (115s)
-OK    ingest_ura_dev (117s)
-OK    clean_paris (7s)
-OK    clean_singapore (7s)
-OK    clean_private (8s)
-OK    features_paris (19s)
+OK    ingest_ura (100s)
+OK    ingest_ura_geocode (126s)
+OK    ingest_ura_dev (125s)
+OK    clean_paris (5s)
+OK    clean_singapore (6s)
+OK    clean_private (5s)
+OK    features_paris (16s)
 OK    features_singapore (2s)
-OK    features_private (2s)
-OK    levels (26s)
-OK    robust (69s)
-OK    indices (8s)
-OK    verdict (10s)
+OK    features_private (1s)
+OK    levels (17s)
+OK    robust (53s)
+OK    indices (6s)
+OK    verdict (8s)
 OK    cross_checks (12s)
-OK    early_warning (3s)
-OK    volumes (1s)
+OK    early_warning (2s)
+OK    volumes (0s)
 OK    value_effect (3s)
-OK    district_cycles (13s)
-OK    tests (5s)
+OK    district_cycles (10s)
+OK    tests (4s)
 --- probe: files of DVF+ open-data on data.gouv.fr
 licence: lov2 | temporal: {'end': '2025-12-31', 'start': '2014-01-01'}
   Documentation DVF+ | html | None | https://datafoncier.cerema.fr/donnees/autres-donnees-foncieres/dvfplus-open-data
@@ -98,7 +98,7 @@ singapore districts 26 years 1990 2026 sales 990464
  2024         26             7.11  -1.54 -0.97
  2025         26             6.68   1.04  1.05
  2026         26             0.04   1.71  1.29
-dvf_plus_d75.csv 186563738 bytes
+dvf_plus_d75.csv already there
 --- value effect
 {'city': 'paris', 'formation_start': '2021-07', 'formation_end': '2022-06', 'end_start': '2025-06', 'end_end': '2026-05', 'districts': 79, 'mean_change_pct': np.float64(-7.907), 'sd_change_pct': np.float64(4.936), 'sd_signal': np.float64(0.098), 'slope': np.float64(31.431), 'slope_se': np.float64(4.142), 'slope_p': np.float64(0.0), 'change_for_10pct_dearer': np.float64(2.996), 'r2': np.float64(0.393), 'slope_with_price_level': np.float64(-8.111), 'slope_with_price_level_se': np.float64(5.252), 'slope_with_price_level_p': np.float64(0.127), 'spearman': np.float64(0.58), 'spearman_p': np.float64(0.0), 'dear_minus_cheap_third_pct': 6.674, 'gap_ci_low': np.float64(3.775), 'gap_ci_high': np.float64(8.376), 'raw_slope': np.float64(23.258)}
 {'city': 'singapore', 'formation_start': '2021-01', 'formation_end': '2021-12', 'end_start': '2025-11', 'end_end': '2026-10', 'districts': 129, 'mean_change_pct': np.float64(31.426), 'sd_change_pct': np.float64(3.957), 'sd_signal': np.float64(0.16), 'slope': np.float64(7.23), 'slope_se': np.float64(2.27), 'slope_p': np.float64(0.002), 'change_for_10pct_dearer': np.float64(0.689), 'r2': np.float64(0.085), 'slope_with_price_level': np.float64(7.761), 'slope_with_price_level_se': np.float64(2.301), 'slope_with_price_level_p': np.float64(0.001), 'spearman': np.float64(0.242), 'spearman_p': np.float64(0.006), 'dear_minus_cheap_third_pct': 2.121, 'gap_ci_low': np.float64(0.157), 'gap_ci_high': np.float64(3.716), 'raw_slope': np.float64(-6.209)}
@@ -106,7 +106,7 @@ dvf_plus_d75.csv 186563738 bytes
 --- raw files
 0 .gitkeep
 0 .manifest.lock
-36884 MANIFEST.csv
+36556 MANIFEST.csv
 186563738 dvfplus/dvf_plus_d75.csv
 1083818 fx/ecb_eurofxref_sgd_usd.csv
 2601 official/hdb_resale_price_index.csv
@@ -246,4 +246,4 @@ quarter,property_type,locality,index,_id
      91 Landed
     364 Non-Landed
       1 property_type
-build finished 2026-11-14T12:00:38Z
+build finished 2026-11-14T14:26:30Z
